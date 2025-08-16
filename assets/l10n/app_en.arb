@@ -1,0 +1,9 @@
+{
+    "@@locale": "en",
+    "name": "Name",
+    "products": "Products",
+    "add_product": "Add product",
+    "customers": "Customers",
+    "add_customer": "Add customer",
+    "save": "Save"
+}
