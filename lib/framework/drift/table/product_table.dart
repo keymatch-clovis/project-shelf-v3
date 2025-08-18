@@ -3,7 +3,7 @@ import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 
 @UseRowClass(ProductDto)
 @TableIndex.sql('''
-  CREATE UNIQUE INDEX idx_unique_name_not_pending_for_deletion
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_name_not_pending_for_deletion
   ON product(name)
   WHERE pending_delete_until IS NULL;
 ''')

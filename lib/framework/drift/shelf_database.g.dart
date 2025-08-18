@@ -323,7 +323,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
 }
 
 class $CityTableTable extends CityTable
-    with TableInfo<$CityTableTable, CityTableData> {
+    with TableInfo<$CityTableTable, CityDto> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -367,10 +367,10 @@ class $CityTableTable extends CityTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'city_table';
+  static const String $name = 'city';
   @override
   VerificationContext validateIntegrity(
-    Insertable<CityTableData> instance, {
+    Insertable<CityDto> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -400,9 +400,9 @@ class $CityTableTable extends CityTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  CityTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CityDto map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CityTableData(
+    return CityDto(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -424,91 +424,7 @@ class $CityTableTable extends CityTable
   }
 }
 
-class CityTableData extends DataClass implements Insertable<CityTableData> {
-  final int id;
-  final String name;
-  final String department;
-  const CityTableData({
-    required this.id,
-    required this.name,
-    required this.department,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['department'] = Variable<String>(department);
-    return map;
-  }
-
-  CityTableCompanion toCompanion(bool nullToAbsent) {
-    return CityTableCompanion(
-      id: Value(id),
-      name: Value(name),
-      department: Value(department),
-    );
-  }
-
-  factory CityTableData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CityTableData(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      department: serializer.fromJson<String>(json['department']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'department': serializer.toJson<String>(department),
-    };
-  }
-
-  CityTableData copyWith({int? id, String? name, String? department}) =>
-      CityTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        department: department ?? this.department,
-      );
-  CityTableData copyWithCompanion(CityTableCompanion data) {
-    return CityTableData(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      department: data.department.present
-          ? data.department.value
-          : this.department,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('CityTableData(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('department: $department')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, name, department);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is CityTableData &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.department == this.department);
-}
-
-class CityTableCompanion extends UpdateCompanion<CityTableData> {
+class CityTableCompanion extends UpdateCompanion<CityDto> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> department;
@@ -523,7 +439,7 @@ class CityTableCompanion extends UpdateCompanion<CityTableData> {
     required String department,
   }) : name = Value(name),
        department = Value(department);
-  static Insertable<CityTableData> custom({
+  static Insertable<CityDto> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? department,
@@ -580,7 +496,7 @@ abstract class _$ShelfDatabase extends GeneratedDatabase {
   late final $CityTableTable cityTable = $CityTableTable(this);
   late final Index idxUniqueNameNotPendingForDeletion = Index(
     'idx_unique_name_not_pending_for_deletion',
-    'CREATE UNIQUE INDEX idx_unique_name_not_pending_for_deletion ON product (name) WHERE pending_delete_until IS NULL',
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_name_not_pending_for_deletion ON product (name) WHERE pending_delete_until IS NULL',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -918,17 +834,14 @@ class $$CityTableTableTableManager
         RootTableManager<
           _$ShelfDatabase,
           $CityTableTable,
-          CityTableData,
+          CityDto,
           $$CityTableTableFilterComposer,
           $$CityTableTableOrderingComposer,
           $$CityTableTableAnnotationComposer,
           $$CityTableTableCreateCompanionBuilder,
           $$CityTableTableUpdateCompanionBuilder,
-          (
-            CityTableData,
-            BaseReferences<_$ShelfDatabase, $CityTableTable, CityTableData>,
-          ),
-          CityTableData,
+          (CityDto, BaseReferences<_$ShelfDatabase, $CityTableTable, CityDto>),
+          CityDto,
           PrefetchHooks Function()
         > {
   $$CityTableTableTableManager(_$ShelfDatabase db, $CityTableTable table)
@@ -974,17 +887,14 @@ typedef $$CityTableTableProcessedTableManager =
     ProcessedTableManager<
       _$ShelfDatabase,
       $CityTableTable,
-      CityTableData,
+      CityDto,
       $$CityTableTableFilterComposer,
       $$CityTableTableOrderingComposer,
       $$CityTableTableAnnotationComposer,
       $$CityTableTableCreateCompanionBuilder,
       $$CityTableTableUpdateCompanionBuilder,
-      (
-        CityTableData,
-        BaseReferences<_$ShelfDatabase, $CityTableTable, CityTableData>,
-      ),
-      CityTableData,
+      (CityDto, BaseReferences<_$ShelfDatabase, $CityTableTable, CityDto>),
+      CityDto,
       PrefetchHooks Function()
     >;
 

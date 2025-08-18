@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
+import 'package:project_shelf_v3/app/use_case/city/load_default_cities_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/find_product_use_case.dart';
@@ -47,4 +50,19 @@ final findProductUseCaseProvider = Provider<FindProductUseCase>((ref) {
 final deleteProductUseCaseProvider = Provider<DeleteProductUseCase>((ref) {
   final ProductService service = ref.read(productServiceProvider);
   return DeleteProductUseCase(service);
+});
+
+/// City related
+// CREATE related
+final loadDefaultCitiesUseCaseProvider = Provider<LoadDefaultCitiesUseCase>((
+  ref,
+) {
+  final CityService service = ref.read(cityServiceProvider);
+  return LoadDefaultCitiesUseCase(service);
+});
+
+// READ related
+final searchCitiesUseCaseProvider = Provider<SearchCitiesUseCase>((ref) {
+  final CityService service = ref.read(cityServiceProvider);
+  return SearchCitiesUseCase(service);
 });

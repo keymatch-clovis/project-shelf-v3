@@ -26,6 +26,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   money2: ^6.0.5
   csv: ^6.0.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -43,4 +44,4 @@ flutter:
   uses-material-design: true
   generate: true
   assets:
-    - assets/raw/departments_citiens.csv
+    - assets/raw/departments_cities.csv

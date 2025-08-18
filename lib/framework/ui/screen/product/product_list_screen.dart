@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/view_model/product/product_list_view_model.dart';
 import 'package:project_shelf_v3/adapter/view_model/product/product_search_view_model.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/ui/common/search_anchor/city_search_anchor.dart';
 
 class ProductListScreen extends ConsumerWidget {
   const ProductListScreen({super.key});
@@ -16,7 +17,7 @@ class ProductListScreen extends ConsumerWidget {
         title: Text(AppLocalizations.of(context)!.products),
         // https://m3.material.io/components/app-bars/specs#fac99130-8bb8-498c-8cb8-16ea056cc3e1
         actionsPadding: EdgeInsets.symmetric(horizontal: 4),
-        actions: [_ProductSearchAnchor()],
+        actions: [_ProductSearchAnchor(), CitySearchAnchor()],
       ),
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton.large(
