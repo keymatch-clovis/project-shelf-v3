@@ -4,7 +4,7 @@ part of 'shelf_database.dart';
 
 // ignore_for_file: type=lint
 class $ProductTableTable extends ProductTable
-    with TableInfo<$ProductTableTable, ProductTableData> {
+    with TableInfo<$ProductTableTable, ProductDto> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -98,10 +98,10 @@ class $ProductTableTable extends ProductTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'product_table';
+  static const String $name = 'product';
   @override
   VerificationContext validateIntegrity(
-    Insertable<ProductTableData> instance, {
+    Insertable<ProductDto> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -167,9 +167,9 @@ class $ProductTableTable extends ProductTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  ProductTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ProductDto map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ProductTableData(
+    return ProductDto(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -207,157 +207,7 @@ class $ProductTableTable extends ProductTable
   }
 }
 
-class ProductTableData extends DataClass
-    implements Insertable<ProductTableData> {
-  final int id;
-  final String name;
-  final int defaultPrice;
-  final int stock;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? pendingDeleteUntil;
-  const ProductTableData({
-    required this.id,
-    required this.name,
-    required this.defaultPrice,
-    required this.stock,
-    required this.createdAt,
-    required this.updatedAt,
-    this.pendingDeleteUntil,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['default_price'] = Variable<int>(defaultPrice);
-    map['stock'] = Variable<int>(stock);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    if (!nullToAbsent || pendingDeleteUntil != null) {
-      map['pending_delete_until'] = Variable<DateTime>(pendingDeleteUntil);
-    }
-    return map;
-  }
-
-  ProductTableCompanion toCompanion(bool nullToAbsent) {
-    return ProductTableCompanion(
-      id: Value(id),
-      name: Value(name),
-      defaultPrice: Value(defaultPrice),
-      stock: Value(stock),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      pendingDeleteUntil: pendingDeleteUntil == null && nullToAbsent
-          ? const Value.absent()
-          : Value(pendingDeleteUntil),
-    );
-  }
-
-  factory ProductTableData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ProductTableData(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      defaultPrice: serializer.fromJson<int>(json['defaultPrice']),
-      stock: serializer.fromJson<int>(json['stock']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-      pendingDeleteUntil: serializer.fromJson<DateTime?>(
-        json['pendingDeleteUntil'],
-      ),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'defaultPrice': serializer.toJson<int>(defaultPrice),
-      'stock': serializer.toJson<int>(stock),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-      'pendingDeleteUntil': serializer.toJson<DateTime?>(pendingDeleteUntil),
-    };
-  }
-
-  ProductTableData copyWith({
-    int? id,
-    String? name,
-    int? defaultPrice,
-    int? stock,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    Value<DateTime?> pendingDeleteUntil = const Value.absent(),
-  }) => ProductTableData(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    defaultPrice: defaultPrice ?? this.defaultPrice,
-    stock: stock ?? this.stock,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-    pendingDeleteUntil: pendingDeleteUntil.present
-        ? pendingDeleteUntil.value
-        : this.pendingDeleteUntil,
-  );
-  ProductTableData copyWithCompanion(ProductTableCompanion data) {
-    return ProductTableData(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      defaultPrice: data.defaultPrice.present
-          ? data.defaultPrice.value
-          : this.defaultPrice,
-      stock: data.stock.present ? data.stock.value : this.stock,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      pendingDeleteUntil: data.pendingDeleteUntil.present
-          ? data.pendingDeleteUntil.value
-          : this.pendingDeleteUntil,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ProductTableData(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('defaultPrice: $defaultPrice, ')
-          ..write('stock: $stock, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('pendingDeleteUntil: $pendingDeleteUntil')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    defaultPrice,
-    stock,
-    createdAt,
-    updatedAt,
-    pendingDeleteUntil,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is ProductTableData &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.defaultPrice == this.defaultPrice &&
-          other.stock == this.stock &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.pendingDeleteUntil == this.pendingDeleteUntil);
-}
-
-class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
+class ProductTableCompanion extends UpdateCompanion<ProductDto> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> defaultPrice;
@@ -387,7 +237,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
        stock = Value(stock),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
-  static Insertable<ProductTableData> custom({
+  static Insertable<ProductDto> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? defaultPrice,
@@ -472,15 +322,275 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   }
 }
 
+class $CityTableTable extends CityTable
+    with TableInfo<$CityTableTable, CityTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CityTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _departmentMeta = const VerificationMeta(
+    'department',
+  );
+  @override
+  late final GeneratedColumn<String> department = GeneratedColumn<String>(
+    'department',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, department];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'city_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CityTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('department')) {
+      context.handle(
+        _departmentMeta,
+        department.isAcceptableOrUnknown(data['department']!, _departmentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_departmentMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CityTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CityTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      department: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}department'],
+      )!,
+    );
+  }
+
+  @override
+  $CityTableTable createAlias(String alias) {
+    return $CityTableTable(attachedDatabase, alias);
+  }
+}
+
+class CityTableData extends DataClass implements Insertable<CityTableData> {
+  final int id;
+  final String name;
+  final String department;
+  const CityTableData({
+    required this.id,
+    required this.name,
+    required this.department,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['department'] = Variable<String>(department);
+    return map;
+  }
+
+  CityTableCompanion toCompanion(bool nullToAbsent) {
+    return CityTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      department: Value(department),
+    );
+  }
+
+  factory CityTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CityTableData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      department: serializer.fromJson<String>(json['department']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'department': serializer.toJson<String>(department),
+    };
+  }
+
+  CityTableData copyWith({int? id, String? name, String? department}) =>
+      CityTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        department: department ?? this.department,
+      );
+  CityTableData copyWithCompanion(CityTableCompanion data) {
+    return CityTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      department: data.department.present
+          ? data.department.value
+          : this.department,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CityTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('department: $department')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, department);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CityTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.department == this.department);
+}
+
+class CityTableCompanion extends UpdateCompanion<CityTableData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> department;
+  const CityTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.department = const Value.absent(),
+  });
+  CityTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String department,
+  }) : name = Value(name),
+       department = Value(department);
+  static Insertable<CityTableData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? department,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (department != null) 'department': department,
+    });
+  }
+
+  CityTableCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? department,
+  }) {
+    return CityTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      department: department ?? this.department,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (department.present) {
+      map['department'] = Variable<String>(department.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CityTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('department: $department')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ShelfDatabase extends GeneratedDatabase {
   _$ShelfDatabase(QueryExecutor e) : super(e);
   $ShelfDatabaseManager get managers => $ShelfDatabaseManager(this);
   late final $ProductTableTable productTable = $ProductTableTable(this);
+  late final $CityTableTable cityTable = $CityTableTable(this);
+  late final Index idxUniqueNameNotPendingForDeletion = Index(
+    'idx_unique_name_not_pending_for_deletion',
+    'CREATE UNIQUE INDEX idx_unique_name_not_pending_for_deletion ON product (name) WHERE pending_delete_until IS NULL',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [productTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    productTable,
+    cityTable,
+    idxUniqueNameNotPendingForDeletion,
+  ];
 }
 
 typedef $$ProductTableTableCreateCompanionBuilder =
@@ -634,21 +744,17 @@ class $$ProductTableTableTableManager
         RootTableManager<
           _$ShelfDatabase,
           $ProductTableTable,
-          ProductTableData,
+          ProductDto,
           $$ProductTableTableFilterComposer,
           $$ProductTableTableOrderingComposer,
           $$ProductTableTableAnnotationComposer,
           $$ProductTableTableCreateCompanionBuilder,
           $$ProductTableTableUpdateCompanionBuilder,
           (
-            ProductTableData,
-            BaseReferences<
-              _$ShelfDatabase,
-              $ProductTableTable,
-              ProductTableData
-            >,
+            ProductDto,
+            BaseReferences<_$ShelfDatabase, $ProductTableTable, ProductDto>,
           ),
-          ProductTableData,
+          ProductDto,
           PrefetchHooks Function()
         > {
   $$ProductTableTableTableManager(_$ShelfDatabase db, $ProductTableTable table)
@@ -710,17 +816,175 @@ typedef $$ProductTableTableProcessedTableManager =
     ProcessedTableManager<
       _$ShelfDatabase,
       $ProductTableTable,
-      ProductTableData,
+      ProductDto,
       $$ProductTableTableFilterComposer,
       $$ProductTableTableOrderingComposer,
       $$ProductTableTableAnnotationComposer,
       $$ProductTableTableCreateCompanionBuilder,
       $$ProductTableTableUpdateCompanionBuilder,
       (
-        ProductTableData,
-        BaseReferences<_$ShelfDatabase, $ProductTableTable, ProductTableData>,
+        ProductDto,
+        BaseReferences<_$ShelfDatabase, $ProductTableTable, ProductDto>,
       ),
-      ProductTableData,
+      ProductDto,
+      PrefetchHooks Function()
+    >;
+typedef $$CityTableTableCreateCompanionBuilder =
+    CityTableCompanion Function({
+      Value<int> id,
+      required String name,
+      required String department,
+    });
+typedef $$CityTableTableUpdateCompanionBuilder =
+    CityTableCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> department,
+    });
+
+class $$CityTableTableFilterComposer
+    extends Composer<_$ShelfDatabase, $CityTableTable> {
+  $$CityTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CityTableTableOrderingComposer
+    extends Composer<_$ShelfDatabase, $CityTableTable> {
+  $$CityTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CityTableTableAnnotationComposer
+    extends Composer<_$ShelfDatabase, $CityTableTable> {
+  $$CityTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get department => $composableBuilder(
+    column: $table.department,
+    builder: (column) => column,
+  );
+}
+
+class $$CityTableTableTableManager
+    extends
+        RootTableManager<
+          _$ShelfDatabase,
+          $CityTableTable,
+          CityTableData,
+          $$CityTableTableFilterComposer,
+          $$CityTableTableOrderingComposer,
+          $$CityTableTableAnnotationComposer,
+          $$CityTableTableCreateCompanionBuilder,
+          $$CityTableTableUpdateCompanionBuilder,
+          (
+            CityTableData,
+            BaseReferences<_$ShelfDatabase, $CityTableTable, CityTableData>,
+          ),
+          CityTableData,
+          PrefetchHooks Function()
+        > {
+  $$CityTableTableTableManager(_$ShelfDatabase db, $CityTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CityTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CityTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CityTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> department = const Value.absent(),
+              }) => CityTableCompanion(
+                id: id,
+                name: name,
+                department: department,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required String department,
+              }) => CityTableCompanion.insert(
+                id: id,
+                name: name,
+                department: department,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CityTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ShelfDatabase,
+      $CityTableTable,
+      CityTableData,
+      $$CityTableTableFilterComposer,
+      $$CityTableTableOrderingComposer,
+      $$CityTableTableAnnotationComposer,
+      $$CityTableTableCreateCompanionBuilder,
+      $$CityTableTableUpdateCompanionBuilder,
+      (
+        CityTableData,
+        BaseReferences<_$ShelfDatabase, $CityTableTable, CityTableData>,
+      ),
+      CityTableData,
       PrefetchHooks Function()
     >;
 
@@ -729,4 +993,6 @@ class $ShelfDatabaseManager {
   $ShelfDatabaseManager(this._db);
   $$ProductTableTableTableManager get productTable =>
       $$ProductTableTableTableManager(_db, _db.productTable);
+  $$CityTableTableTableManager get cityTable =>
+      $$CityTableTableTableManager(_db, _db.cityTable);
 }

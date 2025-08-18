@@ -98,29 +98,11 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
-  /// No description provided for @name.
+  /// No description provided for @accept.
   ///
   /// In en, this message translates to:
-  /// **'Name'**
-  String get name;
-
-  /// No description provided for @products.
-  ///
-  /// In en, this message translates to:
-  /// **'Products'**
-  String get products;
-
-  /// No description provided for @add_product.
-  ///
-  /// In en, this message translates to:
-  /// **'Add product'**
-  String get add_product;
-
-  /// No description provided for @customers.
-  ///
-  /// In en, this message translates to:
-  /// **'Customers'**
-  String get customers;
+  /// **'Accept'**
+  String get accept;
 
   /// No description provided for @add_customer.
   ///
@@ -128,11 +110,137 @@ abstract class AppLocalizations {
   /// **'Add customer'**
   String get add_customer;
 
+  /// No description provided for @add_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Add product'**
+  String get add_product;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @customers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get customers;
+
+  /// No description provided for @delete_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete product'**
+  String get delete_product;
+
+  /// No description provided for @err_blank_value.
+  ///
+  /// In en, this message translates to:
+  /// **'The value can\'t be blank'**
+  String get err_blank_value;
+
+  /// No description provided for @err_invalid_decimal_value.
+  ///
+  /// In en, this message translates to:
+  /// **'The value must be decimal'**
+  String get err_invalid_decimal_value;
+
+  /// No description provided for @err_invalid_integer_value.
+  ///
+  /// In en, this message translates to:
+  /// **'The value must be an integer'**
+  String get err_invalid_integer_value;
+
+  /// No description provided for @err_invalid_value.
+  ///
+  /// In en, this message translates to:
+  /// **'The value is invalid'**
+  String get err_invalid_value;
+
+  /// No description provided for @err_negative_value.
+  ///
+  /// In en, this message translates to:
+  /// **'The value can\'t be negative'**
+  String get err_negative_value;
+
+  /// No description provided for @err_not_enough_stock.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough stock available'**
+  String get err_not_enough_stock;
+
+  /// No description provided for @err_product_name_taken.
+  ///
+  /// In en, this message translates to:
+  /// **'This name is already taken'**
+  String get err_product_name_taken;
+
+  /// No description provided for @err_value_required.
+  ///
+  /// In en, this message translates to:
+  /// **'A value is required'**
+  String get err_value_required;
+
+  /// No description provided for @this_action_cannot_be_undone.
+  ///
+  /// In en, this message translates to:
+  /// **'This action can\'t be undone.'**
+  String get this_action_cannot_be_undone;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get product;
+
+  /// No description provided for @products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get products;
+
+  /// No description provided for @coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get coming_soon;
+
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
+
+  /// No description provided for @default_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Default price'**
+  String get default_price;
+
+  /// No description provided for @stock.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stock;
+
+  /// No description provided for @invoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices'**
+  String get invoices;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 }
 
 class _AppLocalizationsDelegate

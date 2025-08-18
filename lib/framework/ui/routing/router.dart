@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_shelf_v3/comon/typedefs.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_list_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/product/see_product_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorProductKey = GlobalKey<NavigatorState>(
@@ -10,6 +12,12 @@ final _shellNavigatorProductKey = GlobalKey<NavigatorState>(
 );
 final _shellNavigatorCustomerKey = GlobalKey<NavigatorState>(
   debugLabel: 'customer',
+);
+final _shellNavigatorInvoiceKey = GlobalKey<NavigatorState>(
+  debugLabel: 'invoice',
+);
+final _shellNavigatorSettingsKey = GlobalKey<NavigatorState>(
+  debugLabel: 'settings',
 );
 
 final goRouter = GoRouter(
@@ -37,6 +45,13 @@ final goRouter = GoRouter(
                     return CreateProductScreen();
                   },
                 ),
+                GoRoute(
+                  path: 'see',
+                  builder: (context, state) {
+                    final Id productId = state.extra! as Id;
+                    return SeeProductScreen(productId);
+                  },
+                ),
               ],
             ),
           ],
@@ -47,6 +62,32 @@ final goRouter = GoRouter(
             // TODO: Change these magic strings
             GoRoute(
               path: '/customer',
+              pageBuilder: (context, state) {
+                return const NoTransitionPage(child: ProductListScreen());
+              },
+              routes: [],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _shellNavigatorInvoiceKey,
+          routes: [
+            // TODO: Change these magic strings
+            GoRoute(
+              path: '/invoice',
+              pageBuilder: (context, state) {
+                return const NoTransitionPage(child: ProductListScreen());
+              },
+              routes: [],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _shellNavigatorSettingsKey,
+          routes: [
+            // TODO: Change these magic strings
+            GoRoute(
+              path: '/settings',
               pageBuilder: (context, state) {
                 return const NoTransitionPage(child: ProductListScreen());
               },

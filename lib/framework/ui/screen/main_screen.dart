@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/riverpod/drift_provider.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
-  const MainScreen({
-    required this.navigationShell,
-    super.key,
-  });
+  const MainScreen({required this.navigationShell, super.key});
 
   void goBranch(int index) {
     navigationShell.goBranch(
@@ -22,19 +21,37 @@ class MainScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+    // Eagerly initialize providers by watching them.
+    // By using "watch", the provider will stay alive and not be disposed.
+    ref.watch(shelfDatabaseProvider);
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.abc),
-            label: AppLocalizations.of(context)!.products,
+            icon: const Icon(Icons.category_outlined),
+            selectedIcon: const Icon(Icons.category_rounded),
+            label: localizations.products,
           ),
           NavigationDestination(
-            icon: Icon(Icons.abc),
-            label: AppLocalizations.of(context)!.customers,
+            icon: const Icon(Icons.group_outlined),
+            selectedIcon: const Icon(Icons.group_rounded),
+            label: localizations.customers,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.receipt_outlined),
+            selectedIcon: const Icon(Icons.receipt_rounded),
+            label: localizations.invoices,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings_rounded),
+            label: localizations.settings,
           ),
         ],
         onDestinationSelected: goBranch,

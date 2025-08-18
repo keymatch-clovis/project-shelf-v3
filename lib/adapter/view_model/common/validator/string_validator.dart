@@ -1,13 +1,22 @@
+import 'package:project_shelf_v3/adapter/view_model/common/validator/validator.dart';
 import 'package:project_shelf_v3/adapter/view_model/common/view_model_error.dart';
 
-List<ViewModelError> validateString(String value, {bool required = false}) {
-  List<ViewModelError> errors = [];
+class StringValidator implements Validator<String> {
+  @override
+  final bool isRequired;
 
-  if (required) {
-    if (value.isEmpty) {
-      errors.add(ViewModelError.blankValue);
+  StringValidator({this.isRequired = false});
+
+  @override
+  List<ViewModelError> validate(String value) {
+    List<ViewModelError> errors = [];
+
+    if (isRequired) {
+      if (value.isEmpty) {
+        errors.add(ViewModelError.blankValue);
+      }
     }
-  }
 
-  return errors;
+    return errors;
+  }
 }
