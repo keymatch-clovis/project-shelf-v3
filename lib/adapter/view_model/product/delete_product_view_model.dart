@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/view_model/common/view_model_event.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/comon/logger/view_model_printer.dart';
 import 'package:project_shelf_v3/framework/riverpod/use_case_provider.dart';
 
 part 'delete_product_view_model.freezed.dart';
@@ -25,13 +26,15 @@ abstract class DeleteProductViewModelState with _$DeleteProductViewModelState {
 
 class DeleteProductViewModel
     extends FamilyNotifier<DeleteProductViewModelState, Product> {
+  final Logger _logger = Logger(printer: ViewModelPrinter());
+
   @override
   DeleteProductViewModelState build(Product product) {
     return DeleteProductViewModelState(product: product);
   }
 
   Future<void> delete() async {
-    Logger().d("[VIEW-MODEL] Deleting product: ${state.product}");
+    _logger.d('Deleting product: ${state.product.toString()}');
     state = state.copyWith(isLoading: true);
 
     await ref.read(deleteProductUseCaseProvider).exec(state.product.id);

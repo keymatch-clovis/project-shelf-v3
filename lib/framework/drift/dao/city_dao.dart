@@ -2,9 +2,12 @@ import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
+import 'package:project_shelf_v3/comon/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 
 class CityDao implements CityRepository {
+  final Logger _logger = Logger(printer: FrameworkPrinter());
+
   final ShelfDatabase _database;
 
   CityDao(this._database);
@@ -14,7 +17,7 @@ class CityDao implements CityRepository {
   Future<void> create(
     Iterable<({String department, String name})> items,
   ) async {
-    Logger().d("[DRIFT] Creating cities: ${items.length}");
+    _logger.d("Creating cities: ${items.length}");
     await _database.batch((batch) {
       batch.insertAll(
         _database.cityTable,
@@ -31,7 +34,7 @@ class CityDao implements CityRepository {
   /// READ related
   @override
   Stream<List<CityDto>> search(String value) {
-    Logger().d("[DRIFT] Searching cities with: $value");
+    _logger.d("Searching cities with: $value");
     return _database
         .customSelect(
           '''

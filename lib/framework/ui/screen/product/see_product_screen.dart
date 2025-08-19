@@ -85,55 +85,115 @@ class _SeeProductScreenState extends ConsumerState<SeeProductScreen>
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              pinned: true,
-              title: Text(AppLocalizations.of(context)!.product),
-              // https://m3.material.io/components/app-bars/specs#fac99130-8bb8-498c-8cb8-16ea056cc3e1
-              actionsPadding: EdgeInsets.symmetric(horizontal: 12),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AcceptDialog(
-                        title: '${localizations.delete_product}?',
-                        body: localizations.this_action_cannot_be_undone,
-                        onAccept: deleteViewModel.delete,
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.delete_outline_rounded),
-                ),
-              ],
-              bottom: TabBar(
-                controller: _tabController,
-                tabs: [
-                  Tab(icon: Icon(Icons.data_object_rounded)),
-                  Tab(icon: Icon(Icons.receipt_long_rounded)),
-                  Tab(icon: Icon(Icons.group_outlined)),
+            SliverOverlapAbsorber(
+              // This widget takes the overlapping behavior of the SliverAppBar,
+              // and redirects it to the SliverOverlapInjector below. If it is
+              // missing, then it is possible for the nested "inner" scroll view
+              // below to end up under the SliverAppBar even when the inner
+              // scroll view thinks it has not been scrolled.
+              // This is not necessary if the "headerSliverBuilder" only builds
+              // widgets that do not overlap the next sliver.
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar(
+                pinned: true,
+                // The "forceElevated" property causes the SliverAppBar to show
+                // a shadow. The "innerBoxIsScrolled" parameter is true when the
+                // inner scroll view is scrolled beyond its "zero" point, i.e.
+                // when it appears to be scrolled below the SliverAppBar.
+                // Without this, there are cases where the shadow would appear
+                // or not appear inappropriately, because the SliverAppBar is
+                // not actually aware of the precise position of the inner
+                // scroll views.
+                forceElevated: innerBoxIsScrolled,
+                title: Text(AppLocalizations.of(context)!.product),
+                // https://m3.material.io/components/app-bars/specs#fac99130-8bb8-498c-8cb8-16ea056cc3e1
+                actionsPadding: EdgeInsets.symmetric(horizontal: 12),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AcceptDialog(
+                          title: '${localizations.delete_product}?',
+                          body: localizations.this_action_cannot_be_undone,
+                          onAccept: deleteViewModel.delete,
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.delete_outline_rounded),
+                  ),
                 ],
+                bottom: TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(icon: Icon(Icons.data_object_rounded)),
+                    Tab(icon: Icon(Icons.receipt_long_rounded)),
+                    Tab(icon: Icon(Icons.group_outlined)),
+                  ],
+                ),
               ),
             ),
           ],
           body: TabBarView(
             controller: _tabController,
             children: [
-              EditProductForm(product),
-              CustomScrollView(
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(child: _ComingSoonIcon()),
-                  ),
-                ],
+              // EditProductForm(product),
+              // SliverFillRemaining(
+              //   hasScrollBody: false,
+              //   child: Center(child: _ComingSoonIcon()),
+              // ),
+
+              // This Builder is needed to provide a BuildContext that is
+              // "inside" the NestedScrollView, so that
+              // sliverOverlapAbsorberHandleFor() can find the NestedScrollView.
+              Builder(
+                builder: (context) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context,
+                        ),
+                      ),
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: _EditProductForm(product),
+                      ),
+                    ],
+                  );
+                },
               ),
-              CustomScrollView(
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(child: _ComingSoonIcon()),
-                  ),
-                ],
+              Builder(
+                builder: (context) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context,
+                        ),
+                      ),
+                      SliverFillRemaining(
+                        child: Center(child: _ComingSoonIcon()),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context,
+                        ),
+                      ),
+                      SliverFillRemaining(
+                        child: Center(child: _ComingSoonIcon()),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
@@ -164,10 +224,10 @@ class _ComingSoonIcon extends StatelessWidget {
   }
 }
 
-class EditProductForm extends ConsumerWidget {
+class _EditProductForm extends ConsumerWidget {
   final Product _product;
 
-  const EditProductForm(this._product, {super.key});
+  const _EditProductForm(this._product);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -184,21 +244,13 @@ class EditProductForm extends ConsumerWidget {
       ref.read(editProductViewModelEventProvider.notifier).state = null;
     });
 
-    return Scaffold(
-      floatingActionButton: state.isValid
-          ? FloatingActionButton(
-              onPressed: viewModel.edit,
-              child: const Icon(Icons.save_rounded),
-            )
-          : null,
-      body: ProductForm(
-        nameInput: state.name,
-        onNameChanged: viewModel.updateName,
-        defaultPriceInput: state.defaultPrice,
-        onDefaultPriceChanged: viewModel.updateDefaultPrice,
-        stockInput: state.stock,
-        onStockChanged: viewModel.updateStock,
-      ),
+    return ProductForm(
+      nameInput: state.name,
+      onNameChanged: viewModel.updateName,
+      defaultPriceInput: state.defaultPrice,
+      onDefaultPriceChanged: viewModel.updateDefaultPrice,
+      stockInput: state.stock,
+      onStockChanged: viewModel.updateStock,
     );
   }
 }

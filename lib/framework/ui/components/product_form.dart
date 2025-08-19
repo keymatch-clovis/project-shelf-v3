@@ -7,7 +7,7 @@ import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.da
 import 'package:project_shelf_v3/framework/ui/common/view_model_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
 
-class ProductForm extends StatelessWidget {
+class ProductForm extends StatefulWidget {
   final Input nameInput;
   final void Function(String value) onNameChanged;
 
@@ -30,6 +30,24 @@ class ProductForm extends StatelessWidget {
   });
 
   @override
+  State<StatefulWidget> createState() => _ProductFromState();
+}
+
+class _ProductFromState extends State<ProductForm> {
+  final _nameFieldFocus = FocusNode();
+  final _defaultPriceFieldFocus = FocusNode();
+  final _stockFieldFocus = FocusNode();
+
+  @override
+  void dispose() {
+    _nameFieldFocus.dispose();
+    _defaultPriceFieldFocus.dispose();
+    _stockFieldFocus.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
@@ -44,21 +62,23 @@ class ProductForm extends StatelessWidget {
         children: [
           CustomTextField(
             label: localizations.name,
-            value: nameInput.value,
-            onChanged: onNameChanged,
-            onClear: () => onNameChanged(""),
+            focusNode: _nameFieldFocus,
+            value: widget.nameInput.value,
+            onChanged: widget.onNameChanged,
+            onClear: () => widget.onNameChanged(""),
             keyboardType: TextInputType.name,
             textCapitalization: TextCapitalization.characters,
             textInputAction: TextInputAction.next,
-            errors: nameInput.errors.parseErrors(context),
+            errors: widget.nameInput.errors.parseErrors(context),
           ),
           CustomTextField(
             label: localizations.default_price,
-            value: defaultPriceInput.value,
-            onChanged: onDefaultPriceChanged,
-            onClear: () => onDefaultPriceChanged(""),
+            focusNode: _defaultPriceFieldFocus,
+            value: widget.defaultPriceInput.value,
+            onChanged: widget.onDefaultPriceChanged,
+            onClear: () => widget.onDefaultPriceChanged(""),
             keyboardType: TextInputType.number,
-            errors: defaultPriceInput.errors.parseErrors(context),
+            errors: widget.defaultPriceInput.errors.parseErrors(context),
             textInputAction: TextInputAction.next,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -67,11 +87,12 @@ class ProductForm extends StatelessWidget {
           ),
           CustomTextField(
             label: localizations.stock,
-            value: stockInput.value,
-            onChanged: onStockChanged,
-            onClear: () => onStockChanged(""),
+            focusNode: _stockFieldFocus,
+            value: widget.stockInput.value,
+            onChanged: widget.onStockChanged,
+            onClear: () => widget.onStockChanged(""),
             keyboardType: TextInputType.number,
-            errors: stockInput.errors.parseErrors(context),
+            errors: widget.stockInput.errors.parseErrors(context),
             textInputAction: TextInputAction.done,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),

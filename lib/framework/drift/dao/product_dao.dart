@@ -2,10 +2,13 @@ import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
+import 'package:project_shelf_v3/comon/logger/framework_printer.dart';
 import 'package:project_shelf_v3/comon/typedefs.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 
 class ProductDao implements ProductRepository {
+  final Logger _logger = Logger(printer: FrameworkPrinter());
+
   final ShelfDatabase _database;
 
   ProductDao(this._database);
@@ -17,7 +20,7 @@ class ProductDao implements ProductRepository {
     required int defaultPrice,
     required int stock,
   }) async {
-    Logger().d("[DRIFT] Creating product with: $name, $defaultPrice, $stock");
+    _logger.d("Creating product with: $name, $defaultPrice, $stock");
     final dateTime = DateTime.now();
 
     return await _database
@@ -41,9 +44,7 @@ class ProductDao implements ProductRepository {
     required int defaultPrice,
     required int stock,
   }) async {
-    Logger().d(
-      "[DRIFT] updating product with: $id, $name, $defaultPrice, $stock",
-    );
+    _logger.d("Updating product with: $id, $name, $defaultPrice, $stock");
     final dateTime = DateTime.now();
 
     final statement = _database.update(_database.productTable)
@@ -62,7 +63,7 @@ class ProductDao implements ProductRepository {
   /// READ related
   @override
   Stream<List<ProductDto>> watch() {
-    Logger().d("[DRIFT] Watching products");
+    _logger.d("Watching products");
     // TODO: Maybe we can set the ordering later.
     return (_database.select(
       _database.productTable,
@@ -71,7 +72,7 @@ class ProductDao implements ProductRepository {
 
   @override
   Stream<List<ProductDto>> search(String value) {
-    Logger().d("[DRIFT] Searching products with: $value");
+    _logger.d("Searching products with: $value");
     return _database
         .customSelect(
           '''
@@ -94,7 +95,7 @@ class ProductDao implements ProductRepository {
 
   @override
   Future<ProductDto?> searchWithName(String name) {
-    Logger().d("[DRIFT] Searching product with name: $name");
+    _logger.d("Searching product with name: $name");
     return (_database.select(_database.productTable)
           ..where((e) => e.name.equals(name) & e.pendingDeleteUntil.isNull()))
         .getSingleOrNull();
@@ -102,7 +103,7 @@ class ProductDao implements ProductRepository {
 
   @override
   Future<ProductDto> findById(Id id) {
-    Logger().d("[DRIFT] Finding product with ID: $id");
+    _logger.d("Finding product with ID: $id");
     return (_database.select(_database.productTable)
           ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull()))
         .getSingle();
@@ -110,7 +111,7 @@ class ProductDao implements ProductRepository {
 
   @override
   Future<ProductDto> findByName(String name) {
-    Logger().d("[DRIFT] Finding product with name: $name");
+    _logger.d("Finding product with name: $name");
     return (_database.select(_database.productTable)
           ..where((e) => e.name.equals(name) & e.pendingDeleteUntil.isNull()))
         .getSingle();
@@ -119,7 +120,7 @@ class ProductDao implements ProductRepository {
   /// DELETE related
   @override
   Future<void> delete(Id id) async {
-    Logger().d("[DRIFT] Deleting product with ID: $id");
+    _logger.d("Deleting product with ID: $id");
     final count = await (_database.delete(
       _database.productTable,
     )..where((r) => r.id.equals(id))).go();

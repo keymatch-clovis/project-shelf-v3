@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
+import 'package:project_shelf_v3/comon/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/table/city_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/product_table.dart';
 
@@ -13,6 +14,8 @@ const DATABASE_NAME = 'shelf';
 
 @DriftDatabase(tables: [ProductTable, CityTable])
 class ShelfDatabase extends _$ShelfDatabase {
+  final Logger _logger = Logger(printer: FrameworkPrinter());
+
   // After generating code, this class needs to define a `schemaVersion` getter
   // and a constructor telling drift where the database should be stored.
   // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
@@ -23,7 +26,7 @@ class ShelfDatabase extends _$ShelfDatabase {
   int get schemaVersion => 1;
 
   static QueryExecutor _openConnection() {
-    Logger().i("[DRIFT] Opening database");
+    Logger(printer: FrameworkPrinter()).i('Opening database');
 
     return driftDatabase(
       name: DATABASE_NAME,
@@ -38,12 +41,12 @@ class ShelfDatabase extends _$ShelfDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
-      Logger().d("[DRIFT] Creating database");
+      _logger.d('Creating database');
       await m.createAll();
 
       /// Product FTS virtual table
       // Product related
-      Logger().d("[DRIFT] Creating product FTS virtual table");
+      _logger.d('Creating product FTS virtual table');
       await customStatement('''
         CREATE VIRTUAL TABLE product_fts
         USING fts5(product_id, name);
@@ -66,7 +69,7 @@ class ShelfDatabase extends _$ShelfDatabase {
         END;
       ''');
 
-      Logger().d("[DRIFT] Creating city FTS virtual table");
+      _logger.d('Creating city FTS virtual table');
       await customStatement('''
         CREATE VIRTUAL TABLE city_fts
         USING fts5(city_id, name, department);

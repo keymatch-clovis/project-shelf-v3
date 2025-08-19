@@ -1,6 +1,6 @@
 import 'package:csv/csv.dart';
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/common/logger/use_case_printer.dart';
+import 'package:project_shelf_v3/comon/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/app/entity/app_preferences.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';

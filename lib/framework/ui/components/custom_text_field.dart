@@ -7,6 +7,8 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextCapitalization? textCapitalization;
   final TextInputAction? textInputAction;
+  final FocusNode? focusNode;
+  final void Function(String)? onFieldSubmitted;
 
   /// Custom fields
   final String label;
@@ -21,6 +23,8 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters,
     this.textCapitalization,
     this.textInputAction,
+    this.focusNode,
+    this.onFieldSubmitted,
 
     /// Custom fields
     required this.label,
@@ -34,8 +38,9 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
+
+  late FocusNode _focusNode;
 
   bool wasFocused = false;
   bool isDirty = false;
@@ -45,6 +50,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     super.initState();
+
+    _focusNode = widget.focusNode ?? FocusNode();
 
     final initialFormattedValue = widget.inputFormatters?.fold(widget.value, (
       acc,
@@ -85,7 +92,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
+
+    // If the parent did not provide the [FocusNode], it means we created the
+    // [FocusNode] here. And we have to dispose it.
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
+
     super.dispose();
   }
 
@@ -118,6 +131,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               widget.textCapitalization ?? TextCapitalization.none,
           textInputAction: widget.textInputAction,
           keyboardType: widget.keyboardType,
+          onFieldSubmitted: widget.onFieldSubmitted,
           onChanged: (value) {
             if (!isDirty) {
               setState(() {
