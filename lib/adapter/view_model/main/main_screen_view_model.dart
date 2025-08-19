@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/adapter/view_model/common/view_model_event.dart';
-import 'package:project_shelf_v3/framework/riverpod/shared_preferences_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/use_case_provider.dart';
 
 part 'main_screen_view_model.freezed.dart';
@@ -25,13 +24,14 @@ class MainScreenViewModel extends Notifier<MainScreenViewModelState> {
   }
 
   Future<void> _checkMustLoadDefaultData() async {
-    final preferences = await ref.read(sharedPreferencesProvider.future);
-    if (preferences.mustLoadDefaultData) {
-      final csv = await rootBundle.loadString(
-        'assets/raw/departments_cities.csv',
-      );
-      ref.watch(loadDefaultCitiesUseCaseProvider).exec(csv);
-    }
+    // We could create an use case just to check if the app must load the
+    // default data, and prevent a reference watch. For now, we can just call
+    // the use case and let it handle that case with the business rules.
+    final citiesCsv = await rootBundle.loadString(
+      'assets/raw/departments_cities.csv',
+    );
+
+    ref.watch(loadDefaultDataUseCaseProvider).exec(citiesCsv: citiesCsv);
   }
 }
 

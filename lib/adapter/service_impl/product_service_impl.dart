@@ -1,11 +1,14 @@
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
+import 'package:project_shelf_v3/adapter/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/comon/typedefs.dart';
 
 class ProductServiceImpl implements ProductService {
+  final Logger _logger = Logger(printer: ImplPrinter());
+
   final ProductRepository _repository;
 
   ProductServiceImpl(this._repository);
@@ -17,7 +20,7 @@ class ProductServiceImpl implements ProductService {
     required Money defaultPrice,
     required int stock,
   }) async {
-    Logger().d('[IMPL] Creating product');
+    _logger.d('Creating product');
     return await _repository.create(
       name: name,
       defaultPrice: defaultPrice.amount.minorUnits.toInt(),
@@ -33,7 +36,7 @@ class ProductServiceImpl implements ProductService {
     required Money defaultPrice,
     required int stock,
   }) async {
-    Logger().d('[IMPL] Updating product');
+    _logger.d('Updating product');
     await _repository.update(
       id: id,
       name: name,
@@ -45,7 +48,7 @@ class ProductServiceImpl implements ProductService {
   /// READ related
   @override
   Stream<List<Product>> watch() {
-    Logger().d('[IMPL] Watching products');
+    _logger.d('Watching products');
 
     // FIXME: This should be different.
     Currency currency = Currency.create('COP', 0);
@@ -57,6 +60,7 @@ class ProductServiceImpl implements ProductService {
 
   @override
   Stream<List<Product>> search(String value) {
+    _logger.d('Searching product with: $value');
     // FIXME: This should be different.
     Currency currency = Currency.create('COP', 0);
 
@@ -67,6 +71,8 @@ class ProductServiceImpl implements ProductService {
 
   @override
   Future<Product?> searchWithName(String name) {
+    _logger.d('Searching product with name: $name');
+
     // FIXME: This should be different.
     Currency currency = Currency.create('COP', 0);
 
@@ -77,6 +83,8 @@ class ProductServiceImpl implements ProductService {
 
   @override
   Future<Product> findById(Id id) {
+    _logger.d('Finding product with ID: $id');
+
     // FIXME: This should be different.
     Currency currency = Currency.create('COP', 0);
 
@@ -85,6 +93,8 @@ class ProductServiceImpl implements ProductService {
 
   @override
   Future<Product> findByName(String name) {
+    _logger.d('Finding product with name: $name');
+
     // FIXME: This should be different.
     Currency currency = Currency.create('COP', 0);
 
@@ -94,7 +104,7 @@ class ProductServiceImpl implements ProductService {
   /// DELETE related
   @override
   Future<void> delete(Id id) async {
-    Logger().d("[IMPL] Deleting product with ID: $id");
+    _logger.d('Deleting product with ID: $id');
     await _repository.delete(id);
   }
 }
