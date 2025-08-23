@@ -61,6 +61,7 @@ class _ProductFromState extends State<ProductForm> {
         spacing: 12,
         children: [
           CustomTextField(
+            maxLength: 10,
             label: localizations.name,
             focusNode: _nameFieldFocus,
             value: widget.nameInput.value,

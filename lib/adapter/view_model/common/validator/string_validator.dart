@@ -8,8 +8,8 @@ class StringValidator implements Validator<String> {
   StringValidator({this.isRequired = false});
 
   @override
-  List<ViewModelError> validate(String value) {
-    List<ViewModelError> errors = [];
+  Set<ViewModelError> validate(String value) {
+    Set<ViewModelError> errors = Set.identity();
 
     if (isRequired) {
       if (value.isEmpty) {

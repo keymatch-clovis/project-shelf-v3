@@ -45,7 +45,7 @@ class ProductListScreen extends ConsumerWidget {
                     return ListTile(
                       title: Text(items[index].name),
                       onTap: () =>
-                          context.go('/product/see', extra: items[index].id),
+                          context.go('/product/see', extra: items[index]),
                     );
                   },
                 );
@@ -112,7 +112,7 @@ class _ProductSearchState extends ConsumerState<_ProductSearchAnchor> {
                     title: Text(items[index].name),
                     onTap: () {
                       _searchController.closeView(null);
-                      context.go('/product/see', extra: items[index].id);
+                      context.go('/product/see', extra: items[index]);
                     },
                   );
                 },

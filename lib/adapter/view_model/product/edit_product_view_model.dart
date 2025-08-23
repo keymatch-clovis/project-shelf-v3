@@ -37,40 +37,55 @@ abstract class EditProductViewModelState with _$EditProductViewModelState {
 }
 
 class EditProductViewModel
-    extends FamilyNotifier<EditProductViewModelState, Product> {
+    extends FamilyAsyncNotifier<EditProductViewModelState, Product> {
   @override
-  EditProductViewModelState build(Product product) {
+  Future<EditProductViewModelState> build(Product product) async {
+    final Product found = await ref
+        .read(findProductUseCaseProvider)
+        .exec(id: product.id);
+
     // FIXME: This should be different.
     final currency = Currency.create('COP', 0, pattern: '#,##0');
 
     return EditProductViewModelState(
       product: product,
-      name: Input(StringValidator(isRequired: true), value: product.name),
+      name: Input(StringValidator(isRequired: true), value: found.name),
       defaultPrice: Input(
         CurrencyValidator(currency),
-        value: product.defaultPrice.amount.minorUnits.toString(),
+        value: found.defaultPrice.amount.minorUnits.toString(),
       ),
-      stock: Input(IntValidator(), value: product.stock.toString()),
+      stock: Input(IntValidator(), value: found.stock.toString()),
     );
   }
 
-  void updateName(String value) {
-    state.name.update(value);
+  Future<void> updateName(String value) async {
+    final old = await future;
+    state = AsyncData(old.copyWith(name: old.name.copyWith(value: value)));
+
     _checkNameIsUnique();
+
     ref.notifyListeners();
   }
 
-  void updateDefaultPrice(String value) {
-    state.defaultPrice.update(value);
+  Future<void> updateDefaultPrice(String value) async {
+    final old = await future;
+
+    state = AsyncData(
+      old.copyWith(defaultPrice: old.defaultPrice.copyWith(value: value)),
+    );
     ref.notifyListeners();
   }
 
-  void updateStock(String value) {
-    state.stock.update(value);
+  Future<void> updateStock(String value) async {
+    final old = await future;
+
+    state = AsyncData(old.copyWith(stock: old.stock.copyWith(value: value)));
     ref.notifyListeners();
   }
 
   Future<void> edit() async {
+    final state = (await future);
+
     Logger().d("[VIEW-MODEL] Updating product");
     assert(state.isValid);
 
@@ -90,30 +105,35 @@ class EditProductViewModel
         ProductEdited();
   }
 
-  void _checkNameIsUnique() {
+  Future<void> _checkNameIsUnique() async {
+    // Always wait for the future to finish loading, if it is loading.
+    final old = await future;
+
     // Short-circuit a search if the editing name is the same as the current
     // one.
-    if (state.product.name == state.name.value) {
+    if (old.product.name == old.name.value) {
       return;
     }
 
-    state = state.copyWith(isLoading: true);
+    state = AsyncData(old.copyWith(isLoading: true));
 
-    ref.read(searchProductUseCaseProvider).exec(name: state.name.value).then((
-      product,
-    ) {
-      if (product != null) {
-        state.name.errors.add(ViewModelError.productNameTaken);
-      }
+    final foundProduct = await ref
+        .read(searchProductUseCaseProvider)
+        .exec(name: old.name.value);
 
-      state = state.copyWith(isLoading: false);
+    if (foundProduct != null) {
+      state = AsyncData(
+        old.copyWith(
+          name: old.name.copyWith(errors: {ViewModelError.productNameTaken}),
+        ),
+      );
       ref.notifyListeners();
-    });
+    }
   }
 }
 
 /// Provider
-final editProductViewModelProvider = NotifierProvider.autoDispose
+final editProductViewModelProvider = AsyncNotifierProvider.autoDispose
     .family<EditProductViewModel, EditProductViewModelState, Product>(() {
       return EditProductViewModel();
     });

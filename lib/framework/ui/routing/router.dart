@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_shelf_v3/comon/typedefs.dart';
+import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/product/edit_product_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/see_product_screen.dart';
 
@@ -48,9 +49,18 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: 'see',
                   builder: (context, state) {
-                    final Id productId = state.extra! as Id;
-                    return SeeProductScreen(productId);
+                    final Product product = state.extra! as Product;
+                    return SeeProductScreen(product);
                   },
+                  routes: [
+                    GoRoute(
+                      path: 'edit',
+                      builder: (context, state) {
+                        final Product product = state.extra! as Product;
+                        return EditProductScreen(product);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

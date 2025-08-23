@@ -8,8 +8,8 @@ class IntValidator implements Validator<String> {
   IntValidator({this.isRequired = false});
 
   @override
-  List<ViewModelError> validate(String value) {
-    List<ViewModelError> errors = [];
+  Set<ViewModelError> validate(String value) {
+    Set<ViewModelError> errors = Set.identity();
     num? transformed = num.tryParse(value);
 
     if (isRequired) {

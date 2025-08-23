@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final FocusNode? focusNode;
   final void Function(String)? onFieldSubmitted;
+  final int? maxLength;
 
   /// Custom fields
   final String label;
@@ -25,6 +26,7 @@ class CustomTextField extends StatefulWidget {
     this.textInputAction,
     this.focusNode,
     this.onFieldSubmitted,
+    this.maxLength,
 
     /// Custom fields
     required this.label,
@@ -107,6 +109,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       children: [
         TextFormField(
+          maxLength: widget.maxLength,
           controller: _controller,
           focusNode: _focusNode,
           decoration: InputDecoration(
@@ -145,7 +148,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
           forceErrorText: isDirty ? widget.errors.firstOrNull : null,
         ),
         // When the errors are showing, try to preserve the padding.
-        if (widget.errors.isEmpty || !isDirty) SizedBox(height: 20),
+        // NOTE: Ugly.
+        if (widget.maxLength == null && (widget.errors.isEmpty || !isDirty))
+          SizedBox(height: 20),
       ],
     );
   }

@@ -48,28 +48,26 @@ class CreateProductViewModel extends Notifier<CreateProductViewModelState> {
   }
 
   void updateName(String value) {
-    state.name.update(value);
+    state = state.copyWith(
+      name: state.name.copyWith(value: value, errors: {}),
+    );
 
-    state = state.copyWith(isLoading: true);
-    ref.read(searchProductUseCaseProvider).exec(name: value).then((product) {
-      if (product != null) {
-        state.name.errors.add(ViewModelError.productNameTaken);
-      }
-
-      state = state.copyWith(isLoading: false);
-      ref.notifyListeners();
-    });
+    _checkNameIsUnique();
 
     ref.notifyListeners();
   }
 
   void updateDefaultPrice(String value) {
-    state.defaultPrice.update(value);
+    state = state.copyWith(
+      defaultPrice: state.defaultPrice.copyWith(value: value, errors: {}),
+    );
     ref.notifyListeners();
   }
 
   void updateStock(String value) {
-    state.stock.update(value);
+    state = state.copyWith(
+      stock: state.stock.copyWith(value: value, errors: {}),
+    );
     ref.notifyListeners();
   }
 
@@ -90,6 +88,21 @@ class CreateProductViewModel extends Notifier<CreateProductViewModelState> {
 
     ref.read(createProductViewModelEventProvider.notifier).state =
         ProductCreated();
+  }
+
+  Future<void> _checkNameIsUnique() async {
+    state = state.copyWith(isLoading: true);
+
+    final foundProduct = await ref
+        .read(searchProductUseCaseProvider)
+        .exec(name: state.name.value);
+
+    if (foundProduct != null) {
+      state.name.errors.add(ViewModelError.productNameTaken);
+    }
+
+    state = state.copyWith(isLoading: false);
+    ref.notifyListeners();
   }
 }
 
