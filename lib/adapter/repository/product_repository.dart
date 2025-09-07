@@ -1,5 +1,5 @@
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
-import 'package:project_shelf_v3/comon/typedefs.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 
 abstract interface class ProductRepository {
   /// CREATE related
@@ -10,7 +10,7 @@ abstract interface class ProductRepository {
   });
 
   /// UPDATE related
-  Future<void> update({
+  Future<ProductDto> update({
     required Id id,
     required String name,
     required int defaultPrice,

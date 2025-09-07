@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
-import 'package:project_shelf_v3/comon/logger/framework_printer.dart';
-import 'package:project_shelf_v3/comon/typedefs.dart';
+import 'package:project_shelf_v3/common/logger/framework_printer.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 
 class ProductDao implements ProductRepository {
@@ -38,7 +38,7 @@ class ProductDao implements ProductRepository {
 
   /// UPDATE related
   @override
-  Future<void> update({
+  Future<ProductDto> update({
     required Id id,
     required String name,
     required int defaultPrice,
@@ -58,6 +58,8 @@ class ProductDao implements ProductRepository {
         updatedAt: Value(dateTime),
       ),
     );
+
+    return await findById(id);
   }
 
   /// READ related

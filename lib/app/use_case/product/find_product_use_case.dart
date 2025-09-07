@@ -1,8 +1,8 @@
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
-import 'package:project_shelf_v3/comon/logger/use_case_printer.dart';
-import 'package:project_shelf_v3/comon/typedefs.dart';
+import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 
 class FindProductUseCase {
   final Logger _logger = Logger(printer: UseCasePrinter());

@@ -1,6 +1,6 @@
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
-import 'package:project_shelf_v3/comon/typedefs.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 
 abstract interface class ProductService {
   /// CREATE related
@@ -11,7 +11,7 @@ abstract interface class ProductService {
   });
 
   /// UPDATE related
-  Future<void> update({
+  Future<Product> update({
     required Id id,
     required String name,
     required Money defaultPrice,

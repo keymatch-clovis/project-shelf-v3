@@ -1,5 +1,7 @@
 import 'package:money2/money2.dart';
 
+const MAX_PRODUCT_NAME_SIZE = 128;
+
 class Product {
   final int id;
   final String name;

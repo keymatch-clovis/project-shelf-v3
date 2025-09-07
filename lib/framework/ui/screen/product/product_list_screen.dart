@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/view_model/product/product_list_view_model.dart';
-import 'package:project_shelf_v3/adapter/view_model/product/product_search_view_model.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/riverpod/ui_controller/product/current_product_controller.dart';
+import 'package:project_shelf_v3/framework/riverpod/ui_controller/product/product_list_controller.dart';
+import 'package:project_shelf_v3/framework/riverpod/ui_controller/product/product_search_controller.dart';
 import 'package:project_shelf_v3/framework/ui/common/search_anchor/city_search_anchor.dart';
 
 class ProductListScreen extends ConsumerWidget {
@@ -44,8 +45,14 @@ class ProductListScreen extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     return ListTile(
                       title: Text(items[index].name),
-                      onTap: () =>
-                          context.go('/product/see', extra: items[index]),
+                      onTap: () {
+                        ref
+                                .read(currentProductNotifierProvider.notifier)
+                                .state =
+                            items[index];
+
+                        context.go('/product/see');
+                      },
                     );
                   },
                 );
@@ -112,7 +119,9 @@ class _ProductSearchState extends ConsumerState<_ProductSearchAnchor> {
                     title: Text(items[index].name),
                     onTap: () {
                       _searchController.closeView(null);
-                      context.go('/product/see', extra: items[index]);
+                      ref.read(currentProductNotifierProvider.notifier).state =
+                          items[index];
+                      context.go('/product/see');
                     },
                   );
                 },

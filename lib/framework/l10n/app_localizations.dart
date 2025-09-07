@@ -122,11 +122,23 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get close;
 
+  /// No description provided for @coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get coming_soon;
+
   /// No description provided for @customers.
   ///
   /// In en, this message translates to:
   /// **'Customers'**
   String get customers;
+
+  /// No description provided for @default_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Default price'**
+  String get default_price;
 
   /// No description provided for @delete_product.
   ///
@@ -182,11 +194,17 @@ abstract class AppLocalizations {
   /// **'A value is required'**
   String get err_value_required;
 
-  /// No description provided for @this_action_cannot_be_undone.
+  /// No description provided for @invoices.
   ///
   /// In en, this message translates to:
-  /// **'This action can\'t be undone.'**
-  String get this_action_cannot_be_undone;
+  /// **'Invoices'**
+  String get invoices;
+
+  /// No description provided for @edit_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit product'**
+  String get edit_product;
 
   /// No description provided for @name.
   ///
@@ -200,17 +218,17 @@ abstract class AppLocalizations {
   /// **'Product'**
   String get product;
 
+  /// No description provided for @product_edited.
+  ///
+  /// In en, this message translates to:
+  /// **'Product edited'**
+  String get product_edited;
+
   /// No description provided for @products.
   ///
   /// In en, this message translates to:
   /// **'Products'**
   String get products;
-
-  /// No description provided for @coming_soon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming soon'**
-  String get coming_soon;
 
   /// No description provided for @save.
   ///
@@ -218,11 +236,11 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
-  /// No description provided for @default_price.
+  /// No description provided for @settings.
   ///
   /// In en, this message translates to:
-  /// **'Default price'**
-  String get default_price;
+  /// **'Settings'**
+  String get settings;
 
   /// No description provided for @stock.
   ///
@@ -230,17 +248,11 @@ abstract class AppLocalizations {
   /// **'Stock'**
   String get stock;
 
-  /// No description provided for @invoices.
+  /// No description provided for @this_action_cannot_be_undone.
   ///
   /// In en, this message translates to:
-  /// **'Invoices'**
-  String get invoices;
-
-  /// No description provided for @settings.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
+  /// **'This action can\'t be undone.'**
+  String get this_action_cannot_be_undone;
 }
 
 class _AppLocalizationsDelegate

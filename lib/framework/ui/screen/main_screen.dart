@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_shelf_v3/adapter/view_model/main/main_screen_view_model.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/drift_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/ui_controller/main/main_controller.dart';
 
 class MainScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -29,7 +29,7 @@ class MainScreen extends ConsumerWidget {
     // By using "watch", the provider will stay alive and not be disposed.
     ref.watch(shelfDatabaseProvider);
 
-    ref.watch(mainScreenViewModelProvider);
+    ref.watch(mainControllerProvider);
 
     return Scaffold(
       body: navigationShell,

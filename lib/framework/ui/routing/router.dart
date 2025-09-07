@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
-import 'package:project_shelf_v3/framework/ui/screen/product/edit_product_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/product/product_edit_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_list_screen.dart';
-import 'package:project_shelf_v3/framework/ui/screen/product/see_product_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/product/product_details_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorProductKey = GlobalKey<NavigatorState>(
@@ -49,15 +48,13 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: 'see',
                   builder: (context, state) {
-                    final Product product = state.extra! as Product;
-                    return SeeProductScreen(product);
+                    return ProductDetailsScreen();
                   },
                   routes: [
                     GoRoute(
                       path: 'edit',
                       builder: (context, state) {
-                        final Product product = state.extra! as Product;
-                        return EditProductScreen(product);
+                        return ProductEditScreen();
                       },
                     ),
                   ],

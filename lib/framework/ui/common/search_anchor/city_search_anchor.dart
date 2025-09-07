@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_shelf_v3/adapter/view_model/city/city_search_view_model.dart';
+import 'package:project_shelf_v3/framework/riverpod/ui_controller/city/city_search_controller.dart';
 
 class CitySearchAnchor extends ConsumerStatefulWidget {
   const CitySearchAnchor({super.key});

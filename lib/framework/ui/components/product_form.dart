@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/adapter/view_model/common/input.dart';
+import 'package:project_shelf_v3/adapter/ui_state/common/input.dart';
+import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
-import 'package:project_shelf_v3/framework/ui/common/view_model_error_parser.dart';
+import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
 
 class ProductForm extends StatefulWidget {
@@ -61,7 +62,7 @@ class _ProductFromState extends State<ProductForm> {
         spacing: 12,
         children: [
           CustomTextField(
-            maxLength: 10,
+            maxLength: MAX_PRODUCT_NAME_SIZE,
             label: localizations.name,
             focusNode: _nameFieldFocus,
             value: widget.nameInput.value,

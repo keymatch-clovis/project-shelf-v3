@@ -8,7 +8,10 @@ plugins {
 android {
     namespace = "com.example.project_shelf_v3"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // I don't really know how to set this using the `flutter` property. So I
+    // have to set it manually.
+    // ndkVersion = flutter.ndkVersion
+    ndkVersion = "29.0.13846066 rc3"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

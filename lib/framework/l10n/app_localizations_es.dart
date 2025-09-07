@@ -21,7 +21,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String get coming_soon => 'Coming soon';
+
+  @override
   String get customers => 'Customers';
+
+  @override
+  String get default_price => 'Default price';
 
   @override
   String get delete_product => 'Delete product';
@@ -51,7 +57,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get err_value_required => 'A value is required';
 
   @override
-  String get this_action_cannot_be_undone => 'This action can\'t be undone.';
+  String get invoices => 'Invoices';
+
+  @override
+  String get edit_product => 'Edit product';
 
   @override
   String get name => 'Name';
@@ -60,23 +69,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get product => 'Product';
 
   @override
-  String get products => 'Products';
+  String get product_edited => 'Product edited';
 
   @override
-  String get coming_soon => 'Coming soon';
+  String get products => 'Products';
 
   @override
   String get save => 'Save';
 
   @override
-  String get default_price => 'Default price';
+  String get settings => 'Settings';
 
   @override
   String get stock => 'Stock';
 
   @override
-  String get invoices => 'Invoices';
-
-  @override
-  String get settings => 'Settings';
+  String get this_action_cannot_be_undone => 'This action can\'t be undone.';
 }

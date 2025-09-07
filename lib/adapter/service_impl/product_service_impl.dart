@@ -1,10 +1,10 @@
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/comon/logger/impl_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
-import 'package:project_shelf_v3/comon/typedefs.dart';
+import 'package:project_shelf_v3/common/logger/impl_printer.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 
 class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
@@ -30,19 +30,25 @@ class ProductServiceImpl implements ProductService {
 
   /// UPDATE related
   @override
-  Future<void> update({
+  Future<Product> update({
     required Id id,
     required String name,
     required Money defaultPrice,
     required int stock,
   }) async {
     _logger.d('Updating product');
-    await _repository.update(
-      id: id,
-      name: name,
-      defaultPrice: defaultPrice.amount.minorUnits.toInt(),
-      stock: stock,
-    );
+
+    // FIXME: This should be different.
+    Currency currency = Currency.create('COP', 0);
+
+    return await _repository
+        .update(
+          id: id,
+          name: name,
+          defaultPrice: defaultPrice.amount.minorUnits.toInt(),
+          stock: stock,
+        )
+        .then((dto) => dto.toEntity(currency));
   }
 
   /// READ related
