@@ -169,7 +169,7 @@ class $ProductTableTable extends ProductTable
   @override
   ProductDto map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ProductDto.new(
+    return ProductDto(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -402,7 +402,7 @@ class $CityTableTable extends CityTable
   @override
   CityDto map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CityDto.new(
+    return CityDto(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],

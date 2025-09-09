@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
-import 'package:project_shelf_v3/framework/riverpod/ui_controller/product/product_edit_controller.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_form.dart';
 
-class ProductEditScreen extends ConsumerWidget {
+class ProductEditScreen extends StatelessWidget {
   const ProductEditScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
     /// Controller related
-    final controller = ref.watch(productEditControllerProvider.notifier);
-    final state = ref.watch(productEditControllerProvider);
 
     // /// Event related
     // ref.listen<ViewModelEvent?>(editProductViewModelEventProvider, (_, event) {
@@ -61,14 +57,14 @@ class ProductEditScreen extends ConsumerWidget {
                 // scroll views.
                 forceElevated: innerBoxIsScrolled,
                 actions: [
-                  FilledButton(
-                    onPressed: state.isValid ? controller.edit : null,
-                    child: state.isLoading
-                        ? CircularProgressIndicator(
-                            constraints: BoxConstraints.tight(Size.square(20)),
-                          )
-                        : Text(AppLocalizations.of(context)!.save),
-                  ),
+                  // FilledButton(
+                  //   onPressed: state.isValid ? controller.edit : null,
+                  //   child: state.isLoading
+                  //       ? CircularProgressIndicator(
+                  //           constraints: BoxConstraints.tight(Size.square(20)),
+                  //         )
+                  //       : Text(AppLocalizations.of(context)!.save),
+                  // ),
                 ],
               ),
             ),
@@ -89,14 +85,15 @@ class ProductEditScreen extends ConsumerWidget {
                   SliverFillRemaining(
                     hasScrollBody: false,
                     fillOverscroll: true,
-                    child: ProductForm(
-                      nameInput: state.name,
-                      onNameChanged: controller.updateName,
-                      defaultPriceInput: state.defaultPrice,
-                      onDefaultPriceChanged: controller.updateDefaultPrice,
-                      stockInput: state.stock,
-                      onStockChanged: controller.updateStock,
-                    ),
+                    child: Text("test"),
+                    // child: ProductForm(
+                    //   nameInput: state.name,
+                    //   onNameChanged: controller.updateName,
+                    //   defaultPriceInput: state.defaultPrice,
+                    //   onDefaultPriceChanged: controller.updateDefaultPrice,
+                    //   stockInput: state.stock,
+                    //   onStockChanged: controller.updateStock,
+                    // ),
                   ),
                 ],
               );

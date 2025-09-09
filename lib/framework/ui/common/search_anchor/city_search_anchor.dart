@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_shelf_v3/framework/riverpod/ui_controller/city/city_search_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_shelf_v3/app/entity/city.dart';
+import 'package:project_shelf_v3/framework/bloc/city_search_bloc.dart';
 
-class CitySearchAnchor extends ConsumerStatefulWidget {
+class CitySearchAnchor extends StatefulWidget {
   const CitySearchAnchor({super.key});
 
   @override
-  ConsumerState<CitySearchAnchor> createState() => _CitySearchState();
+  State<CitySearchAnchor> createState() => _CitySearchState();
 }
 
-class _CitySearchState extends ConsumerState<CitySearchAnchor> {
+class _CitySearchState extends State<CitySearchAnchor> {
   final SearchController _searchController = SearchController();
 
   @override
@@ -25,46 +26,43 @@ class _CitySearchState extends ConsumerState<CitySearchAnchor> {
           onPressed: controller.openView,
         );
       },
-      viewBuilder: (_) => Consumer(
-        builder: (_, ref, _) {
-          final asyncValue = ref.watch(
-            citySearchProvider(_searchController.text),
-          );
-
-          return asyncValue.when(
-            data: (items) {
-              if (items.isEmpty) {
-                // TODO: FIX THIS MF
-                return Center(child: Text("no data"));
-              }
-
-              return ListView.separated(
-                padding: EdgeInsets.zero,
-                itemCount: items.length,
-                separatorBuilder: (_, index) {
-                  return const Divider();
-                },
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(items[index].name),
-                    onTap: () {
-                      _searchController.closeView(null);
-                    },
-                  );
-                },
-              );
-            },
-            loading: () {
-              return Padding(
-                padding: EdgeInsetsGeometry.all(8),
-                child: Center(child: const CircularProgressIndicator()),
-              );
-            },
-            error: (err, _) => Text(err.toString()),
-          );
+      viewBuilder: (_) => BlocBuilder<CitySearchBloc, CitySearchState>(
+        builder: (context, state) {
+          return switch (state) {
+            SearchStateEmpty() => Text("empty"),
+            SearchStateLoading() => Text("loading"),
+            SearchStateSuccess() => _SearchResultList(
+              items: state.items,
+              onTap: (item) {},
+            ),
+          };
         },
       ),
       suggestionsBuilder: (_, _) => [],
+    );
+  }
+}
+
+class _SearchResultList extends StatelessWidget {
+  final List<City> items;
+  final void Function(City item)? onTap;
+
+  const _SearchResultList({required this.items, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      itemCount: items.length,
+      separatorBuilder: (_, index) {
+        return const Divider();
+      },
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(items[index].name),
+          onTap: () => onTap?.call(items[index]),
+        );
+      },
     );
   }
 }

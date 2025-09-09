@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Add product'**
   String get add_product;
 
+  /// No description provided for @no_products.
+  ///
+  /// In en, this message translates to:
+  /// **'No products'**
+  String get no_products;
+
   /// No description provided for @close.
   ///
   /// In en, this message translates to:

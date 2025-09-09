@@ -18,6 +18,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get add_product => 'Add product';
 
   @override
+  String get no_products => 'No products';
+
+  @override
   String get close => 'Close';
 
   @override

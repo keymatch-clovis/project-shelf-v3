@@ -15,7 +15,11 @@ class Input {
 
   Input(this._validator, {String? value, Set<CustomStateError>? errors})
     : errors = errors ?? {},
-      value = value ?? "";
+      value = value ?? "" {
+    // Validate the input when it is created. This prevents invalid states, as
+    // when the input is invalid, but the validation has not been run.
+    this.errors.addAll(_validator.validate(this.value));
+  }
 
   Input copyWith({String? value, Set<CustomStateError>? errors}) {
     final validationErrors = _validator.validate(value ?? this.value);

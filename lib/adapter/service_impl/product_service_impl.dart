@@ -5,13 +5,12 @@ import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/main.dart';
 
 class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
 
-  final ProductRepository _repository;
-
-  ProductServiceImpl(this._repository);
+  final _repository = getIt.get<ProductRepository>();
 
   /// CREATE related
   @override

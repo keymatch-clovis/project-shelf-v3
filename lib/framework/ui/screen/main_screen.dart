@@ -1,35 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_shelf_v3/framework/bloc/app_preferences_bloc.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
-import 'package:project_shelf_v3/framework/riverpod/drift_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/ui_controller/main/main_controller.dart';
 
-class MainScreen extends ConsumerWidget {
+class MainScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   const MainScreen({required this.navigationShell, super.key});
 
-  void goBranch(int index) {
-    navigationShell.goBranch(
-      index,
-      // A common pattern when using bottom navigation bars is to support
-      // navigating to the initial location when tapping the item that is
-      // already active. This example demonstrates how to support this behavior,
-      // using the initialLocation parameter of goBranch.
-      initialLocation: index == navigationShell.currentIndex,
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      // NOTE: These are the main providers for the whole app. These can be
+      // considered as 'global state' something like redux. This is not very
+      // much recommended, but we can use this for smaller blocs, in my
+      // opinion.
+      // See more:
+      // https://github.com/felangel/bloc/issues/1072#issuecomment-618682862
+      providers: [
+        BlocProvider(
+          create: (_) => AppPreferencesBloc()..add(PreferencesFetched()),
+          lazy: false,
+        ),
+      ],
+      child: _MainScreenView(navigationShell),
     );
   }
+}
+
+class _MainScreenView extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
+
+  const _MainScreenView(this.navigationShell);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-
-    // Eagerly initialize providers by watching them.
-    // By using "watch", the provider will stay alive and not be disposed.
-    ref.watch(shelfDatabaseProvider);
-
-    ref.watch(mainControllerProvider);
 
     return Scaffold(
       body: navigationShell,
@@ -57,8 +64,19 @@ class MainScreen extends ConsumerWidget {
             label: localizations.settings,
           ),
         ],
-        onDestinationSelected: goBranch,
+        onDestinationSelected: _goBranch,
       ),
+    );
+  }
+
+  void _goBranch(int index) {
+    navigationShell.goBranch(
+      index,
+      // A common pattern when using bottom navigation bars is to support
+      // navigating to the initial location when tapping the item that is
+      // already active. This example demonstrates how to support this behavior,
+      // using the initialLocation parameter of goBranch.
+      initialLocation: index == navigationShell.currentIndex,
     );
   }
 }

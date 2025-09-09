@@ -17,9 +17,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
       return newValue.copyWith(text: '');
     }
 
-    final minorUnits = int.parse(rawDigits);
-
-    final money = Money.fromIntWithCurrency(minorUnits, currency);
+    final money = currency.parse(rawDigits);
     final formatted = money.toString();
 
     int offset =
