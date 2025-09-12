@@ -70,7 +70,7 @@ class _ProductSearchState extends ConsumerState<ProductSearchAnchor> {
                           .read(selectedProductProvider.notifier)
                           .select(items[index]);
 
-                      context.go(CustomRoute.productDetails.route);
+                      context.go(CustomRoute.PRODUCT_DETAILS.route);
 
                       _searchController.clear();
                       _searchController.closeView(null);

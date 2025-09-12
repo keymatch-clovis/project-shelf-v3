@@ -3,65 +3,82 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
 import 'package:project_shelf_v3/adapter/common/extension/currency_extension.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/int_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
-import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
+import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/selected_product_provider.dart';
 import 'package:project_shelf_v3/main.dart';
 
-part 'create_product_provider.freezed.dart';
+part 'edit_product_provider.freezed.dart';
 
 /// State related
-enum CreateProductStatus { initial, loading, success }
+enum EditProductStatus { initial, loading, success }
 
 @freezed
-abstract class CreateProductState with _$CreateProductState {
-  const factory CreateProductState({
-    @Default(CreateProductStatus.initial) CreateProductStatus status,
+abstract class EditProductState with _$EditProductState {
+  const factory EditProductState({
+    @Default(EditProductStatus.initial) EditProductStatus status,
+    required Product product,
     required Input nameInput,
     required Input defaultPriceInput,
     required Input purchasePriceInput,
     required Input stockInput,
     @Default([]) List<File> photoFiles,
-  }) = _CreateProductState;
+  }) = _EditProductState;
 
-  const CreateProductState._();
+  const EditProductState._();
 
   // Computed properties
   bool get isValid => <bool>[
     nameInput.errors.isEmpty,
     defaultPriceInput.errors.isEmpty,
     stockInput.errors.isEmpty,
-    status == CreateProductStatus.initial,
+    status == EditProductStatus.initial,
   ].every((el) => el);
 }
 
 /// Provider related
-class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
+class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
   final _searchProductUseCase = getIt.get<SearchProductUseCase>();
-  final _createProductUseCase = getIt.get<CreateProductUseCase>();
+  final _updateProductUseCase = getIt.get<UpdateProductUseCase>();
   final _debouncer = Debouncer();
 
   @override
-  FutureOr<CreateProductState> build() async {
+  FutureOr<EditProductState> build() async {
     final appPreferences = await ref.watch(appPreferencesProvider.future);
 
-    return CreateProductState(
-      nameInput: Input(StringValidator(isRequired: true)),
+    final selectedProductState = ref.watch(selectedProductProvider);
+    assert(selectedProductState is Selected);
+
+    final product = (selectedProductState as Selected).product;
+
+    return EditProductState(
+      product: product,
+      nameInput: Input(StringValidator(isRequired: true), value: product.name),
       defaultPriceInput: Input(
         CurrencyValidator(appPreferences.defaultCurrency),
+        value: product.defaultPrice.minorUnits > BigInt.zero
+            ? product.defaultPrice.minorUnits.toString()
+            : null,
       ),
       purchasePriceInput: Input(
         CurrencyValidator(appPreferences.defaultCurrency),
+        value: product.purchasePrice.minorUnits > BigInt.zero
+            ? product.purchasePrice.minorUnits.toString()
+            : null,
       ),
-      stockInput: Input(IntValidator()),
+      stockInput: Input(
+        IntValidator(),
+        value: product.stock > 0 ? product.stock.toString() : null,
+      ),
     );
   }
 
@@ -70,7 +87,7 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
 
     state = AsyncData(
       state.value!.copyWith(
-        status: CreateProductStatus.loading,
+        status: EditProductStatus.loading,
         nameInput: state.value!.nameInput.copyWith(value: value),
       ),
     );
@@ -89,9 +106,7 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
       }
     });
 
-    state = AsyncData(
-      state.value!.copyWith(status: CreateProductStatus.initial),
-    );
+    state = AsyncData(state.value!.copyWith(status: EditProductStatus.initial));
   }
 
   Future<void> updateDefaultPrice(String value) async {
@@ -128,48 +143,36 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
     );
   }
 
-  Future<void> create() async {
+  Future<void> edit() async {
     await future;
     assert(state.value!.isValid);
 
     final appPreferences = await ref.watch(appPreferencesProvider.future);
 
-    state = AsyncData(
-      state.value!.copyWith(status: CreateProductStatus.loading),
-    );
+    state = AsyncData(state.value!.copyWith(status: EditProductStatus.loading));
 
-    await _createProductUseCase.exec(
-      Args(
-        name: state.value!.nameInput.value.trim(),
-        defaultPrice: appPreferences.defaultCurrency.tryParse(
-          state.value!.defaultPriceInput.value,
-        ),
-        purchasePrice: appPreferences.defaultCurrency.tryParse(
-          state.value!.purchasePriceInput.value,
-        ),
-        stock: int.tryParse(state.value!.stockInput.value),
-      ),
-    );
+    await _updateProductUseCase
+        .exec(
+          Args(
+            id: state.value!.product.id,
+            name: state.value!.nameInput.value.trim(),
+            defaultPrice: appPreferences.defaultCurrency.tryParse(
+              state.value!.defaultPriceInput.value,
+            ),
+            purchasePrice: appPreferences.defaultCurrency.tryParse(
+              state.value!.purchasePriceInput.value,
+            ),
+            stock: int.tryParse(state.value!.stockInput.value),
+          ),
+        )
+        .then((it) {
+          ref.read(selectedProductProvider.notifier).select(it);
+        });
 
-    state = AsyncData(
-      state.value!.copyWith(status: CreateProductStatus.success),
-    );
-  }
-
-  Future<void> openCamera() async {
-    final imagePicker = ImagePicker();
-    final picked = await imagePicker.pickImage(source: ImageSource.camera);
-
-    if (picked != null) {
-      state = AsyncData(
-        state.value!.copyWith(
-          photoFiles: [...state.value!.photoFiles, File(picked.path)],
-        ),
-      );
-    }
+    state = AsyncData(state.value!.copyWith(status: EditProductStatus.success));
   }
 }
 
-final createProductProvider = AsyncNotifierProvider.autoDispose(
-  CreateProductAsyncNotifier.new,
+final editProductProvider = AsyncNotifierProvider.autoDispose(
+  EditProductAsyncNotifier.new,
 );

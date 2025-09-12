@@ -14,21 +14,18 @@ class ProductDao implements ProductRepository {
 
   /// CREATE related
   @override
-  Future<Id> create({
-    required String name,
-    required int defaultPrice,
-    required int stock,
-  }) async {
-    _logger.d("Creating product with: $name, $defaultPrice, $stock");
+  Future<Id> create(CreateArgs args) async {
+    _logger.d("Creating product with: $args");
     final dateTime = DateTime.now();
 
     return await _database
         .into(_database.productTable)
         .insert(
           ProductTableCompanion.insert(
-            name: name,
-            defaultPrice: defaultPrice,
-            stock: stock,
+            name: args.name,
+            defaultPrice: args.defaultPrice,
+            purchasePrice: args.purchasePrice,
+            stock: args.stock,
             createdAt: dateTime,
             updatedAt: dateTime,
           ),
@@ -37,28 +34,22 @@ class ProductDao implements ProductRepository {
 
   /// UPDATE related
   @override
-  Future<ProductDto> update({
-    required Id id,
-    required String name,
-    required int defaultPrice,
-    required int stock,
-  }) async {
-    _logger.d("Updating product with: $id, $name, $defaultPrice, $stock");
-    final dateTime = DateTime.now();
+  Future<ProductDto> update(UpdateArgs args) async {
+    _logger.d("Updating product with: $args");
 
     final statement = _database.update(_database.productTable)
-      ..where((r) => r.id.equals(id));
+      ..where((r) => r.id.equals(args.id));
 
     await statement.write(
       ProductTableCompanion(
-        name: Value(name),
-        defaultPrice: Value(defaultPrice),
-        stock: Value(stock),
-        updatedAt: Value(dateTime),
+        name: Value(args.name),
+        defaultPrice: Value(args.defaultPrice),
+        stock: Value(args.stock),
+        updatedAt: Value(DateTime.now()),
       ),
     );
 
-    return await findById(id);
+    return await findById(args.id);
   }
 
   /// READ related

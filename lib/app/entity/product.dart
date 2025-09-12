@@ -6,6 +6,7 @@ class Product {
   final int id;
   final String name;
   final Money defaultPrice;
+  final Money purchasePrice;
   final int stock;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -15,6 +16,7 @@ class Product {
     required this.id,
     required this.name,
     required this.defaultPrice,
+    required this.purchasePrice,
     required this.stock,
     required this.createdAt,
     required this.updatedAt,

@@ -9,8 +9,10 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
 import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
@@ -62,16 +64,20 @@ void main() async {
   );
 
   /// Use case related.
-  getIt.registerLazySingleton<WatchProductsUseCase>(
-    () => WatchProductsUseCase(),
-  );
-
   getIt.registerLazySingleton<GetAppPreferencesUseCase>(
     () => GetAppPreferencesUseCase(),
   );
 
+  getIt.registerLazySingleton<WatchProductsUseCase>(
+    () => WatchProductsUseCase(),
+  );
+
   getIt.registerLazySingleton<CreateProductUseCase>(
     () => CreateProductUseCase(),
+  );
+
+  getIt.registerLazySingleton<UpdateProductUseCase>(
+    () => UpdateProductUseCase(),
   );
 
   getIt.registerLazySingleton<SearchProductUseCase>(
@@ -80,6 +86,10 @@ void main() async {
 
   getIt.registerLazySingleton<SearchProductsUseCase>(
     () => SearchProductsUseCase(),
+  );
+
+  getIt.registerLazySingleton<DeleteProductUseCase>(
+    () => DeleteProductUseCase(),
   );
 
   runApp(

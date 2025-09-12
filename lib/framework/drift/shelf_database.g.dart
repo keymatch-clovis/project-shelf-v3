@@ -42,6 +42,17 @@ class $ProductTableTable extends ProductTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _purchasePriceMeta = const VerificationMeta(
+    'purchasePrice',
+  );
+  @override
+  late final GeneratedColumn<int> purchasePrice = GeneratedColumn<int>(
+    'purchase_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _stockMeta = const VerificationMeta('stock');
   @override
   late final GeneratedColumn<int> stock = GeneratedColumn<int>(
@@ -89,6 +100,7 @@ class $ProductTableTable extends ProductTable
     id,
     name,
     defaultPrice,
+    purchasePrice,
     stock,
     createdAt,
     updatedAt,
@@ -127,6 +139,17 @@ class $ProductTableTable extends ProductTable
       );
     } else if (isInserting) {
       context.missing(_defaultPriceMeta);
+    }
+    if (data.containsKey('purchase_price')) {
+      context.handle(
+        _purchasePriceMeta,
+        purchasePrice.isAcceptableOrUnknown(
+          data['purchase_price']!,
+          _purchasePriceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_purchasePriceMeta);
     }
     if (data.containsKey('stock')) {
       context.handle(
@@ -182,6 +205,10 @@ class $ProductTableTable extends ProductTable
         DriftSqlType.int,
         data['${effectivePrefix}default_price'],
       )!,
+      purchasePrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}purchase_price'],
+      )!,
       stock: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}stock'],
@@ -211,6 +238,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> defaultPrice;
+  final Value<int> purchasePrice;
   final Value<int> stock;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -219,6 +247,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.defaultPrice = const Value.absent(),
+    this.purchasePrice = const Value.absent(),
     this.stock = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -228,12 +257,14 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     this.id = const Value.absent(),
     required String name,
     required int defaultPrice,
+    required int purchasePrice,
     required int stock,
     required DateTime createdAt,
     required DateTime updatedAt,
     this.pendingDeleteUntil = const Value.absent(),
   }) : name = Value(name),
        defaultPrice = Value(defaultPrice),
+       purchasePrice = Value(purchasePrice),
        stock = Value(stock),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -241,6 +272,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? defaultPrice,
+    Expression<int>? purchasePrice,
     Expression<int>? stock,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -250,6 +282,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (defaultPrice != null) 'default_price': defaultPrice,
+      if (purchasePrice != null) 'purchase_price': purchasePrice,
       if (stock != null) 'stock': stock,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -262,6 +295,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     Value<int>? id,
     Value<String>? name,
     Value<int>? defaultPrice,
+    Value<int>? purchasePrice,
     Value<int>? stock,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -271,6 +305,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
       id: id ?? this.id,
       name: name ?? this.name,
       defaultPrice: defaultPrice ?? this.defaultPrice,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
       stock: stock ?? this.stock,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -289,6 +324,9 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     }
     if (defaultPrice.present) {
       map['default_price'] = Variable<int>(defaultPrice.value);
+    }
+    if (purchasePrice.present) {
+      map['purchase_price'] = Variable<int>(purchasePrice.value);
     }
     if (stock.present) {
       map['stock'] = Variable<int>(stock.value);
@@ -313,6 +351,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('defaultPrice: $defaultPrice, ')
+          ..write('purchasePrice: $purchasePrice, ')
           ..write('stock: $stock, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -514,6 +553,7 @@ typedef $$ProductTableTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required int defaultPrice,
+      required int purchasePrice,
       required int stock,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -524,6 +564,7 @@ typedef $$ProductTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<int> defaultPrice,
+      Value<int> purchasePrice,
       Value<int> stock,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -551,6 +592,11 @@ class $$ProductTableTableFilterComposer
 
   ColumnFilters<int> get defaultPrice => $composableBuilder(
     column: $table.defaultPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get purchasePrice => $composableBuilder(
+    column: $table.purchasePrice,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -599,6 +645,11 @@ class $$ProductTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get purchasePrice => $composableBuilder(
+    column: $table.purchasePrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get stock => $composableBuilder(
     column: $table.stock,
     builder: (column) => ColumnOrderings(column),
@@ -637,6 +688,11 @@ class $$ProductTableTableAnnotationComposer
 
   GeneratedColumn<int> get defaultPrice => $composableBuilder(
     column: $table.defaultPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get purchasePrice => $composableBuilder(
+    column: $table.purchasePrice,
     builder: (column) => column,
   );
 
@@ -689,6 +745,7 @@ class $$ProductTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<int> defaultPrice = const Value.absent(),
+                Value<int> purchasePrice = const Value.absent(),
                 Value<int> stock = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -697,6 +754,7 @@ class $$ProductTableTableTableManager
                 id: id,
                 name: name,
                 defaultPrice: defaultPrice,
+                purchasePrice: purchasePrice,
                 stock: stock,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -707,6 +765,7 @@ class $$ProductTableTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required int defaultPrice,
+                required int purchasePrice,
                 required int stock,
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -715,6 +774,7 @@ class $$ProductTableTableTableManager
                 id: id,
                 name: name,
                 defaultPrice: defaultPrice,
+                purchasePrice: purchasePrice,
                 stock: stock,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

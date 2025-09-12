@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/custom_state_error.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/validator/currency_validator.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/validator/int_validator.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/validator/string_validator.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/validator/validator.dart';
+import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
+import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
+import 'package:project_shelf_v3/adapter/common/validator/int_validator.dart';
+import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
+import 'package:project_shelf_v3/adapter/common/validator/validator.dart';
 
 @immutable
 class Input {
