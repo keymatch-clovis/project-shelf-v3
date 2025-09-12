@@ -158,6 +158,12 @@ abstract class AppLocalizations {
   /// **'Default price'**
   String get default_price;
 
+  /// No description provided for @purchase_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase price'**
+  String get purchase_price;
+
   /// No description provided for @delete_product.
   ///
   /// In en, this message translates to:
@@ -247,6 +253,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Product edited'**
   String get product_edited;
+
+  /// No description provided for @product_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Product deleted'**
+  String get product_deleted;
 
   /// No description provided for @products.
   ///

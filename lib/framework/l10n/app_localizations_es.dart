@@ -39,6 +39,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get default_price => 'Default price';
 
   @override
+  String get purchase_price => 'Purchase price';
+
+  @override
   String get delete_product => 'Delete product?';
 
   @override
@@ -82,6 +85,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get product_edited => 'Product edited';
+
+  @override
+  String get product_deleted => 'Product deleted';
 
   @override
   String get products => 'Products';

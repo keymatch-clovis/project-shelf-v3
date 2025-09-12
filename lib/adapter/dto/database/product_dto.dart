@@ -11,6 +11,7 @@ class ProductDto {
   final int id;
   final String name;
   final int defaultPrice;
+  final int purchasePrice;
   final int stock;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -20,6 +21,7 @@ class ProductDto {
     required this.id,
     required this.name,
     required this.defaultPrice,
+    required this.purchasePrice,
     required this.stock,
     required this.createdAt,
     required this.updatedAt,
@@ -34,6 +36,7 @@ class ProductDto {
       id: id,
       name: name,
       defaultPrice: Money.fromIntWithCurrency(defaultPrice, currency),
+      purchasePrice: Money.fromIntWithCurrency(purchasePrice, currency),
       stock: stock,
       createdAt: createdAt,
       updatedAt: updatedAt,

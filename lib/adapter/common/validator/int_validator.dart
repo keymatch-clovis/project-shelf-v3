@@ -1,5 +1,5 @@
-import 'package:project_shelf_v3/adapter/ui_state/common/custom_state_error.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/validator/validator.dart';
+import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
+import 'package:project_shelf_v3/adapter/common/validator/validator.dart';
 
 class IntValidator implements Validator<String> {
   @override

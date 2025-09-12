@@ -3,19 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/create_product_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/edit_product_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_details_form.dart';
-import 'package:project_shelf_v3/framework/ui/components/product_images_form.dart';
 
-class CreateProductScreen extends ConsumerStatefulWidget {
-  const CreateProductScreen({super.key});
+class EditProductScreen extends ConsumerStatefulWidget {
+  const EditProductScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreateProductScreenState();
+      _EditProductScreenState();
 }
 
-final class _CreateProductScreenState extends ConsumerState<CreateProductScreen>
+final class _EditProductScreenState extends ConsumerState<EditProductScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
@@ -35,17 +34,14 @@ final class _CreateProductScreenState extends ConsumerState<CreateProductScreen>
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    ref.listen(createProductProvider.selectAsync((it) => it.status), (
-      _,
-      state,
-    ) {
+    ref.listen(editProductProvider.selectAsync((it) => it.status), (_, state) {
       state.then((it) {
-        if (it == CreateProductStatus.success) {
+        if (it == EditProductStatus.success) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 showCloseIcon: true,
-                content: Text(localizations.product_created),
+                content: Text(localizations.product_edited),
               ),
             );
 
@@ -57,8 +53,8 @@ final class _CreateProductScreenState extends ConsumerState<CreateProductScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.add_product),
-        actions: [_CreateAction()],
+        title: Text(localizations.edit_product),
+        actions: [_EditAction()],
         bottom: TabBar.secondary(
           controller: _tabController,
           tabs: [
@@ -72,43 +68,12 @@ final class _CreateProductScreenState extends ConsumerState<CreateProductScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [_DetailsForm(), _ImagesForm()],
-      ),
-      floatingActionButton: AnimatedBuilder(
-        animation: _tabController.animation!,
-        builder: (context, _) {
-          final tab = _tabController.animation!.value.round();
-          return _FabRenderer(tab);
-        },
-      ),
-    );
-  }
-}
-
-class _FabRenderer extends ConsumerWidget {
-  final int tab;
-
-  const _FabRenderer(this.tab);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return switch (tab) {
-      1 => Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        spacing: 16,
         children: [
-          FloatingActionButton(
-            onPressed: () {},
-            child: Icon(Icons.photo_library_rounded),
-          ),
-          FloatingActionButton.large(
-            onPressed: ref.read(createProductProvider.notifier).openCamera,
-            child: Icon(Icons.camera_alt_rounded),
-          ),
+          _DetailsForm(),
+          const Center(child: Text("Comming Soon 😊")),
         ],
       ),
-      _ => const SizedBox.shrink(),
-    };
+    );
   }
 }
 
@@ -118,7 +83,7 @@ class _DetailsForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appPreferences = ref.watch(appPreferencesProvider);
-    final state = ref.watch(createProductProvider);
+    final state = ref.watch(editProductProvider);
 
     if (appPreferences.isLoading || state.isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -127,53 +92,32 @@ class _DetailsForm extends ConsumerWidget {
     return ProductDetailsForm(
       currency: appPreferences.value!.defaultCurrency,
       nameInput: state.value!.nameInput,
-      onNameChanged: ref.read(createProductProvider.notifier).updateName,
+      onNameChanged: ref.read(editProductProvider.notifier).updateName,
       defaultPriceInput: state.value!.defaultPriceInput,
       onDefaultPriceChanged: ref
-          .read(createProductProvider.notifier)
+          .read(editProductProvider.notifier)
           .updateDefaultPrice,
       purchasePriceInput: state.value!.purchasePriceInput,
       onPurchasePriceChanged: ref
-          .read(createProductProvider.notifier)
+          .read(editProductProvider.notifier)
           .updatePurchasePrice,
       stockInput: state.value!.stockInput,
-      onStockChanged: ref.read(createProductProvider.notifier).updateStock,
+      onStockChanged: ref.read(editProductProvider.notifier).updateStock,
     );
   }
 }
 
-class _ImagesForm extends ConsumerWidget {
-  const _ImagesForm();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(
-      createProductProvider.select((it) {
-        return it.whenData((it) {
-          return it.photoFiles;
-        });
-      }),
-    );
-
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    return ProductImagesForm(state.value!);
-  }
-}
-
-class _CreateAction extends ConsumerWidget {
+class _EditAction extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
-    final state = ref.watch(createProductProvider);
+    final state = ref.watch(editProductProvider);
 
     return state.when(
       data: (data) {
         return FilledButton(
           onPressed: data.isValid
-              ? ref.read(createProductProvider.notifier).create
+              ? ref.read(editProductProvider.notifier).edit
               : null,
           child: Text(localizations.save),
         );

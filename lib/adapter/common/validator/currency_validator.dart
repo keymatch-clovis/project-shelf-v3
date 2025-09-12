@@ -1,6 +1,6 @@
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/custom_state_error.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/validator/validator.dart';
+import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
+import 'package:project_shelf_v3/adapter/common/validator/validator.dart';
 
 class CurrencyValidator implements Validator<String> {
   final Currency currency;

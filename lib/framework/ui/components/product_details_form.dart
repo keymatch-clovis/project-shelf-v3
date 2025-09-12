@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/input.dart';
+import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
@@ -17,6 +17,9 @@ class ProductDetailsForm extends StatefulWidget {
   final Input defaultPriceInput;
   final void Function(String value) onDefaultPriceChanged;
 
+  final Input purchasePriceInput;
+  final void Function(String value) onPurchasePriceChanged;
+
   final Input stockInput;
   final void Function(String value) onStockChanged;
 
@@ -30,6 +33,9 @@ class ProductDetailsForm extends StatefulWidget {
     required this.defaultPriceInput,
     required this.onDefaultPriceChanged,
 
+    required this.purchasePriceInput,
+    required this.onPurchasePriceChanged,
+
     required this.stockInput,
     required this.onStockChanged,
   });
@@ -41,15 +47,17 @@ class ProductDetailsForm extends StatefulWidget {
 class _ProductDetailsFormState extends State<ProductDetailsForm> {
   final _nameFieldFocus = FocusNode();
   final _defaultPriceFieldFocus = FocusNode();
+  final _purchasePriceFieldFocus = FocusNode();
   final _stockFieldFocus = FocusNode();
 
   @override
   void dispose() {
+    super.dispose();
+
     _nameFieldFocus.dispose();
     _defaultPriceFieldFocus.dispose();
+    _purchasePriceFieldFocus.dispose();
     _stockFieldFocus.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -66,6 +74,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
           CustomTextField(
             maxLength: MAX_PRODUCT_NAME_SIZE,
             required: true,
+            initialValue: widget.nameInput.value,
             label: localizations.name,
             focusNode: _nameFieldFocus,
             onFieldSubmitted: (_) => _defaultPriceFieldFocus.requestFocus(),
@@ -79,7 +88,8 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
           CustomTextField(
             label: localizations.default_price,
             focusNode: _defaultPriceFieldFocus,
-            onFieldSubmitted: (_) => _stockFieldFocus.requestFocus(),
+            initialValue: widget.defaultPriceInput.value,
+            onFieldSubmitted: (_) => _purchasePriceFieldFocus.requestFocus(),
             onChanged: widget.onDefaultPriceChanged,
             onClear: () => widget.onDefaultPriceChanged(""),
             keyboardType: TextInputType.number,
@@ -91,7 +101,23 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
             ],
           ),
           CustomTextField(
+            label: localizations.purchase_price,
+            initialValue: widget.purchasePriceInput.value,
+            focusNode: _purchasePriceFieldFocus,
+            onFieldSubmitted: (_) => _stockFieldFocus.requestFocus(),
+            onChanged: widget.onPurchasePriceChanged,
+            onClear: () => widget.onPurchasePriceChanged(""),
+            keyboardType: TextInputType.number,
+            errors: widget.purchasePriceInput.errors.parseErrors(context),
+            textInputAction: TextInputAction.next,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              CurrencyInputFormatter(currency: widget.currency),
+            ],
+          ),
+          CustomTextField(
             label: localizations.stock,
+            initialValue: widget.stockInput.value,
             focusNode: _stockFieldFocus,
             onChanged: widget.onStockChanged,
             onClear: () => widget.onStockChanged(""),

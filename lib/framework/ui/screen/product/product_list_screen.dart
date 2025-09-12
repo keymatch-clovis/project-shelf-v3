@@ -78,7 +78,7 @@ class _ProductList extends ConsumerWidget {
           onTap: (product) {
             ref.read(selectedProductProvider.notifier).select(products[index]);
 
-            context.go(CustomRoute.productDetails.route);
+            context.go(CustomRoute.PRODUCT_DETAILS.route);
           },
         );
       },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_shelf_v3/adapter/ui_state/common/custom_state_error.dart';
+import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 
 extension CustomStateErrorParser on Set<CustomStateError> {

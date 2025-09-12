@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
-import 'package:project_shelf_v3/framework/ui/screen/product/product_edit_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/product/edit_product_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_details_screen.dart';
 
 enum CustomRoute {
-  product(route: "/product"),
-  productDetails(route: "/product/details"),
-  ;
+  PRODUCT(route: "/product", part: "product"),
+  PRODUCT_DETAILS(route: "/product/details", part: "details"),
+  PRODUCT_EDIT(route: "/product/details/edit", part: "edit"),
+  PRODUCT_CREATE(route: "/product/create", part: "create");
 
   final String route;
+  final String part;
 
-  const CustomRoute({required this.route});
+  const CustomRoute({required this.route, required this.part});
 }
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -31,7 +33,7 @@ final _shellNavigatorSettingsKey = GlobalKey<NavigatorState>(
 );
 
 final goRouter = GoRouter(
-  initialLocation: '/product',
+  initialLocation: CustomRoute.PRODUCT.route,
   navigatorKey: _rootNavigatorKey,
   routes: [
     StatefulShellRoute.indexedStack(
@@ -43,27 +45,27 @@ final goRouter = GoRouter(
           navigatorKey: _shellNavigatorProductKey,
           routes: [
             GoRoute(
-              path: '/product',
+              path: CustomRoute.PRODUCT.route,
               pageBuilder: (_, _) {
                 return const NoTransitionPage(child: ProductListScreen());
               },
               routes: [
                 GoRoute(
-                  path: '/create',
+                  path: CustomRoute.PRODUCT_CREATE.part,
                   builder: (_, _) {
                     return const CreateProductScreen();
                   },
                 ),
                 GoRoute(
-                  path: '/details',
+                  path: CustomRoute.PRODUCT_DETAILS.part,
                   builder: (_, _) {
                     return const ProductDetailsScreen();
                   },
                   routes: [
                     GoRoute(
-                      path: '/edit',
+                      path: CustomRoute.PRODUCT_EDIT.part,
                       builder: (_, _) {
-                        return const ProductEditScreen();
+                        return const EditProductScreen();
                       },
                     ),
                   ],
