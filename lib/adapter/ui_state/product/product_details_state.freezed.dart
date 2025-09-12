@@ -25,12 +25,12 @@ $ProductDetailsStateCopyWith<ProductDetailsState> get copyWith => _$ProductDetai
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductDetailsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.product, product) || other.product == product));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductDetailsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.product, product));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,product);
+int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(product));
 
 @override
 String toString() {
@@ -62,10 +62,10 @@ class _$ProductDetailsStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductDetailsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? product = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? product = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as bool,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,
   ));
 }
@@ -223,12 +223,12 @@ _$ProductDetailsStateCopyWith<_ProductDetailsState> get copyWith => __$ProductDe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductDetailsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.product, product) || other.product == product));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductDetailsState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&const DeepCollectionEquality().equals(other.product, product));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,product);
+int get hashCode => Object.hash(runtimeType,isLoading,const DeepCollectionEquality().hash(product));
 
 @override
 String toString() {
@@ -260,10 +260,10 @@ class __$ProductDetailsStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductDetailsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? product = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? product = freezed,}) {
   return _then(_ProductDetailsState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
-as bool,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as bool,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,
   ));
 }

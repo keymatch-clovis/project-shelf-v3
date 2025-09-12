@@ -1,6 +1,6 @@
 import 'dart:async';
 
-const DEFAULT_DURATION_MILLIS = 300;
+const DEFAULT_DURATION_MILLIS = 500;
 
 class Debouncer<T> {
   Completer completer = Completer<T>();

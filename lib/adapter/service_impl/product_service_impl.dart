@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
@@ -11,6 +12,7 @@ class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<ProductRepository>();
+  final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   /// CREATE related
   @override
@@ -55,11 +57,17 @@ class ProductServiceImpl implements ProductService {
   Stream<List<Product>> watch() {
     _logger.d('Watching products');
 
-    // FIXME: This should be different.
-    Currency currency = Currency.create('COP', 0);
+    // NOTE: I do this here and not inside the `watch` method, because I don't
+    // really know if the stream emits more values after one call. So it might
+    // get the app preferences more than once.
+    final appPreferences = _appPreferencesService.getAppPreferences();
 
-    return _repository.watch().map((dtos) {
-      return dtos.map((dto) => dto.toEntity(currency)).toList();
+    return _repository.watch().asyncMap((dtos) async {
+      final preferences = await appPreferences;
+
+      return dtos
+          .map((dto) => dto.toEntity(preferences.defaultCurrency))
+          .toList();
     });
   }
 

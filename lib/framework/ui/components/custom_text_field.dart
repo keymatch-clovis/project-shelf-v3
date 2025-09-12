@@ -10,12 +10,14 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final void Function(String)? onFieldSubmitted;
   final int? maxLength;
+  final String? initialValue;
+  final bool readOnly;
 
   /// Custom fields
   final String label;
-  final String value;
   final List<String> errors;
   final void Function()? onClear;
+  final bool required;
 
   const CustomTextField({
     super.key,
@@ -27,12 +29,14 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.maxLength,
+    this.initialValue,
+    this.readOnly = false,
 
     /// Custom fields
     required this.label,
-    required this.value,
-    required this.errors,
+    this.errors = const [],
     this.onClear,
+    this.required = false,
   });
 
   @override
@@ -53,18 +57,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
   void initState() {
     super.initState();
 
+    _controller.text = widget.initialValue ?? "";
+
     _focusNode = widget.focusNode ?? FocusNode();
-
-    final initialFormattedValue = widget.inputFormatters?.fold(widget.value, (
-      acc,
-      formatter,
-    ) {
-      return formatter
-          .formatEditUpdate(TextEditingValue.empty, TextEditingValue(text: acc))
-          .text;
-    });
-
-    _controller.text = initialFormattedValue ?? widget.value;
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
@@ -80,15 +75,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
         });
       }
     });
-  }
-
-  @override
-  void didUpdateWidget(covariant CustomTextField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.value != oldWidget.value && widget.value != _controller.text) {
-      _controller.text = widget.value;
-    }
   }
 
   @override
@@ -109,13 +95,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       children: [
         TextFormField(
+          readOnly: widget.readOnly,
           maxLength: widget.maxLength,
           controller: _controller,
           focusNode: _focusNode,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             label: Text(widget.label),
-            suffixIcon: widget.onClear != null && widget.value.isNotEmpty
+            suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
                 ? IconButton(
                     onPressed: () {
                       if (!isDirty) {
@@ -124,6 +111,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         });
                       }
 
+                      _controller.clear();
                       widget.onClear?.call();
                     },
                     icon: Icon(Icons.clear),
