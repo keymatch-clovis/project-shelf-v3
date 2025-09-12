@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accept => 'Accept';
 
   @override
+  String get details => 'Details';
+
+  @override
+  String get photos => 'Photos';
+
+  @override
   String get add_customer => 'Add customer';
 
   @override
@@ -33,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get default_price => 'Default price';
 
   @override
-  String get delete_product => 'Delete product';
+  String get delete_product => 'Delete product?';
 
   @override
   String get err_blank_value => 'The value can\'t be blank';
@@ -70,6 +76,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get product => 'Product';
+
+  @override
+  String get product_created => 'Product created';
 
   @override
   String get product_edited => 'Product edited';

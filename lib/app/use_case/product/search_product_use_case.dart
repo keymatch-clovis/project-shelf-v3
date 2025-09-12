@@ -23,6 +23,6 @@ class SearchProductUseCase {
       return await _service.searchWithName(name.trim());
     }
 
-    throw AssertionError("[USE-CASE] Tried to search product with null values");
+    throw AssertionError("Tried to search product with null values");
   }
 }

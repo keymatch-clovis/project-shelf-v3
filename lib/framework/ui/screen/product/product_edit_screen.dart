@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
-import 'package:project_shelf_v3/framework/ui/components/product_form.dart';
 
 class ProductEditScreen extends StatelessWidget {
   const ProductEditScreen({super.key});

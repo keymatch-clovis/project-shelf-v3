@@ -104,6 +104,18 @@ abstract class AppLocalizations {
   /// **'Accept'**
   String get accept;
 
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
+
+  /// No description provided for @photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get photos;
+
   /// No description provided for @add_customer.
   ///
   /// In en, this message translates to:
@@ -149,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @delete_product.
   ///
   /// In en, this message translates to:
-  /// **'Delete product'**
+  /// **'Delete product?'**
   String get delete_product;
 
   /// No description provided for @err_blank_value.
@@ -223,6 +235,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Product'**
   String get product;
+
+  /// No description provided for @product_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Product created'**
+  String get product_created;
 
   /// No description provided for @product_edited.
   ///

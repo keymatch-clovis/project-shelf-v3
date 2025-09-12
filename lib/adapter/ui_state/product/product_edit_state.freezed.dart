@@ -25,12 +25,12 @@ $ProductEditStateCopyWith<ProductEditState> get copyWith => _$ProductEditStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductEditState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.product, product) || other.product == product)&&(identical(other.name, name) || other.name == name)&&(identical(other.defaultPrice, defaultPrice) || other.defaultPrice == defaultPrice)&&(identical(other.stock, stock) || other.stock == stock));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProductEditState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currency, currency) || other.currency == currency)&&const DeepCollectionEquality().equals(other.product, product)&&(identical(other.name, name) || other.name == name)&&(identical(other.defaultPrice, defaultPrice) || other.defaultPrice == defaultPrice)&&(identical(other.stock, stock) || other.stock == stock));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,currency,product,name,defaultPrice,stock);
+int get hashCode => Object.hash(runtimeType,isLoading,currency,const DeepCollectionEquality().hash(product),name,defaultPrice,stock);
 
 @override
 String toString() {
@@ -62,11 +62,11 @@ class _$ProductEditStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductEditState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? currency = null,Object? product = null,Object? name = null,Object? defaultPrice = null,Object? stock = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? currency = null,Object? product = freezed,Object? name = null,Object? defaultPrice = null,Object? stock = null,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
-as Currency,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as Currency,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as Input,defaultPrice: null == defaultPrice ? _self.defaultPrice : defaultPrice // ignore: cast_nullable_to_non_nullable
 as Input,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
@@ -231,12 +231,12 @@ _$ProductEditStateCopyWith<_ProductEditState> get copyWith => __$ProductEditStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductEditState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.product, product) || other.product == product)&&(identical(other.name, name) || other.name == name)&&(identical(other.defaultPrice, defaultPrice) || other.defaultPrice == defaultPrice)&&(identical(other.stock, stock) || other.stock == stock));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductEditState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currency, currency) || other.currency == currency)&&const DeepCollectionEquality().equals(other.product, product)&&(identical(other.name, name) || other.name == name)&&(identical(other.defaultPrice, defaultPrice) || other.defaultPrice == defaultPrice)&&(identical(other.stock, stock) || other.stock == stock));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,currency,product,name,defaultPrice,stock);
+int get hashCode => Object.hash(runtimeType,isLoading,currency,const DeepCollectionEquality().hash(product),name,defaultPrice,stock);
 
 @override
 String toString() {
@@ -268,11 +268,11 @@ class __$ProductEditStateCopyWithImpl<$Res>
 
 /// Create a copy of ProductEditState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? currency = null,Object? product = null,Object? name = null,Object? defaultPrice = null,Object? stock = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? currency = null,Object? product = freezed,Object? name = null,Object? defaultPrice = null,Object? stock = null,}) {
   return _then(_ProductEditState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
-as Currency,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as Currency,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as Input,defaultPrice: null == defaultPrice ? _self.defaultPrice : defaultPrice // ignore: cast_nullable_to_non_nullable
 as Input,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable

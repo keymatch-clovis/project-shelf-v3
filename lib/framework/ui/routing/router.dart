@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_shelf_v3/framework/bloc/selected_product_bloc.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_edit_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_details_screen.dart';
+
+enum CustomRoute {
+  product(route: "/product"),
+  productDetails(route: "/product/details"),
+  ;
+
+  final String route;
+
+  const CustomRoute({required this.route});
+}
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorProductKey = GlobalKey<NavigatorState>(
@@ -28,45 +36,35 @@ final goRouter = GoRouter(
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        return MainScreen(navigationShell: navigationShell);
+        return MainScreen(navigationShell);
       },
       branches: [
         StatefulShellBranch(
           navigatorKey: _shellNavigatorProductKey,
           routes: [
-            ShellRoute(
-              builder: (_, _, child) {
-                return BlocProvider(
-                  create: (_) => SelectedProductBloc(),
-                  child: child,
-                );
+            GoRoute(
+              path: '/product',
+              pageBuilder: (_, _) {
+                return const NoTransitionPage(child: ProductListScreen());
               },
               routes: [
                 GoRoute(
-                  path: '/product',
-                  pageBuilder: (_, _) {
-                    return const NoTransitionPage(child: ProductListScreen());
+                  path: '/create',
+                  builder: (_, _) {
+                    return const CreateProductScreen();
+                  },
+                ),
+                GoRoute(
+                  path: '/details',
+                  builder: (_, _) {
+                    return const ProductDetailsScreen();
                   },
                   routes: [
                     GoRoute(
-                      path: '/create',
+                      path: '/edit',
                       builder: (_, _) {
-                        return const CreateProductScreen();
+                        return const ProductEditScreen();
                       },
-                    ),
-                    GoRoute(
-                      path: '/details',
-                      builder: (_, _) {
-                        return const ProductDetailsScreen();
-                      },
-                      routes: [
-                        GoRoute(
-                          path: '/edit',
-                          builder: (_, _) {
-                            return const ProductEditScreen();
-                          },
-                        ),
-                      ],
                     ),
                   ],
                 ),

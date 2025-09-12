@@ -1,18 +1,21 @@
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
+import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
+import 'package:project_shelf_v3/main.dart';
 
 class SearchProductsUseCase {
-  final ProductService _service;
+  final Logger _logger = Logger(printer: UseCasePrinter());
 
-  SearchProductsUseCase(this._service);
+  final _service = getIt.get<ProductService>();
 
-  Stream<List<Product>> exec(String value) {
-    Logger().d("[USE-CASE] Searching products with: $value");
-    if (value.isEmpty) {
-      return Stream.value([]);
-    }
+  SearchProductsUseCase();
 
-    return _service.search(value);
+  Stream<List<Product>> exec({String query = ""}) {
+    if (query.isEmpty) return Stream.value([]);
+
+    _logger.d('Searching products with: $query');
+    return _service.search(query);
   }
 }
+

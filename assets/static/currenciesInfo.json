@@ -1,0 +1,10 @@
+{
+    "COP": {
+        "code": "COP",
+        "symbol": "$",
+        "decimalDigits": 0,
+        "groupSeparator": ".",
+        "decimalSeparator": ",",
+        "pattern": "S #,##0"
+    }
+}
