@@ -10,14 +10,14 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final void Function(String)? onFieldSubmitted;
   final int? maxLength;
-  final String? initialValue;
   final bool readOnly;
 
   /// Custom fields
   final String label;
   final List<String> errors;
   final void Function()? onClear;
-  final bool required;
+  final bool isRequired;
+  final String? value;
 
   const CustomTextField({
     super.key,
@@ -29,14 +29,14 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.maxLength,
-    this.initialValue,
     this.readOnly = false,
 
     /// Custom fields
     required this.label,
     this.errors = const [],
     this.onClear,
-    this.required = false,
+    this.isRequired = false,
+    this.value,
   });
 
   @override
@@ -56,8 +56,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     super.initState();
-
-    _controller.text = widget.initialValue ?? "";
 
     _focusNode = widget.focusNode ?? FocusNode();
 
@@ -92,6 +90,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.value != null) {
+      _controller.text = widget.value!;
+    }
+
     return Column(
       children: [
         TextFormField(

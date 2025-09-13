@@ -73,8 +73,8 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
         children: [
           CustomTextField(
             maxLength: MAX_PRODUCT_NAME_SIZE,
-            required: true,
-            initialValue: widget.nameInput.value,
+            isRequired: true,
+            value: widget.nameInput.value,
             label: localizations.name,
             focusNode: _nameFieldFocus,
             onFieldSubmitted: (_) => _defaultPriceFieldFocus.requestFocus(),
@@ -88,7 +88,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
           CustomTextField(
             label: localizations.default_price,
             focusNode: _defaultPriceFieldFocus,
-            initialValue: widget.defaultPriceInput.value,
+            value: widget.defaultPriceInput.value,
             onFieldSubmitted: (_) => _purchasePriceFieldFocus.requestFocus(),
             onChanged: widget.onDefaultPriceChanged,
             onClear: () => widget.onDefaultPriceChanged(""),
@@ -102,7 +102,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
           ),
           CustomTextField(
             label: localizations.purchase_price,
-            initialValue: widget.purchasePriceInput.value,
+            value: widget.purchasePriceInput.value,
             focusNode: _purchasePriceFieldFocus,
             onFieldSubmitted: (_) => _stockFieldFocus.requestFocus(),
             onChanged: widget.onPurchasePriceChanged,
@@ -117,7 +117,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
           ),
           CustomTextField(
             label: localizations.stock,
-            initialValue: widget.stockInput.value,
+            value: widget.stockInput.value,
             focusNode: _stockFieldFocus,
             onChanged: widget.onStockChanged,
             onClear: () => widget.onStockChanged(""),
