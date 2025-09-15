@@ -8,12 +8,14 @@ class IntValidator implements Validator<String> {
   IntValidator({this.isRequired = false});
 
   @override
-  Set<CustomStateError> validate(String value) {
+  Set<CustomStateError> validate(String? value) {
     Set<CustomStateError> errors = Set.identity();
-    num? transformed = num.tryParse(value);
+    num? transformed = num.tryParse(value ?? "");
 
     if (isRequired) {
-      if (value.isEmpty) {
+      if (value == null) {
+        errors.add(CustomStateError.nullValue);
+      } else if (value.isEmpty) {
         errors.add(CustomStateError.blankValue);
       }
 
@@ -23,7 +25,7 @@ class IntValidator implements Validator<String> {
     }
     // If the this is not null, we have to check the inside of the string, to see
     // if it is what we expect.
-    else if (value.isNotEmpty && transformed == null) {
+    else if (value?.isNotEmpty == true && transformed == null) {
       errors.add(CustomStateError.invalidIntegerValue);
     }
 

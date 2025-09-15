@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/web.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/create_product_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/product/create_product_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_details_form.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_images_form.dart';
 
@@ -180,7 +181,10 @@ class _CreateAction extends ConsumerWidget {
       },
       // https://stackoverflow.com/questions/53455358/how-to-present-an-empty-view-in-flutter
       loading: () => const SizedBox.shrink(),
-      error: (err, _) => throw AssertionError(err),
+      error: (err, _) {
+        Logger().f(err);
+        throw AssertionError(err);
+      },
     );
   }
 }

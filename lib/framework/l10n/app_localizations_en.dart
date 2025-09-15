@@ -15,7 +15,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get details => 'Details';
 
   @override
+  String get create_customer => 'Create customer';
+
+  @override
   String get photos => 'Photos';
+
+  @override
+  String get business_name => 'Business name';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get phone_number => 'Phone number';
 
   @override
   String get add_customer => 'Add customer';
@@ -25,6 +40,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_products => 'No products';
+
+  @override
+  String get no_customers => 'No customers';
+
+  @override
+  String get no_cities_found => 'No cities found';
 
   @override
   String get close => 'Close';
@@ -82,6 +103,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get product_created => 'Product created';
+
+  @override
+  String get customer_created => 'Customer created';
 
   @override
   String get product_edited => 'Product edited';

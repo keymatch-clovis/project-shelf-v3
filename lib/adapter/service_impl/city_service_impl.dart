@@ -1,23 +1,25 @@
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
-import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
+import 'package:project_shelf_v3/adapter/repository/city_repository.dart'
+    as repository;
 import 'package:project_shelf_v3/app/entity/city.dart';
-import 'package:project_shelf_v3/app/service/city_service.dart';
+import 'package:project_shelf_v3/app/service/city_service.dart' as service;
+import 'package:project_shelf_v3/main.dart';
 
-class CityServiceImpl implements CityService {
-  final Logger _logger = Logger(printer: ImplPrinter());
+class CityServiceImpl implements service.CityService {
+  final _logger = Logger(printer: ImplPrinter());
 
-  final CityRepository _repository;
-
-  CityServiceImpl(this._repository);
+  final _repository = getIt.get<repository.CityRepository>();
 
   /// CREATE related
   @override
-  Future<void> create(
-    Iterable<({String name, String department})> items,
-  ) async {
-    _logger.d('Creating cities: ${items.length}');
-    await _repository.create(items);
+  Future<void> createMany(Iterable<service.CreateArgs> args) async {
+    _logger.d('Creating cities: ${args.length}');
+    await _repository.createMany(
+      args.map(
+        (it) => repository.CreateArgs(name: it.name, department: it.department),
+      ),
+    );
   }
 
   /// READ related

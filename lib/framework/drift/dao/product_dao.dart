@@ -76,7 +76,8 @@ class ProductDao implements ProductRepository {
             ORDER BY rank;
           ''',
           // https://sqlite.org/fts5.html
-          variables: [Variable("$value*")],
+          // NOTE: Notice the escaped string here. This is important.
+          variables: [Variable('"$value"*')],
           readsFrom: {_database.productTable},
         )
         .watch()

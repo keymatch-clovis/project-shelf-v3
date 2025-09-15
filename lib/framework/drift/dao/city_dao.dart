@@ -4,24 +4,21 @@ import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
+import 'package:project_shelf_v3/main.dart';
 
 class CityDao implements CityRepository {
-  final Logger _logger = Logger(printer: FrameworkPrinter());
+  final _logger = Logger(printer: FrameworkPrinter());
 
-  final ShelfDatabase _database;
-
-  CityDao(this._database);
+  final _database = getIt.get<ShelfDatabase>();
 
   /// CREATE related
   @override
-  Future<void> create(
-    Iterable<({String department, String name})> items,
-  ) async {
-    _logger.d("Creating cities: ${items.length}");
+  Future<void> createMany(Iterable<CreateArgs> args) async {
+    _logger.d("Creating cities: ${args.length}");
     await _database.batch((batch) {
       batch.insertAll(
         _database.cityTable,
-        items.map((el) {
+        args.map((el) {
           return CityTableCompanion.insert(
             name: el.name,
             department: el.department,
@@ -43,7 +40,9 @@ class CityDao implements CityRepository {
             WHERE city_fts MATCH ?
             ORDER BY rank;
           ''',
-          variables: [Variable("$value*")],
+          // https://sqlite.org/fts5.html
+          // NOTE: Notice the escaped string here. This is important.
+          variables: [Variable.withString('"$value"*')],
           readsFrom: {_database.cityTable},
         )
         .watch()

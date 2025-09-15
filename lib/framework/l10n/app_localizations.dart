@@ -110,11 +110,41 @@ abstract class AppLocalizations {
   /// **'Details'**
   String get details;
 
+  /// No description provided for @create_customer.
+  ///
+  /// In en, this message translates to:
+  /// **'Create customer'**
+  String get create_customer;
+
   /// No description provided for @photos.
   ///
   /// In en, this message translates to:
   /// **'Photos'**
   String get photos;
+
+  /// No description provided for @business_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Business name'**
+  String get business_name;
+
+  /// No description provided for @city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get city;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @phone_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get phone_number;
 
   /// No description provided for @add_customer.
   ///
@@ -133,6 +163,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No products'**
   String get no_products;
+
+  /// No description provided for @no_customers.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers'**
+  String get no_customers;
+
+  /// No description provided for @no_cities_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No cities found'**
+  String get no_cities_found;
 
   /// No description provided for @close.
   ///
@@ -247,6 +289,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Product created'**
   String get product_created;
+
+  /// No description provided for @customer_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer created'**
+  String get customer_created;
 
   /// No description provided for @product_edited.
   ///

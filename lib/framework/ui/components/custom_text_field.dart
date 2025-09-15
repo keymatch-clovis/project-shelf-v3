@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTextField extends StatefulWidget {
+final class CustomTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
@@ -65,6 +65,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           wasFocused = true;
         });
       }
+
       // If the user focuses, and then un-focuses, we can mark the text field as
       // dirty.
       if (!_focusNode.hasFocus && wasFocused) {
@@ -103,7 +104,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           focusNode: _focusNode,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
-            label: Text(widget.label),
+            label: _renderLabel(widget.label, isRequired: widget.isRequired),
             suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
                 ? IconButton(
                     onPressed: () {
@@ -140,8 +141,27 @@ class _CustomTextFieldState extends State<CustomTextField> {
         // When the errors are showing, try to preserve the padding.
         // NOTE: Ugly.
         if (widget.maxLength == null && (widget.errors.isEmpty || !isDirty))
-          SizedBox(height: 20),
+          SizedBox(height: 22),
       ],
     );
   }
+}
+
+Widget _renderLabel(String label, {bool isRequired = false}) {
+  if (isRequired) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          // http://unicodepedia.com/unicode/halfwidth-and-fullwidth-forms/ff0a/fullwidth-asterisk/
+          "＊",
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 4),
+        Text(label),
+      ],
+    );
+  }
+
+  return Text(label);
 }

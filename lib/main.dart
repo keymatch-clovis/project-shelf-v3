@@ -2,18 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
+import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
+import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/city_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/customer_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
+import 'package:project_shelf_v3/app/service/asset_service.dart';
+import 'package:project_shelf_v3/app/service/city_service.dart';
+import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
+import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart';
+import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/framework/flutter/root_bundle_wrapper.dart';
@@ -31,43 +46,40 @@ void main() async {
   // Almost all projects have this.
   WidgetsFlutterBinding.ensureInitialized();
 
-  getIt.registerSingletonAsync<ShelfDatabase>(
-    () async => ShelfDatabase(),
+  getIt.registerSingleton<ShelfDatabase>(
+    ShelfDatabase(),
     dispose: (database) async {
       await database.close();
     },
   );
 
   /// Repositories related
-  getIt.registerSingletonAsync<AppPreferencesRepository>(
-    () async => SharedPreferencesWrapper(),
-  );
-
-  getIt.registerSingletonAsync<AssetRepository>(
-    () async => RootBundleWrapper(),
-  );
-
-  getIt.registerSingletonWithDependencies<ProductRepository>(
-    () => ProductDao(),
-    dependsOn: [ShelfDatabase],
-  );
+  getIt.registerSingleton<AppPreferencesRepository>(SharedPreferencesWrapper());
+  getIt.registerSingleton<AssetRepository>(RootBundleWrapper());
+  getIt.registerSingleton<CityRepository>(CityDao());
+  getIt.registerSingleton<ProductRepository>(ProductDao());
+  getIt.registerSingleton<CustomerRepository>(CustomerDao());
 
   /// Services related
-  getIt.registerSingletonWithDependencies<AppPreferencesService>(
-    () => AppPreferencesServiceImpl(),
-    dependsOn: [AppPreferencesRepository],
-  );
-
-  getIt.registerSingletonWithDependencies<ProductService>(
-    () => ProductServiceImpl(),
-    dependsOn: [ProductRepository],
-  );
+  getIt.registerSingleton<AssetService>(AssetServiceImpl());
+  getIt.registerSingleton<AppPreferencesService>(AppPreferencesServiceImpl());
+  getIt.registerSingleton<CityService>(CityServiceImpl());
+  getIt.registerSingleton<ProductService>(ProductServiceImpl());
+  getIt.registerSingleton<CustomerService>(CustomerServiceImpl());
 
   /// Use case related.
   getIt.registerLazySingleton<GetAppPreferencesUseCase>(
     () => GetAppPreferencesUseCase(),
   );
 
+  getIt.registerLazySingleton<LoadDefaultDataUseCase>(
+    () => LoadDefaultDataUseCase(),
+  );
+
+  // Cities related.
+  getIt.registerLazySingleton<SearchCitiesUseCase>(() => SearchCitiesUseCase());
+
+  // Products related.
   getIt.registerLazySingleton<WatchProductsUseCase>(
     () => WatchProductsUseCase(),
   );
@@ -92,10 +104,25 @@ void main() async {
     () => DeleteProductUseCase(),
   );
 
+  // Customer related.
+  getIt.registerLazySingleton<WatchCustomersUseCase>(
+    () => WatchCustomersUseCase(),
+  );
+
+  getIt.registerLazySingleton<SearchCustomersUseCase>(
+    () => SearchCustomersUseCase(),
+  );
+
+  getIt.registerLazySingleton<CreateCustomerUseCase>(
+    () => CreateCustomerUseCase(),
+  );
+
   runApp(
     // For widgets to be able to read providers, we need to wrap the entire
     // application in a "ProviderScope" widget.
     // This is where the state of our providers will be stored.
+
+    // TODO: override here the app info to get the version.
     ProviderScope(child: const MainApp()),
   );
 }

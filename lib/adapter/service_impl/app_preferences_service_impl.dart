@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/app/common/constants.dart';
+import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.dart';
 import 'package:project_shelf_v3/app/entity/app_preferences.dart';
@@ -9,8 +9,9 @@ import 'package:project_shelf_v3/main.dart';
 
 class AppPreferencesServiceImpl implements AppPreferencesService {
   final _logger = Logger(printer: ImplPrinter());
+
   final _repository = getIt.get<AppPreferencesRepository>();
-  final _assetRepository = getIt.get<AssetRepository>();
+  final _assetService = getIt.get<AssetService>();
 
   @override
   Future<AppPreferences> getAppPreferences() async {
@@ -27,7 +28,7 @@ class AppPreferencesServiceImpl implements AppPreferencesService {
           // | null  -> true  |
           // | false -> false |
           // +----------------+
-          return it ?? false;
+          return it != false;
         });
 
     final String defaultCurrencyIsoCode = await _repository
@@ -36,7 +37,7 @@ class AppPreferencesServiceImpl implements AppPreferencesService {
           return it ?? DEFAULT_CURRENCY.name;
         });
 
-    final currencies = await _assetRepository.loadCurrencies();
+    final currencies = await _assetService.getCurrencies();
     final defaultCurrency = currencies.firstWhere((it) {
       return it.isoCode == defaultCurrencyIsoCode;
     });

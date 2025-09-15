@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/web.dart';
 import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
-import 'package:project_shelf_v3/framework/riverpod/product_list_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/selected_product_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/product/product_list_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/product/selected_product_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_list_tile.dart';
-import 'package:project_shelf_v3/framework/ui/components/search_anchor/product_search_anchor.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
 class ProductListScreen extends StatelessWidget {
@@ -17,7 +17,7 @@ class ProductListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.products),
-        actions: [ProductSearchAnchor()],
+        //actions: [ProductSearchAnchor()],
       ),
       body: SafeArea(
         child: Builder(
@@ -30,7 +30,10 @@ class ProductListScreen extends StatelessWidget {
                       data: (items) => _ProductList(items),
                       loading: () =>
                           const Center(child: CircularProgressIndicator()),
-                      error: (err, _) => throw AssertionError(err),
+                      error: (err, _) {
+                        Logger().f(err);
+                        throw AssertionError(err);
+                      },
                     );
               },
             );

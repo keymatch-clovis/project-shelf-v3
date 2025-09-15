@@ -11,18 +11,20 @@ class CurrencyValidator implements Validator<String> {
   CurrencyValidator(this.currency, {this.isRequired = false});
 
   @override
-  Set<CustomStateError> validate(String value) {
+  Set<CustomStateError> validate(String? value) {
     Set<CustomStateError> errors = Set.identity();
     Money? transformed;
 
     try {
-      transformed = currency.parse(value);
+      transformed = currency.parse(value ?? "");
     } on Exception {
       transformed = null;
     }
 
     if (isRequired) {
-      if (value.isEmpty) {
+      if (value == null) {
+        errors.add(CustomStateError.nullValue);
+      } else if (value.isEmpty) {
         errors.add(CustomStateError.blankValue);
       }
 
@@ -32,7 +34,7 @@ class CurrencyValidator implements Validator<String> {
     }
     // If the this is not null, we have to check the inside of the string, to see
     // if it is what we expect.
-    else if (value.isNotEmpty && transformed == null) {
+    else if (value?.isNotEmpty == true && transformed == null) {
       errors.add(CustomStateError.invalidDecimalValue);
     }
 

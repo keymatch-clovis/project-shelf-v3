@@ -10,4 +10,14 @@ class AppPreferences {
     required this.mustLoadDefaultData,
     required this.defaultCurrency,
   });
+
+  AppPreferences copyWith({
+    bool? mustLoadDefaultData,
+    Currency? defaultCurrency,
+  }) {
+    return AppPreferences(
+      mustLoadDefaultData: mustLoadDefaultData ?? this.mustLoadDefaultData,
+      defaultCurrency: defaultCurrency ?? this.defaultCurrency,
+    );
+  }
 }

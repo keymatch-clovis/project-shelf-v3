@@ -1,0 +1,33 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_shelf_v3/app/entity/customer.dart';
+import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
+import 'package:project_shelf_v3/common/debouncer.dart';
+import 'package:project_shelf_v3/framework/riverpod/common/stream_search_notifier.dart';
+import 'package:project_shelf_v3/main.dart';
+
+/// Provider related
+final class CustomerSearchNotifier
+    extends StreamSearchNotifier<List<Customer>> {
+  final _useCase = getIt.get<SearchCustomersUseCase>();
+  final _debouncer = Debouncer();
+
+  String _query = "";
+
+  @override
+  Stream<List<Customer>> build() {
+    return _useCase.exec(_query);
+  }
+
+  @override
+  Future<void> updateQuery(String query) async {
+    _debouncer.debounce(() {
+      _query = query;
+      ref.invalidateSelf();
+    });
+    await _debouncer.completer.future;
+  }
+}
+
+final customerSearchProvider = StreamNotifierProvider.autoDispose(
+  CustomerSearchNotifier.new,
+);

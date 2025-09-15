@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/edit_product_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/product/edit_product_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_details_form.dart';
 
 class EditProductScreen extends ConsumerStatefulWidget {

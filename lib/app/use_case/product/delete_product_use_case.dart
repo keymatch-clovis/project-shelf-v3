@@ -13,6 +13,7 @@ class DeleteProductUseCase {
 
   Future<void> exec(Id id) async {
     _logger.d('Deleting product with ID: $id');
+
     await _service.delete(id);
   }
 }

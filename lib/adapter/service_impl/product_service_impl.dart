@@ -1,5 +1,4 @@
 import 'package:logger/logger.dart';
-import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart'
     as repository;
 import 'package:project_shelf_v3/app/entity/product.dart';
@@ -34,9 +33,6 @@ class ProductServiceImpl implements service.ProductService {
   Future<Product> update(service.UpdateArgs args) async {
     _logger.d('Updating product');
 
-    // NOTE: I do this here and not inside the `watch` method, because I don't
-    // really know if the stream emits more values after one call. So it might
-    // get the app preferences more than once.
     final appPreferences = await _appPreferencesService.getAppPreferences();
 
     return await _repository
@@ -74,44 +70,52 @@ class ProductServiceImpl implements service.ProductService {
   @override
   Stream<List<Product>> search(String value) {
     _logger.d('Searching product with: $value');
-    // FIXME: This should be different.
-    Currency currency = Currency.create('COP', 0);
 
-    return _repository.search(value).map((dtos) {
-      return dtos.map((dto) => dto.toEntity(currency)).toList();
+    // NOTE: I do this here and not inside the `search` method, because I don't
+    // really know if the stream emits more values after one call. So it might
+    // get the app preferences more than once.
+    final appPreferences = _appPreferencesService.getAppPreferences();
+
+    return _repository.search(value).asyncMap((dtos) async {
+      final preferences = await appPreferences;
+
+      return dtos
+          .map((dto) => dto.toEntity(preferences.defaultCurrency))
+          .toList();
     });
   }
 
   @override
-  Future<Product?> searchWithName(String name) {
+  Future<Product?> searchWithName(String name) async {
     _logger.d('Searching product with name: $name');
 
-    // FIXME: This should be different.
-    Currency currency = Currency.create('COP', 0);
+    final appPreferences = await _appPreferencesService.getAppPreferences();
 
     return _repository
         .searchWithName(name)
-        .then((dto) => dto?.toEntity(currency));
+        .then((dto) => dto?.toEntity(appPreferences.defaultCurrency));
   }
 
   @override
-  Future<Product> findById(Id id) {
+  Future<Product> findById(Id id) async {
     _logger.d('Finding product with ID: $id');
 
-    // FIXME: This should be different.
-    Currency currency = Currency.create('COP', 0);
+    final appPreferences = await _appPreferencesService.getAppPreferences();
 
-    return _repository.findById(id).then((dto) => dto.toEntity(currency));
+    return _repository
+        .findById(id)
+        .then((dto) => dto.toEntity(appPreferences.defaultCurrency));
   }
 
   @override
-  Future<Product> findByName(String name) {
+  Future<Product> findByName(String name) async {
     _logger.d('Finding product with name: $name');
 
-    // FIXME: This should be different.
-    Currency currency = Currency.create('COP', 0);
+    final appPreferences = await _appPreferencesService.getAppPreferences();
 
-    return _repository.findByName(name).then((dto) => dto.toEntity(currency));
+    return _repository
+        .findByName(name)
+        .then((dto) => dto.toEntity(appPreferences.defaultCurrency));
   }
 
   /// DELETE related

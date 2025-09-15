@@ -3,17 +3,16 @@ import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/main.dart';
 
 class FindProductUseCase {
-  final Logger _logger = Logger(printer: UseCasePrinter());
+  final _logger = Logger(printer: UseCasePrinter());
 
-  final ProductService _service;
+  final _service = getIt.get<ProductService>();
 
-  FindProductUseCase(this._service);
+  FindProductUseCase();
 
   Future<Product> exec({String? name, Id? id}) async {
-    await Future.delayed(const Duration(seconds: 2));
-
     if (id != null) {
       _logger.d('Finding product with ID: $id');
       return await _service.findById(id);
