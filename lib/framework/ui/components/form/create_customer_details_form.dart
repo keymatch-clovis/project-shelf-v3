@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/entity/city.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/city_search_provider.dart';
@@ -8,7 +12,6 @@ import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.d
 import 'package:project_shelf_v3/framework/ui/components/city_list.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/search_anchor/custom_search_anchor.dart';
 
 final class CreateCustomerDetailsForm extends ConsumerStatefulWidget {
   const CreateCustomerDetailsForm({super.key});
@@ -42,6 +45,12 @@ final class _CreateCustomerDetailsFormState
     final localizations = AppLocalizations.of(context)!;
     final state = ref.watch(createCustomerProvider);
 
+    // We need to listen to this provider for it to not autodispose when the
+    // search anchor is closed.
+    //
+    // NOTE: I don't know another way of doing this.
+    ref.listen(citySearchProvider, (_, _) {});
+
     return Padding(
       // https://m3.material.io/components/dialogs/specs#2b93ced7-9b0d-4a59-9bc4-8ff59dcd24c1
       padding: EdgeInsetsGeometry.all(24),
@@ -55,7 +64,9 @@ final class _CreateCustomerDetailsFormState
             value: state.nameInput.value,
             errors: state.nameInput.errors.parseErrors(context),
             focusNode: _nameFieldFocus,
-            onFieldSubmitted: (_) => _citySearchController.openView(),
+            onFieldSubmitted: (_) {
+              _citySearchController.openView();
+            },
             onChanged: ref.read(createCustomerProvider.notifier).updateName,
             onClear: () =>
                 ref.read(createCustomerProvider.notifier).updateName(""),
@@ -63,30 +74,58 @@ final class _CreateCustomerDetailsFormState
             textCapitalization: TextCapitalization.characters,
             textInputAction: TextInputAction.next,
           ),
-          CustomSearchAnchor(
-            provider: citySearchProvider,
-            controller: _citySearchController,
-            anchorBuilder: (controller) {
+          SearchAnchor(
+            viewPadding: EdgeInsets.zero,
+            isFullScreen: true,
+            textCapitalization: TextCapitalization.characters,
+            searchController: _citySearchController,
+            textInputAction: TextInputAction.next,
+            builder: (_, _) {
               return CustomObjectField<City>(
                 label: localizations.city,
                 isRequired: true,
                 textValue: state.cityInput.value?.name,
                 errors: state.cityInput.errors.parseErrors(context),
-                onTap: controller.openView,
+                onTap: _citySearchController.openView,
               );
             },
-            listBuilder: (items, controller) {
-              return CityList(
-                items: items,
-                onTap: (city) {
-                  ref
-                      .read(createCustomerProvider.notifier)
-                      .updateCityInput(city);
+            viewBuilder: (_) => Consumer(
+              builder: (_, ref, _) {
+                return ref
+                    .watch(citySearchProvider)
+                    .when(
+                      data: (it) {
+                        return CityList(
+                          items: it,
+                          onTap: (city) {
+                            ref
+                                .read(createCustomerProvider.notifier)
+                                .updateCityInput(city);
 
-                  controller.closeView(null);
-                  _businessNameFieldFocus.requestFocus();
-                },
-              );
+                            _citySearchController.closeView(null);
+
+                            SchedulerBinding.instance.addPostFrameCallback((_) {
+                              _businessNameFieldFocus.requestFocus();
+                            });
+                          },
+                        );
+                      },
+                      loading: () {
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      error: (err, _) {
+                        Logger().f(err);
+                        throw AssertionError(err);
+                      },
+                    );
+              },
+            ),
+            suggestionsBuilder: (_, controller) {
+              ref
+                  .read(citySearchProvider.notifier)
+                  .updateQuery(controller.text);
+
+              return const [];
             },
           ),
           CustomTextField(
