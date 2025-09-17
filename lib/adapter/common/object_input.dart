@@ -20,10 +20,6 @@ class ObjectInput<T> {
     final validationErrors = _validator.validate(value ?? this.value);
     validationErrors.addAll(errors ?? {});
 
-    return ObjectInput(
-      _validator,
-      value: value ?? this.value,
-      errors: validationErrors,
-    );
+    return ObjectInput(_validator, value: value, errors: validationErrors);
   }
 }

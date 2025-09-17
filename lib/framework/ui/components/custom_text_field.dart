@@ -106,18 +106,24 @@ class _CustomTextFieldState extends State<CustomTextField> {
             border: OutlineInputBorder(),
             label: _renderLabel(widget.label, isRequired: widget.isRequired),
             suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
-                ? IconButton(
-                    onPressed: () {
-                      if (!isDirty) {
-                        setState(() {
-                          isDirty = true;
-                        });
-                      }
+                ? Focus(
+                    // We need to set a focus for this button, so it does not
+                    // tamper with the form traversal.
+                    descendantsAreFocusable: false,
+                    canRequestFocus: false,
+                    child: IconButton(
+                      onPressed: () {
+                        if (!isDirty) {
+                          setState(() {
+                            isDirty = true;
+                          });
+                        }
 
-                      _controller.clear();
-                      widget.onClear?.call();
-                    },
-                    icon: Icon(Icons.clear),
+                        _controller.clear();
+                        widget.onClear?.call();
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
                   )
                 : null,
           ),

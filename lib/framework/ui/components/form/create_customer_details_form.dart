@@ -24,6 +24,7 @@ final class CreateCustomerDetailsForm extends ConsumerStatefulWidget {
 final class _CreateCustomerDetailsFormState
     extends ConsumerState<CreateCustomerDetailsForm> {
   final _nameFieldFocus = FocusNode();
+  final _cityFieldFocus = FocusNode();
   final _businessNameFieldFocus = FocusNode();
   final _addressFieldFocus = FocusNode();
   final _phoneNumberInput = FocusNode();
@@ -64,10 +65,11 @@ final class _CreateCustomerDetailsFormState
             value: state.nameInput.value,
             errors: state.nameInput.errors.parseErrors(context),
             focusNode: _nameFieldFocus,
+            onChanged: ref.read(createCustomerProvider.notifier).updateName,
             onFieldSubmitted: (_) {
+              _businessNameFieldFocus.requestFocus();
               _citySearchController.openView();
             },
-            onChanged: ref.read(createCustomerProvider.notifier).updateName,
             onClear: () =>
                 ref.read(createCustomerProvider.notifier).updateName(""),
             keyboardType: TextInputType.name,
@@ -78,6 +80,7 @@ final class _CreateCustomerDetailsFormState
             viewPadding: EdgeInsets.zero,
             isFullScreen: true,
             textCapitalization: TextCapitalization.characters,
+            keyboardType: TextInputType.text,
             searchController: _citySearchController,
             textInputAction: TextInputAction.next,
             builder: (_, _) {
@@ -85,8 +88,18 @@ final class _CreateCustomerDetailsFormState
                 label: localizations.city,
                 isRequired: true,
                 textValue: state.cityInput.value?.name,
+                onTap: () {
+                  _businessNameFieldFocus.requestFocus();
+                  _citySearchController.openView();
+                },
+                onClear: () {
+                  ref
+                      .read(createCustomerProvider.notifier)
+                      .updateCityInput(null);
+
+                  FocusScope.of(context).unfocus();
+                },
                 errors: state.cityInput.errors.parseErrors(context),
-                onTap: _citySearchController.openView,
               );
             },
             viewBuilder: (_) => Consumer(

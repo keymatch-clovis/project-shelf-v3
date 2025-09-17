@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 final class CustomObjectField<T> extends StatefulWidget {
   final FocusNode? focusNode;
-  final void Function() onTap;
+  final void Function()? onTap;
 
   /// Custom fields
+  final T? value;
   final String? textValue;
   final String label;
   final bool isRequired;
@@ -15,8 +16,9 @@ final class CustomObjectField<T> extends StatefulWidget {
   const CustomObjectField({
     super.key,
     this.focusNode,
-    required this.onTap,
+    this.onTap,
     // Custom fields
+    this.value,
     this.textValue,
     required this.label,
     this.isRequired = false,
@@ -80,27 +82,37 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
         TextFormField(
           controller: _controller,
           readOnly: true,
-          focusNode: _focusNode,
+          enableInteractiveSelection: true,
+          showCursor: true,
+          textCapitalization: TextCapitalization.characters,
+          keyboardType: TextInputType.text,
           decoration: InputDecoration(
             border: OutlineInputBorder(),
             label: _renderLabel(widget.label, isRequired: widget.isRequired),
-            suffixIcon: widget.onClear != null && _controller.text.isEmpty
-                ? IconButton(
-                    onPressed: () {
-                      if (!_isDirty) {
-                        setState(() {
-                          _isDirty = true;
-                        });
+            suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
+                ? Focus(
+                    // We need to set a focus for this button, so it does
+                    // not tamper with the form traversal.
+                    descendantsAreFocusable: false,
+                    canRequestFocus: false,
+                    child: IconButton(
+                      onPressed: () {
+                        if (!_isDirty) {
+                          setState(() {
+                            _isDirty = true;
+                          });
+                        }
+
                         _controller.clear();
                         widget.onClear?.call();
-                      }
-                    },
-                    icon: const Icon(Icons.clear_rounded),
+                      },
+                      icon: const Icon(Icons.clear_rounded),
+                    ),
                   )
                 : null,
           ),
           onTap: () {
-            widget.onTap();
+            widget.onTap?.call();
 
             if (!_isDirty) {
               setState(() {
