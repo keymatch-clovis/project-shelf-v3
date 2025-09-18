@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum CustomObjectFieldStatus { INITIAL, DIRTY }
+
 final class CustomObjectField<T> extends StatefulWidget {
   final FocusNode? focusNode;
   final void Function()? onTap;
@@ -30,12 +32,10 @@ final class CustomObjectField<T> extends StatefulWidget {
 }
 
 final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
-  final _controller = TextEditingController();
-
   late FocusNode _focusNode;
 
   bool _wasFocused = false;
-  bool _isDirty = false;
+  CustomObjectFieldStatus _status = CustomObjectFieldStatus.INITIAL;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
       // dirty.
       if (!_focusNode.hasFocus && _wasFocused) {
         setState(() {
-          _isDirty = true;
+          _status = CustomObjectFieldStatus.DIRTY;
         });
       }
     });
@@ -75,8 +75,6 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    _controller.text = widget.textValue ?? "";
-
     return Focus(
       focusNode: _focusNode,
       child: Column(
@@ -91,20 +89,33 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                     child: Material(
                       clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: theme.colorScheme.outline),
+                        side: BorderSide(
+                          color:
+                              widget.errors.isEmpty ||
+                                  _status == CustomObjectFieldStatus.INITIAL
+                              ? theme.colorScheme.outline
+                              : theme.colorScheme.error,
+                        ),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: InkWell(
                         onTap: () {
                           _focusNode.requestFocus();
-                          // widget.onTap?.call();
+
+                          if (_status != CustomObjectFieldStatus.DIRTY) {
+                            setState(() {
+                              _status = CustomObjectFieldStatus.DIRTY;
+                            });
+                          }
+
+                          widget.onTap?.call();
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 11,
                             vertical: 18,
                           ),
-                          child: Text("test"),
+                          child: Text(widget.label),
                         ),
                       ),
                     ),
@@ -120,23 +131,16 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 6),
-                  child: Text(
-                    "tester",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                  child: _Label(
+                    widget.label,
+                    status: _status,
+                    isRequired: widget.isRequired,
                   ),
                 ),
               ),
             ],
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 11, top: 3, right: 11),
-            child: Text("The value can't", style: TextStyle(fontSize: 12)),
-          ),
-          // When the errors are showing, try to preserve the padding.
-          // if (widget.errors.isEmpty || !_isDirty) SizedBox(height: 22),
+          _ErrorsLabel(errors: widget.errors, status: _status),
         ],
       ),
     );
@@ -194,21 +198,68 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
   }
 }
 
-Widget _renderLabel(String label, {bool isRequired = false}) {
-  if (isRequired) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          // http://unicodepedia.com/unicode/halfwidth-and-fullwidth-forms/ff0a/fullwidth-asterisk/
-          "＊",
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(width: 4),
-        Text(label),
-      ],
+final class _Label extends StatelessWidget {
+  final bool isRequired;
+  final String label;
+  final CustomObjectFieldStatus status;
+
+  const _Label(this.label, {required this.status, this.isRequired = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = TextStyle(
+      fontSize: 12,
+      color: status == CustomObjectFieldStatus.INITIAL
+          ? theme.colorScheme.onSurfaceVariant
+          : theme.colorScheme.error,
+    );
+
+    if (isRequired) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            // http://unicodepedia.com/unicode/halfwidth-and-fullwidth-forms/ff0a/fullwidth-asterisk/
+            "＊",
+            style: TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+              color: status == CustomObjectFieldStatus.INITIAL
+                  ? theme.colorScheme.onSurfaceVariant
+                  : theme.colorScheme.error,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(label, style: style),
+        ],
+      );
+    }
+
+    return Text(label, style: style);
+  }
+}
+
+final class _ErrorsLabel extends StatelessWidget {
+  final List<String> errors;
+  final CustomObjectFieldStatus status;
+
+  const _ErrorsLabel({required this.errors, required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (errors.isEmpty || status == CustomObjectFieldStatus.INITIAL) {
+      return SizedBox(height: 22);
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(left: 11, top: 2, right: 11),
+      child: Text(
+        errors.first,
+        style: TextStyle(fontSize: 12, color: theme.colorScheme.error),
+      ),
     );
   }
-
-  return Text(label);
 }

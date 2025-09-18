@@ -1,0 +1,99 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "2:833941145084202839",
+      "lastPropertyId": "7:1173272383077814940",
+      "name": "InvoiceDraftProductDto",
+      "properties": [
+        {
+          "id": "1:716964287268226645",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8039380102461441883",
+          "name": "productId",
+          "type": 6
+        },
+        {
+          "id": "5:5320575668768391215",
+          "name": "quantity",
+          "type": 6
+        },
+        {
+          "id": "6:8677137074340863362",
+          "name": "unitPrice",
+          "type": 6
+        },
+        {
+          "id": "7:1173272383077814940",
+          "name": "invoiceId",
+          "indexId": "1:408517580857610983",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "InvoiceDraftDto"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:274034651463492387",
+      "lastPropertyId": "4:5155951367029643794",
+      "name": "InvoiceDraftDto",
+      "properties": [
+        {
+          "id": "1:2335828012991959638",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8928440876990293375",
+          "name": "date",
+          "type": 10
+        },
+        {
+          "id": "3:1154369001365028129",
+          "name": "remainingUnpaidBalance",
+          "type": 6
+        },
+        {
+          "id": "4:5155951367029643794",
+          "name": "customerId",
+          "type": 6
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:7112647908102025118",
+          "name": "products",
+          "targetId": "2:833941145084202839"
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "3:274034651463492387",
+  "lastIndexId": "1:408517580857610983",
+  "lastRelationId": "1:7112647908102025118",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [
+    8928238688371058838
+  ],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    1429872648420772918,
+    5504957862810626207,
+    7956238843704801333,
+    7502744386021887995,
+    7593264896029825046,
+    3863485180279580678
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

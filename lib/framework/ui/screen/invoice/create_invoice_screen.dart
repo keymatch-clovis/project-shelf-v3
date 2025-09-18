@@ -60,7 +60,10 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
             child: SizedBox.shrink(
               child: TabBarView(
                 controller: _tabController,
-                children: [_Details(), _Products()],
+                children: [
+                  SingleChildScrollView(child: _Details()),
+                  _Products(),
+                ],
               ),
             ),
           ),
@@ -128,18 +131,18 @@ final class _DetailsState extends ConsumerState<_Details> {
       child: Column(
         spacing: 12,
         children: [
-          CustomTextField(label: "test"),
-          // CustomObjectField(
-          //   label: localizations.date,
-          //   onTap: () {
-          //     showDatePicker(
-          //       context: context,
-          //       initialDate: DateTime.now(),
-          //       firstDate: DateTime(DateTime.now().year - 1),
-          //       lastDate: DateTime.now(),
-          //     );
-          //   },
-          // ),
+          CustomObjectField(
+          isRequired: true,
+            label: localizations.date,
+            onTap: () {
+              showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(DateTime.now().year - 1),
+                lastDate: DateTime.now(),
+              );
+            },
+          ),
           SearchAnchor(
             viewPadding: EdgeInsets.zero,
             isFullScreen: true,

@@ -39,6 +39,7 @@ import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/framework/flutter/root_bundle_wrapper.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/object_box/object_box.dart';
 import 'package:project_shelf_v3/framework/shared_preferences/shared_preferences_wrapper.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 import 'package:get_it/get_it.dart';
@@ -52,12 +53,14 @@ void main() async {
   // Almost all projects have this.
   WidgetsFlutterBinding.ensureInitialized();
 
+  /// Base services related
   getIt.registerSingleton<ShelfDatabase>(
     ShelfDatabase(),
     dispose: (database) async {
       await database.close();
     },
   );
+  getIt.registerSingleton<ObjectBox>(await ObjectBox.create());
 
   /// Repositories related
   getIt.registerSingleton<AppPreferencesRepository>(SharedPreferencesWrapper());
