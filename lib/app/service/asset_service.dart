@@ -1,13 +1,7 @@
 import 'package:money2/money2.dart';
-
-final class CityData {
-  final String name;
-  final String department;
-
-  const CityData({required this.name, required this.department});
-}
+import 'package:project_shelf_v3/domain/entity/city.dart';
 
 abstract interface class AssetService {
-  Future<List<CityData>> getCities();
+  Future<List<City>> getCities();
   Future<List<Currency>> getCurrencies();
 }

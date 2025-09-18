@@ -1,12 +1,12 @@
+import 'package:project_shelf_v3/common/typedefs.dart';
+
 class City {
-  final int? id;
   final String name;
   final String department;
 
-  City({
-    required this.name,
-    required this.department,
+  final Id? id;
 
-    this.id
-  });
+  City({required String name, required String department, this.id})
+    : name = name.trim().toUpperCase(),
+      department = department.trim().toUpperCase();
 }

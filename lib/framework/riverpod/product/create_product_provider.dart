@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
-import 'package:project_shelf_v3/adapter/common/extension/currency_extension.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/int_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
+import 'package:project_shelf_v3/app/dto/create_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
@@ -132,21 +132,15 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
     await future;
     assert(state.value!.isValid);
 
-    final appPreferences = await ref.watch(appPreferencesProvider.future);
-
     state = AsyncData(
       state.value!.copyWith(status: CreateProductStatus.loading),
     );
 
     await _createProductUseCase.exec(
-      Args(
+      CreateProductRequest(
         name: state.value!.nameInput.value.trim(),
-        defaultPrice: appPreferences.defaultCurrency.tryParse(
-          state.value!.defaultPriceInput.value,
-        ),
-        purchasePrice: appPreferences.defaultCurrency.tryParse(
-          state.value!.purchasePriceInput.value,
-        ),
+        defaultPrice: int.tryParse(state.value!.defaultPriceInput.value),
+        purchasePrice: int.tryParse(state.value!.purchasePriceInput.value),
         stock: int.tryParse(state.value!.stockInput.value),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/product_list_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/selected_product_provider.dart';
@@ -49,7 +49,7 @@ class ProductListScreen extends StatelessWidget {
 }
 
 class _ProductList extends ConsumerWidget {
-  final List<Product> products;
+  final List<ProductDto> products;
 
   const _ProductList(this.products);
 

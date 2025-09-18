@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
-import 'package:project_shelf_v3/app/entity/product.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
@@ -72,7 +71,6 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
         spacing: 12,
         children: [
           CustomTextField(
-            maxLength: MAX_PRODUCT_NAME_SIZE,
             isRequired: true,
             value: widget.nameInput.value,
             label: localizations.name,

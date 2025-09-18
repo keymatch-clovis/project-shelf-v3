@@ -1,7 +1,8 @@
+import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/city.dart';
 
 final class CityDto {
-  final int id;
+  final Id id;
   final String name;
   final String department;
 

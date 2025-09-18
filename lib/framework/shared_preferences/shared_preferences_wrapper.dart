@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.dart';
-import 'package:project_shelf_v3/app/entity/app_preferences.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
+import 'package:project_shelf_v3/domain/entity/app_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesWrapper implements AppPreferencesRepository {

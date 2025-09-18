@@ -1,7 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
-import 'package:project_shelf_v3/app/entity/customer.dart';
+import 'package:project_shelf_v3/app/dto/customer_with_city_response.dart';
+import 'package:project_shelf_v3/domain/entity/customer.dart';
 
 part "customer_dto.g.dart";
 
@@ -32,6 +33,10 @@ class CustomerDto {
 
   factory CustomerDto.fromJson(Map<String, dynamic> json) =>
       _$CustomerDtoFromJson(json);
+
+  Customer toEntity() {
+    return Customer(name: name, cityId: city);
+  }
 }
 
 class CustomerWithCityDto {
@@ -40,13 +45,10 @@ class CustomerWithCityDto {
 
   CustomerWithCityDto({required this.customer, required this.city});
 
-  Customer toEntity() => Customer(
-    id: customer.id,
-    name: customer.name,
-    city: city.toEntity(),
-    address: customer.address,
-    phoneNumber: customer.phoneNumber,
-    createdAt: customer.createdAt,
-    updatedAt: customer.updatedAt,
-  );
+  CustomerWithCityResponse toResponse() {
+    return CustomerWithCityResponse(
+      customer: customer.toEntity(),
+      city: city.toEntity(),
+    );
+  }
 }

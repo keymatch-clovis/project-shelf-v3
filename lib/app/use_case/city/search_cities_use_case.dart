@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/app/entity/city.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
+import 'package:project_shelf_v3/domain/entity/city.dart';
 import 'package:project_shelf_v3/main.dart';
 
 class SearchCitiesUseCase {
@@ -16,4 +16,3 @@ class SearchCitiesUseCase {
     return _service.search(query);
   }
 }
-

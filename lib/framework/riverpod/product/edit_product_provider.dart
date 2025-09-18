@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
-import 'package:project_shelf_v3/adapter/common/extension/currency_extension.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/int_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
-import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
+import 'package:project_shelf_v3/app/dto/update_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
@@ -26,7 +26,7 @@ enum EditProductStatus { initial, loading, success }
 abstract class EditProductState with _$EditProductState {
   const factory EditProductState({
     @Default(EditProductStatus.initial) EditProductStatus status,
-    required Product product,
+    required ProductDto product,
     required Input nameInput,
     required Input defaultPriceInput,
     required Input purchasePriceInput,
@@ -147,26 +147,22 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
     await future;
     assert(state.value!.isValid);
 
-    final appPreferences = await ref.watch(appPreferencesProvider.future);
-
     state = AsyncData(state.value!.copyWith(status: EditProductStatus.loading));
 
     await _updateProductUseCase
         .exec(
-          Args(
+          UpdateProductRequest(
             id: state.value!.product.id,
             name: state.value!.nameInput.value.trim(),
-            defaultPrice: appPreferences.defaultCurrency.tryParse(
-              state.value!.defaultPriceInput.value,
-            ),
-            purchasePrice: appPreferences.defaultCurrency.tryParse(
-              state.value!.purchasePriceInput.value,
-            ),
+            defaultPrice: int.tryParse(state.value!.defaultPriceInput.value),
+            purchasePrice: int.tryParse(state.value!.purchasePriceInput.value),
             stock: int.tryParse(state.value!.stockInput.value),
           ),
         )
         .then((it) {
-          ref.read(selectedProductProvider.notifier).select(it);
+          ref
+              .read(selectedProductProvider.notifier)
+              .select(ProductDto.fromEntity(it));
         });
 
     state = AsyncData(state.value!.copyWith(status: EditProductStatus.success));

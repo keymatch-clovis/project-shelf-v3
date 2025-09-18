@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/entity/customer.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_list_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/selected_customer_provider.dart';
@@ -60,7 +60,7 @@ class CustomerListScreen extends StatelessWidget {
 }
 
 class _CustomerList extends ConsumerWidget {
-  final List<Customer> items;
+  final List<CustomerWithCityDto> items;
 
   const _CustomerList(this.items);
 
@@ -80,7 +80,7 @@ class _CustomerList extends ConsumerWidget {
       },
       itemBuilder: (context, index) {
         return CustomerListTile(
-          customer: items[index],
+          dto: items[index],
           onTap: (customer) {
             ref.read(selectedCustomerProvider.notifier).select(customer);
             context.go(CustomRoute.CUSTOMER_DETAILS.route);

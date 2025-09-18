@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:project_shelf_v3/domain/entity/product.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 
 class ProductListTile extends StatelessWidget {
-  final Product product;
-  final void Function(Product)? onTap;
+  final ProductDto product;
+  final void Function(ProductDto)? onTap;
 
   const ProductListTile({required this.product, this.onTap, super.key});
 

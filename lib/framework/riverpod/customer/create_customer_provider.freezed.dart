@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateCustomerState {
 
- CreateCustomerStatus get status; Input get nameInput; Input get businessNameInput; ObjectInput<City> get cityInput; Input get addressInput; Input get phoneNumberInput;
+ CreateCustomerStatus get status; Input get nameInput; Input get businessNameInput; ObjectInput<CityDto> get cityInput; Input get addressInput; Input get phoneNumberInput;
 /// Create a copy of CreateCustomerState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $CreateCustomerStateCopyWith<$Res>  {
   factory $CreateCustomerStateCopyWith(CreateCustomerState value, $Res Function(CreateCustomerState) _then) = _$CreateCustomerStateCopyWithImpl;
 @useResult
 $Res call({
- CreateCustomerStatus status, Input nameInput, Input businessNameInput, ObjectInput<City> cityInput, Input addressInput, Input phoneNumberInput
+ CreateCustomerStatus status, Input nameInput, Input businessNameInput, ObjectInput<CityDto> cityInput, Input addressInput, Input phoneNumberInput
 });
 
 
@@ -68,7 +68,7 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as CreateCustomerStatus,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
 as Input,businessNameInput: null == businessNameInput ? _self.businessNameInput : businessNameInput // ignore: cast_nullable_to_non_nullable
 as Input,cityInput: null == cityInput ? _self.cityInput : cityInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<City>,addressInput: null == addressInput ? _self.addressInput : addressInput // ignore: cast_nullable_to_non_nullable
+as ObjectInput<CityDto>,addressInput: null == addressInput ? _self.addressInput : addressInput // ignore: cast_nullable_to_non_nullable
 as Input,phoneNumberInput: null == phoneNumberInput ? _self.phoneNumberInput : phoneNumberInput // ignore: cast_nullable_to_non_nullable
 as Input,
   ));
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateCustomerStatus status,  Input nameInput,  Input businessNameInput,  ObjectInput<City> cityInput,  Input addressInput,  Input phoneNumberInput)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateCustomerStatus status,  Input nameInput,  Input businessNameInput,  ObjectInput<CityDto> cityInput,  Input addressInput,  Input phoneNumberInput)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateCustomerState() when $default != null:
 return $default(_that.status,_that.nameInput,_that.businessNameInput,_that.cityInput,_that.addressInput,_that.phoneNumberInput);case _:
@@ -176,7 +176,7 @@ return $default(_that.status,_that.nameInput,_that.businessNameInput,_that.cityI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateCustomerStatus status,  Input nameInput,  Input businessNameInput,  ObjectInput<City> cityInput,  Input addressInput,  Input phoneNumberInput)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateCustomerStatus status,  Input nameInput,  Input businessNameInput,  ObjectInput<CityDto> cityInput,  Input addressInput,  Input phoneNumberInput)  $default,) {final _that = this;
 switch (_that) {
 case _CreateCustomerState():
 return $default(_that.status,_that.nameInput,_that.businessNameInput,_that.cityInput,_that.addressInput,_that.phoneNumberInput);case _:
@@ -196,7 +196,7 @@ return $default(_that.status,_that.nameInput,_that.businessNameInput,_that.cityI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateCustomerStatus status,  Input nameInput,  Input businessNameInput,  ObjectInput<City> cityInput,  Input addressInput,  Input phoneNumberInput)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateCustomerStatus status,  Input nameInput,  Input businessNameInput,  ObjectInput<CityDto> cityInput,  Input addressInput,  Input phoneNumberInput)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateCustomerState() when $default != null:
 return $default(_that.status,_that.nameInput,_that.businessNameInput,_that.cityInput,_that.addressInput,_that.phoneNumberInput);case _:
@@ -217,7 +217,7 @@ class _CreateCustomerState extends CreateCustomerState {
 @override@JsonKey() final  CreateCustomerStatus status;
 @override final  Input nameInput;
 @override final  Input businessNameInput;
-@override final  ObjectInput<City> cityInput;
+@override final  ObjectInput<CityDto> cityInput;
 @override final  Input addressInput;
 @override final  Input phoneNumberInput;
 
@@ -251,7 +251,7 @@ abstract mixin class _$CreateCustomerStateCopyWith<$Res> implements $CreateCusto
   factory _$CreateCustomerStateCopyWith(_CreateCustomerState value, $Res Function(_CreateCustomerState) _then) = __$CreateCustomerStateCopyWithImpl;
 @override @useResult
 $Res call({
- CreateCustomerStatus status, Input nameInput, Input businessNameInput, ObjectInput<City> cityInput, Input addressInput, Input phoneNumberInput
+ CreateCustomerStatus status, Input nameInput, Input businessNameInput, ObjectInput<CityDto> cityInput, Input addressInput, Input phoneNumberInput
 });
 
 
@@ -274,7 +274,7 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as CreateCustomerStatus,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
 as Input,businessNameInput: null == businessNameInput ? _self.businessNameInput : businessNameInput // ignore: cast_nullable_to_non_nullable
 as Input,cityInput: null == cityInput ? _self.cityInput : cityInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<City>,addressInput: null == addressInput ? _self.addressInput : addressInput // ignore: cast_nullable_to_non_nullable
+as ObjectInput<CityDto>,addressInput: null == addressInput ? _self.addressInput : addressInput // ignore: cast_nullable_to_non_nullable
 as Input,phoneNumberInput: null == phoneNumberInput ? _self.phoneNumberInput : phoneNumberInput // ignore: cast_nullable_to_non_nullable
 as Input,
   ));

@@ -1,10 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/app/entity/city.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/city_search_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/create_customer_provider.dart';
@@ -24,7 +22,6 @@ final class CreateCustomerDetailsForm extends ConsumerStatefulWidget {
 final class _CreateCustomerDetailsFormState
     extends ConsumerState<CreateCustomerDetailsForm> {
   final _nameFieldFocus = FocusNode();
-  final _cityFieldFocus = FocusNode();
   final _businessNameFieldFocus = FocusNode();
   final _addressFieldFocus = FocusNode();
   final _phoneNumberInput = FocusNode();
@@ -91,7 +88,7 @@ final class _CreateCustomerDetailsFormState
               _citySearchController.closeView(null);
             },
             builder: (_, _) {
-              return CustomObjectField<City>(
+              return CustomObjectField<CityDto>(
                 label: localizations.city,
                 isRequired: true,
                 textValue: state.cityInput.value?.name,

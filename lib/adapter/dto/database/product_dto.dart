@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
-import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/domain/entity/product.dart';
 
 part 'product_dto.g.dart';
 
@@ -32,14 +32,13 @@ class ProductDto {
       _$ProductDtoFromJson(json);
 
   Product toEntity(Currency currency) {
-    return Product(
+    return Product.fromMinorUnits(
+      currency,
       id: id,
       name: name,
-      defaultPrice: Money.fromIntWithCurrency(defaultPrice, currency),
-      purchasePrice: Money.fromIntWithCurrency(purchasePrice, currency),
+      defaultPrice: defaultPrice,
+      purchasePrice: purchasePrice,
       stock: stock,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
     );
   }
 }

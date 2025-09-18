@@ -52,14 +52,13 @@ final class _Screen extends StatelessWidget {
 final class _AppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final localizations = AppLocalizations.of(context)!;
     final state = ref.watch(selectedCustomerProvider);
 
     return switch (state) {
       None() => throw AssertionError(),
       Selected() => SliverAppBar.medium(
         title: Text(
-          state.customer.name,
+          state.dto.customer.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -86,29 +85,28 @@ final class _CustomerDetails extends ConsumerWidget {
               CustomTextField(
                 isRequired: true,
                 readOnly: true,
-                value: state.customer.name,
+                value: state.dto.customer.name,
                 label: localizations.name,
               ),
               CustomTextField(
                 isRequired: true,
                 readOnly: true,
-                value:
-                    "${state.customer.city.name}, ${state.customer.city.department}",
+                value: "${state.dto.city.name}, ${state.dto.city.department}",
                 label: localizations.city,
               ),
               CustomTextField(
                 readOnly: true,
-                value: state.customer.businessName,
+                value: state.dto.customer.businessName,
                 label: localizations.business_name,
               ),
               CustomTextField(
                 readOnly: true,
-                value: state.customer.address,
+                value: state.dto.customer.address,
                 label: localizations.address,
               ),
               CustomTextField(
                 readOnly: true,
-                value: state.customer.phoneNumber,
+                value: state.dto.customer.phoneNumber,
                 label: localizations.phone_number,
               ),
             ],

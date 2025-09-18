@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/entity/invoice.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_list_provider.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
@@ -53,7 +53,7 @@ final class _Body extends ConsumerWidget {
 }
 
 final class _List extends ConsumerWidget {
-  final List<Invoice> items;
+  final List<InvoiceWithCustomerDto> items;
 
   const _List(this.items);
 
@@ -93,12 +93,12 @@ final class _List extends ConsumerWidget {
 }
 
 final class _Tile extends StatelessWidget {
-  final Invoice invoice;
+  final InvoiceWithCustomerDto dto;
 
-  const _Tile(this.invoice);
+  const _Tile(this.dto);
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text("test: ${invoice.number}"));
+    return ListTile(title: Text("test: ${dto.invoice.number}"));
   }
 }

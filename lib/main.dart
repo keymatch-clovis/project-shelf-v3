@@ -4,6 +4,7 @@ import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.d
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
+import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart';
@@ -33,6 +34,7 @@ import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.da
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart';
+import 'package:project_shelf_v3/framework/drift/dao/invoice_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/framework/flutter/root_bundle_wrapper.dart';
@@ -63,6 +65,7 @@ void main() async {
   getIt.registerSingleton<CityRepository>(CityDao());
   getIt.registerSingleton<ProductRepository>(ProductDao());
   getIt.registerSingleton<CustomerRepository>(CustomerDao());
+  getIt.registerSingleton<InvoiceRepository>(InvoiceDao());
 
   /// Services related
   getIt.registerSingleton<AssetService>(AssetServiceImpl());

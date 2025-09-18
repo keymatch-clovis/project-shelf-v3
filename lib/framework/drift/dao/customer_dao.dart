@@ -25,7 +25,7 @@ class CustomerDao implements CustomerRepository {
           CustomerTableCompanion.insert(
             name: args.name,
             businessName: Value.absentIfNull(args.businessName),
-            city: args.city.id,
+            city: args.cityId,
             address: Value.absentIfNull(args.address),
             phoneNumber: Value.absentIfNull(args.phoneNumber),
             createdAt: dateTime,
@@ -160,7 +160,7 @@ class CustomerDao implements CustomerRepository {
     await statement.write(
       CustomerTableCompanion(
         name: Value(args.name),
-        city: Value(args.city.id),
+        city: Value(args.cityId),
         address: Value.absentIfNull(args.address),
         phoneNumber: Value.absentIfNull(args.phoneNumber),
         updatedAt: Value(DateTime.now()),

@@ -6,7 +6,8 @@ import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/object_input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/object_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
-import 'package:project_shelf_v3/app/entity/city.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
+import 'package:project_shelf_v3/app/dto/create_customer_request.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
 import 'package:project_shelf_v3/common/string_extensions.dart';
 import 'package:project_shelf_v3/main.dart';
@@ -22,7 +23,7 @@ abstract class CreateCustomerState with _$CreateCustomerState {
     @Default(CreateCustomerStatus.INITIAL) CreateCustomerStatus status,
     required Input nameInput,
     required Input businessNameInput,
-    required ObjectInput<City> cityInput,
+    required ObjectInput<CityDto> cityInput,
     required Input addressInput,
     required Input phoneNumberInput,
   }) = _CreateCustomerState;
@@ -49,7 +50,7 @@ class CreateCustomerNotifier extends Notifier<CreateCustomerState> {
     return CreateCustomerState(
       nameInput: Input(StringValidator(isRequired: true)),
       businessNameInput: Input(StringValidator()),
-      cityInput: ObjectInput<City>(ObjectValidator(isRequired: true)),
+      cityInput: ObjectInput<CityDto>(ObjectValidator(isRequired: true)),
       addressInput: Input(StringValidator()),
       phoneNumberInput: Input(StringValidator()),
     );
@@ -65,7 +66,7 @@ class CreateCustomerNotifier extends Notifier<CreateCustomerState> {
     );
   }
 
-  void updateCityInput(City? value) {
+  void updateCityInput(CityDto? value) {
     state = state.copyWith(cityInput: state.cityInput.copyWith(value: value));
   }
 
@@ -87,9 +88,9 @@ class CreateCustomerNotifier extends Notifier<CreateCustomerState> {
     state = state.copyWith(status: CreateCustomerStatus.LOADING);
 
     await _createCustomerUseCase.exec(
-      Args(
+      CreateCustomerRequest(
         name: state.nameInput.value,
-        city: state.cityInput.value!,
+        cityId: state.cityInput.value!.id,
         address: state.addressInput.value.nullIfEmpty,
         phoneNumber: state.phoneNumberInput.value.nullIfEmpty,
       ),

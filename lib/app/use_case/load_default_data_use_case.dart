@@ -30,15 +30,11 @@ class LoadDefaultDataUseCase {
   Future<void> _loadDefaultCities() async {
     _logger.d("Loading default cities");
 
-    final citiesData = await _assetService.getCities();
+    final cities = await _assetService.getCities();
 
     // Delete the previous data, as we want to have a clean state.
     await _cityService.deleteAll();
 
-    await _cityService.createMany(
-      citiesData.map(
-        (it) => CreateArgs(name: it.name, department: it.department),
-      ),
-    );
+    await _cityService.createMany(cities);
   }
 }

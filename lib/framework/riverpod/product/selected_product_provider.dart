@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
 import 'package:project_shelf_v3/main.dart';
 
@@ -16,11 +16,11 @@ sealed class SelectedProductState {
 final class None extends SelectedProductState {}
 
 final class Selected extends SelectedProductState {
-  final Product product;
+  final ProductDto product;
 
   Selected({required this.product, super.status});
 
-  Selected copyWith({Product? product, SelectedProductStatus? status}) {
+  Selected copyWith({ProductDto? product, SelectedProductStatus? status}) {
     return Selected(
       product: product ?? this.product,
       status: status ?? this.status,
@@ -37,7 +37,7 @@ final class SelectedProductNotifier extends Notifier<SelectedProductState> {
     return None();
   }
 
-  void select(Product product) {
+  void select(ProductDto product) {
     state = Selected(product: product);
   }
 

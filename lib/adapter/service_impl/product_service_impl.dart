@@ -1,51 +1,52 @@
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/repository/product_repository.dart'
-    as repository;
-import 'package:project_shelf_v3/app/entity/product.dart';
+import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
-import 'package:project_shelf_v3/app/service/product_service.dart' as service;
+import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/main.dart';
 
-class ProductServiceImpl implements service.ProductService {
+class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
 
-  final _repository = getIt.get<repository.ProductRepository>();
+  final _repository = getIt.get<ProductRepository>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   /// CREATE related
   @override
-  Future<Id> create(service.CreateArgs args) async {
+  Future<Id> create(Product product) async {
     _logger.d('Creating product');
     return await _repository.create(
-      repository.CreateArgs(
-        name: args.name,
-        defaultPrice: args.defaultPrice.minorUnits.toInt(),
-        purchasePrice: args.purchasePrice.minorUnits.toInt(),
-        stock: args.stock,
+      CreateArgs(
+        name: product.name,
+        defaultPrice: product.defaultPrice.minorUnits.toInt(),
+        purchasePrice: product.purchasePrice.minorUnits.toInt(),
+        stock: product.stock,
       ),
     );
   }
 
   /// UPDATE related
   @override
-  Future<Product> update(service.UpdateArgs args) async {
+  Future<Product> update(Product product) async {
     _logger.d('Updating product');
 
-    final appPreferences = await _appPreferencesService.getAppPreferences();
+    final defaultCurrency = await _appPreferencesService
+        .getAppPreferences()
+        .then((it) => it.defaultCurrency);
 
     return await _repository
         .update(
-          repository.UpdateArgs(
-            id: args.id,
-            name: args.name,
-            defaultPrice: args.defaultPrice.amount.minorUnits.toInt(),
-            purchasePrice: args.purchasePrice.amount.minorUnits.toInt(),
-            stock: args.stock,
+          UpdateArgs(
+            id: product.id!,
+            name: product.name,
+            defaultPrice: product.defaultPrice.amount.minorUnits.toInt(),
+            purchasePrice: product.purchasePrice.amount.minorUnits.toInt(),
+            stock: product.stock,
           ),
         )
-        .then((dto) => dto.toEntity(appPreferences.defaultCurrency));
+        .then((dto) => dto.toEntity(defaultCurrency));
   }
 
   /// READ related

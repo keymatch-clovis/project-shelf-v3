@@ -1,5 +1,5 @@
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/entity/customer.dart';
+import 'package:project_shelf_v3/app/dto/customer_with_city_response.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/main.dart';
@@ -9,9 +9,7 @@ class WatchCustomersUseCase {
 
   final _service = getIt.get<CustomerService>();
 
-  WatchCustomersUseCase();
-
-  Stream<List<Customer>> exec() {
+  Stream<List<CustomerWithCityResponse>> exec() {
     _logger.d("Watching customers");
     return _service.watch();
   }

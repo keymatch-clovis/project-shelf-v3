@@ -5,6 +5,7 @@ import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/entity/city.dart';
 import 'package:project_shelf_v3/main.dart';
 
 final class AssetServiceImpl implements AssetService {
@@ -13,12 +14,12 @@ final class AssetServiceImpl implements AssetService {
   final _repository = getIt.get<AssetRepository>();
 
   @override
-  Future<List<CityData>> getCities() {
+  Future<List<City>> getCities() {
     _logger.d("Getting cities");
 
     return _repository.getCities().then((it) {
       return const CsvToListConverter().convert(it).map((it) {
-        return CityData(name: it[1], department: it[0]);
+        return City(name: it[1], department: it[0]);
       }).toList();
     });
   }
