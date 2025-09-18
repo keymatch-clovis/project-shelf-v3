@@ -73,57 +73,124 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     _controller.text = widget.textValue ?? "";
 
-    return Column(
-      children: [
-        TextFormField(
-          controller: _controller,
-          readOnly: true,
-          enableInteractiveSelection: true,
-          showCursor: true,
-          textCapitalization: TextCapitalization.characters,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            label: _renderLabel(widget.label, isRequired: widget.isRequired),
-            suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
-                ? Focus(
-                    // We need to set a focus for this button, so it does
-                    // not tamper with the form traversal.
-                    descendantsAreFocusable: false,
-                    canRequestFocus: false,
-                    child: IconButton(
-                      onPressed: () {
-                        if (!_isDirty) {
-                          setState(() {
-                            _isDirty = true;
-                          });
-                        }
-
-                        _controller.clear();
-                        widget.onClear?.call();
-                      },
-                      icon: const Icon(Icons.clear_rounded),
+    return Focus(
+      focusNode: _focusNode,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Material(
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: theme.colorScheme.outline),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          _focusNode.requestFocus();
+                          // widget.onTap?.call();
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 11,
+                            vertical: 18,
+                          ),
+                          child: Text("test"),
+                        ),
+                      ),
                     ),
-                  )
-                : null,
+                  ),
+                ],
+              ),
+              Positioned(
+                left: 6,
+                top: -10,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  child: Text(
+                    "tester",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          onTap: () {
-            widget.onTap?.call();
-
-            if (!_isDirty) {
-              setState(() {
-                _isDirty = true;
-              });
-            }
-          },
-          forceErrorText: _isDirty ? widget.errors.firstOrNull : null,
-        ),
-        // When the errors are showing, try to preserve the padding.
-        if (widget.errors.isEmpty || !_isDirty) SizedBox(height: 22),
-      ],
+          Padding(
+            padding: EdgeInsets.only(left: 11, top: 3, right: 11),
+            child: Text("The value can't", style: TextStyle(fontSize: 12)),
+          ),
+          // When the errors are showing, try to preserve the padding.
+          // if (widget.errors.isEmpty || !_isDirty) SizedBox(height: 22),
+        ],
+      ),
     );
+
+    // return Column(
+    //   children: [
+    //
+    //     TextFormField(
+    //       controller: _controller,
+    //       readOnly: true,
+    //       enableInteractiveSelection: true,
+    //       showCursor: true,
+    //       textCapitalization: TextCapitalization.characters,
+    //       keyboardType: TextInputType.text,
+    //       decoration: InputDecoration(
+    //         border: OutlineInputBorder(),
+    //         label: _renderLabel(widget.label, isRequired: widget.isRequired),
+    //         suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
+    //             ? Focus(
+    //                 // We need to set a focus for this button, so it does
+    //                 // not tamper with the form traversal.
+    //                 descendantsAreFocusable: false,
+    //                 canRequestFocus: false,
+    //                 child: IconButton(
+    //                   onPressed: () {
+    //                     if (!_isDirty) {
+    //                       setState(() {
+    //                         _isDirty = true;
+    //                       });
+    //                     }
+    //
+    //                     _controller.clear();
+    //                     widget.onClear?.call();
+    //                   },
+    //                   icon: const Icon(Icons.clear_rounded),
+    //                 ),
+    //               )
+    //             : null,
+    //       ),
+    //       onTap: () {
+    //         widget.onTap?.call();
+    //
+    //         if (!_isDirty) {
+    //           setState(() {
+    //             _isDirty = true;
+    //           });
+    //         }
+    //       },
+    //       forceErrorText: _isDirty ? widget.errors.firstOrNull : null,
+    //     ),
+    //     // When the errors are showing, try to preserve the padding.
+    //     if (widget.errors.isEmpty || !_isDirty) SizedBox(height: 22),
+    //   ],
+    // );
   }
 }
 

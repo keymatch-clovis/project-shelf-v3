@@ -36,6 +36,8 @@ final class _CreateCustomerDetailsFormState
     _businessNameFieldFocus.dispose();
     _addressFieldFocus.dispose();
     _phoneNumberInput.dispose();
+
+    _citySearchController.dispose();
   }
 
   @override

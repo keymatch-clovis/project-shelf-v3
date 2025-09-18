@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/ui/screen/customer/create_customer_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/customer/customer_details_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/customer/customer_list_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/invoice/create_invoice_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/invoice/invoice_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
@@ -134,7 +135,12 @@ final goRouter = GoRouter(
               pageBuilder: (context, state) {
                 return const NoTransitionPage(child: InvoiceListScreen());
               },
-              routes: [],
+              routes: [
+                GoRoute(
+                  path: CustomRoute.INVOICE_CREATE.part,
+                  builder: (_, _) => const CreateInvoiceScreen(),
+                ),
+              ],
             ),
           ],
         ),

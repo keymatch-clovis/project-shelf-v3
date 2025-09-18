@@ -15,6 +15,6 @@ class CityDto {
       _$CityDtoFromJson(json);
 
   City toEntity() {
-    return City(name: name, department: department);
+    return City(id: id, name: name, department: department);
   }
 }

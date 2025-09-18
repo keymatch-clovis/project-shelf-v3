@@ -73,7 +73,7 @@ final class _List extends ConsumerWidget {
               color: theme.colorScheme.outlineVariant,
             ),
             Text(
-              localizations.no_cities_found,
+              localizations.no_invoices_found,
               style: TextStyle(color: theme.colorScheme.outline),
             ),
           ],

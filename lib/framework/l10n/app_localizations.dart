@@ -116,6 +116,12 @@ abstract class AppLocalizations {
   /// **'Create customer'**
   String get create_customer;
 
+  /// No description provided for @create_invoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Create invoice'**
+  String get create_invoice;
+
   /// No description provided for @photos.
   ///
   /// In en, this message translates to:
@@ -175,6 +181,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No cities found'**
   String get no_cities_found;
+
+  /// No description provided for @no_invoices_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoices found'**
+  String get no_invoices_found;
 
   /// No description provided for @close.
   ///
@@ -265,6 +277,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invoices'**
   String get invoices;
+
+  /// No description provided for @customer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get customer;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @no_customers_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers found'**
+  String get no_customers_found;
 
   /// No description provided for @edit_product.
   ///

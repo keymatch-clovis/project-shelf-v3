@@ -35,7 +35,7 @@ class CustomerDto {
       _$CustomerDtoFromJson(json);
 
   Customer toEntity() {
-    return Customer(name: name, cityId: city);
+    return Customer(name: name, cityId: city, id: id);
   }
 }
 

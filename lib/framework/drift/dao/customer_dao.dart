@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
+import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
@@ -92,13 +93,35 @@ class CustomerDao implements CustomerRepository {
 
   @override
   Stream<List<CustomerWithCityDto>> searchPopulated(String value) {
+    // NOTE: Here we have a problem. As Drift does not allow the creation of
+    // fts5 tables, we have to make a custom select here. As the city and
+    // customer tables have some columns that have the same name, we need to
+    // handle that clash. We could do two approaches, that I've thought about:
+    //
+    //  - 1. Make a select just for the customer ID, and then another select
+    //       using the Drift API. This has the advantage that if the fields
+    //       change, everything should update just fine. And we shouldn't need
+    //       to change this method. But we are making two selects, making the
+    //       queries much slower.
+    //
+    //  - 2. Make a select and manually pass the names for the query and the
+    //       DTO creation. This has the advantage that we are doing only one
+    //       request. But it is brittle, and we have to change this query if
+    //       the customer or city entity change.
+    //
+    // I think the best approach is 1. As the speed should'nt be a problem for
+    // this kind of application. We'll have to see how it behaves in time.
+    //
+    // See more: https://drift.simonbinder.eu/sql_api/extensions/?h=fts#json1
     _logger.d("Searching customers with: $value");
+
     return _database
         .customSelect(
           '''
-            SELECT *, rank FROM customer_fts fts
+            SELECT 
+              customer.id, rank
+            FROM customer_fts fts
               JOIN customer ON customer.id = fts.customer_id
-              JOIN city ON customer.city = city.id
             WHERE
               customer.pending_delete_until IS NULL
               AND customer_fts MATCH ?
@@ -110,13 +133,23 @@ class CustomerDao implements CustomerRepository {
           readsFrom: {_database.customerTable, _database.cityTable},
         )
         .watch()
-        .map((rows) {
-          return rows.map((row) {
-            return CustomerWithCityDto(
-              customer: CustomerDto.fromJson(row.data),
-              city: CityDto.fromJson(row.data),
-            );
-          }).toList();
+        .asyncMap((rows) {
+          final ids = rows.map((row) => (row.data["id"] as num).toInt());
+          final query = _database.select(_database.customerTable).join([
+            leftOuterJoin(
+              _database.cityTable,
+              _database.cityTable.id.equalsExp(_database.customerTable.city),
+            ),
+          ])..where(_database.customerTable.id.isIn(ids));
+
+          return query.get().then((rows) {
+            return rows.map((row) {
+              return CustomerWithCityDto(
+                customer: row.readTable(_database.customerTable),
+                city: row.readTable(_database.cityTable),
+              );
+            }).toList();
+          });
         });
   }
 
