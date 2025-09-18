@@ -308,6 +308,12 @@ abstract class AppLocalizations {
   /// **'Product deleted'**
   String get product_deleted;
 
+  /// No description provided for @customer_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer deleted'**
+  String get customer_deleted;
+
   /// No description provided for @products.
   ///
   /// In en, this message translates to:

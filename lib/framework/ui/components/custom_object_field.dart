@@ -11,7 +11,6 @@ final class CustomObjectField<T> extends StatefulWidget {
   final bool isRequired;
   final void Function()? onClear;
   final List<String> errors;
-  final void Function()? onSubmitted;
 
   const CustomObjectField({
     super.key,
@@ -24,7 +23,6 @@ final class CustomObjectField<T> extends StatefulWidget {
     this.isRequired = false,
     this.onClear,
     this.errors = const [],
-    this.onSubmitted,
   });
 
   @override

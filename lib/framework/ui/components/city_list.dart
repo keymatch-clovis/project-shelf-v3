@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:project_shelf_v3/app/entity/city.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 
 final class CityList extends StatelessWidget {
-  final List<City> items;
-  final void Function(City)? onTap;
+  final List<CityDto> items;
+  final void Function(CityDto)? onTap;
 
   const CityList({super.key, required this.items, this.onTap});
 
@@ -44,8 +44,8 @@ final class CityList extends StatelessWidget {
 }
 
 final class _ListTile extends StatelessWidget {
-  final City city;
-  final void Function(City)? onTap;
+  final CityDto city;
+  final void Function(CityDto)? onTap;
 
   const _ListTile(this.city, {this.onTap});
 

@@ -9,6 +9,9 @@ class CustomerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text(customer.name));
+    return ListTile(
+      onTap: onTap != null ? () => onTap!(customer) : null,
+      title: Text(customer.name),
+    );
   }
 }

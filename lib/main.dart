@@ -9,17 +9,21 @@ import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_im
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/city_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/customer_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/invoice_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
+import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/watch_invoices_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
@@ -66,6 +70,7 @@ void main() async {
   getIt.registerSingleton<CityService>(CityServiceImpl());
   getIt.registerSingleton<ProductService>(ProductServiceImpl());
   getIt.registerSingleton<CustomerService>(CustomerServiceImpl());
+  getIt.registerSingleton<InvoiceService>(InvoiceServiceImpl());
 
   /// Use case related.
   getIt.registerLazySingleton<GetAppPreferencesUseCase>(
@@ -115,6 +120,15 @@ void main() async {
 
   getIt.registerLazySingleton<CreateCustomerUseCase>(
     () => CreateCustomerUseCase(),
+  );
+
+  getIt.registerLazySingleton<DeleteCustomerUseCase>(
+    () => DeleteCustomerUseCase(),
+  );
+
+  // Invoice related.
+  getIt.registerLazySingleton<WatchInvoicesUseCase>(
+    () => WatchInvoicesUseCase(),
   );
 
   runApp(

@@ -83,6 +83,13 @@ final class _CreateCustomerDetailsFormState
             keyboardType: TextInputType.text,
             searchController: _citySearchController,
             textInputAction: TextInputAction.next,
+            viewOnSubmitted: (_) {
+              ref
+                  .read(createCustomerProvider.notifier)
+                  .updateCityInput(ref.read(citySearchProvider).value!.first);
+
+              _citySearchController.closeView(null);
+            },
             builder: (_, _) {
               return CustomObjectField<City>(
                 label: localizations.city,

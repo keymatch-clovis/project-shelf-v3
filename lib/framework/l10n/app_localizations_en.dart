@@ -114,6 +114,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get product_deleted => 'Product deleted';
 
   @override
+  String get customer_deleted => 'Customer deleted';
+
+  @override
   String get products => 'Products';
 
   @override

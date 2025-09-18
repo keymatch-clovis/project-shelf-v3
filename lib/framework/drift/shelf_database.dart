@@ -5,16 +5,28 @@ import 'package:path_provider/path_provider.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/table/city_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/customer_table.dart';
+import 'package:project_shelf_v3/framework/drift/table/invoice_product_table.dart';
+import 'package:project_shelf_v3/framework/drift/table/invoice_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/product_table.dart';
 
 part 'shelf_database.g.dart';
 
 const DATABASE_NAME = 'shelf';
 
-@DriftDatabase(tables: [ProductTable, CityTable, CustomerTable])
+@DriftDatabase(
+  tables: [
+    ProductTable,
+    CityTable,
+    CustomerTable,
+    InvoiceTable,
+    InvoiceProductTable,
+  ],
+)
 class ShelfDatabase extends _$ShelfDatabase {
   final Logger _logger = Logger(printer: FrameworkPrinter());
 
@@ -123,6 +135,18 @@ class ShelfDatabase extends _$ShelfDatabase {
             business_name = new.business_name
           WHERE customer_id = old.id;
         END;
+      """);
+
+      // Invoice related
+
+      // NOTE: As the invoices are a bit more complicated than the other tables,
+      // we will make the triggers as app logic, and not database logic. This
+      // means the other tables might also be migrated to app logic. For now
+      // this is fine.
+      _logger.d("Creating invoice FTS virtual table");
+      await customStatement("""
+        CREATE VIRTUAL TABLE invoice_fts
+        USING fts5(invoice_id, number, customer_name, customer_business_name);
       """);
     },
   );

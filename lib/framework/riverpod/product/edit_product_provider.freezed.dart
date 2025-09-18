@@ -25,12 +25,12 @@ $EditProductStateCopyWith<EditProductState> get copyWith => _$EditProductStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProductState&&(identical(other.status, status) || other.status == status)&&(identical(other.product, product) || other.product == product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other.photoFiles, photoFiles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProductState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.product, product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other.photoFiles, photoFiles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,product,nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(photoFiles));
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(product),nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(photoFiles));
 
 @override
 String toString() {
@@ -62,10 +62,10 @@ class _$EditProductStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? product = null,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? product = freezed,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as EditProductStatus,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as EditProductStatus,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as Product,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
 as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
@@ -239,12 +239,12 @@ _$EditProductStateCopyWith<_EditProductState> get copyWith => __$EditProductStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditProductState&&(identical(other.status, status) || other.status == status)&&(identical(other.product, product) || other.product == product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other._photoFiles, _photoFiles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditProductState&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.product, product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other._photoFiles, _photoFiles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,product,nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(_photoFiles));
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(product),nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(_photoFiles));
 
 @override
 String toString() {
@@ -276,10 +276,10 @@ class __$EditProductStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProductState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? product = null,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? product = freezed,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
   return _then(_EditProductState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as EditProductStatus,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as EditProductStatus,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as Product,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
 as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable

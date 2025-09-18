@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/ui/screen/customer/create_customer_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/customer/customer_details_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/customer/customer_list_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/invoice/invoice_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/edit_product_screen.dart';
@@ -18,7 +20,14 @@ enum CustomRoute {
   PRODUCT_CREATE(route: "/product/create", part: "create"),
 
   CUSTOMER(route: "/customer", part: "customer"),
-  CUSTOMER_CREATE(route: "/customer/create", part: "create");
+  CUSTOMER_DETAILS(route: "/customer/details", part: "details"),
+  CUSTOMER_EDIT(route: "/customer/details/edit", part: "edit"),
+  CUSTOMER_CREATE(route: "/customer/create", part: "create"),
+
+  INVOICE(route: "/invoice", part: "invoice"),
+  INVOICE_DETAILS(route: "/invoice/details", part: "details"),
+  INVOICE_EDIT(route: "/invoice/details/edit", part: "edit"),
+  INVOICE_CREATE(route: "/invoice/create", part: "create");
 
   final String route;
   final String part;
@@ -91,7 +100,6 @@ final goRouter = GoRouter(
         StatefulShellBranch(
           navigatorKey: _shellNavigatorCustomerKey,
           routes: [
-            // TODO: Change these magic strings
             GoRoute(
               path: CustomRoute.CUSTOMER.route,
               pageBuilder: (context, state) {
@@ -102,6 +110,18 @@ final goRouter = GoRouter(
                   path: CustomRoute.CUSTOMER_CREATE.part,
                   builder: (_, _) => const CreateCustomerScreen(),
                 ),
+                GoRoute(
+                  path: CustomRoute.CUSTOMER_DETAILS.part,
+                  builder: (_, _) => const CustomerDetailsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: CustomRoute.CUSTOMER_EDIT.part,
+                      builder: (_, _) {
+                        throw UnimplementedError();
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -109,11 +129,10 @@ final goRouter = GoRouter(
         StatefulShellBranch(
           navigatorKey: _shellNavigatorInvoiceKey,
           routes: [
-            // TODO: Change these magic strings
             GoRoute(
-              path: '/invoice',
+              path: CustomRoute.INVOICE.route,
               pageBuilder: (context, state) {
-                return const NoTransitionPage(child: ProductListScreen());
+                return const NoTransitionPage(child: InvoiceListScreen());
               },
               routes: [],
             ),

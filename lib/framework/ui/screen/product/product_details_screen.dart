@@ -89,7 +89,7 @@ class _SliverAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
-    final state = ref.read(selectedProductProvider);
+    final state = ref.watch(selectedProductProvider);
 
     return switch (state) {
       None() => throw AssertionError(),

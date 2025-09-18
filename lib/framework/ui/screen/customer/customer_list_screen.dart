@@ -5,6 +5,7 @@ import 'package:logger/web.dart';
 import 'package:project_shelf_v3/app/entity/customer.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_list_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/customer/selected_customer_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/customer_list_tile.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
@@ -78,7 +79,13 @@ class _CustomerList extends ConsumerWidget {
         return const Divider(height: 1);
       },
       itemBuilder: (context, index) {
-        return CustomerListTile(customer: items[index]);
+        return CustomerListTile(
+          customer: items[index],
+          onTap: (customer) {
+            ref.read(selectedCustomerProvider.notifier).select(customer);
+            context.go(CustomRoute.CUSTOMER_DETAILS.route);
+          },
+        );
       },
     );
   }

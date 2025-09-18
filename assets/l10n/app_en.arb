@@ -35,6 +35,7 @@
     "customer_created": "Customer created",
     "product_edited": "Product edited",
     "product_deleted": "Product deleted",
+    "customer_deleted": "Customer deleted",
     "products": "Products",
     "save": "Save",
     "settings": "Settings",
