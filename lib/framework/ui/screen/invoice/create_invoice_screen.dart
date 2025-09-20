@@ -20,7 +20,44 @@ final class CreateInvoiceScreen extends ConsumerWidget {
     // NOTE: I don't know another way of doing this.
     ref.listen(customerSearchProvider, (_, _) {});
 
-    return const _Screen();
+    return ref
+        .watch(createInvoiceProvider)
+        .when(
+          data: (_) => _Screen(),
+          loading: () => _LoadingScreen(),
+          error: (err, _) {
+            Logger().f(err);
+            throw AssertionError(err);
+          },
+        );
+  }
+}
+
+final class _LoadingScreen extends StatelessWidget {
+  const _LoadingScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceDim,
+      body: Dialog(
+        shadowColor: theme.colorScheme.shadow,
+        child: Container(
+          // https://m3.material.io/components/dialogs/specs#9a8c226b-19fa-4d6b-894e-e7d5ca9203e8
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Setting up", style: theme.textTheme.titleMedium),
+              const SizedBox(height: 16),
+              const CircularProgressIndicator(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -123,7 +160,7 @@ final class _DetailsState extends ConsumerState<_Details> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-    final state = ref.watch(createInvoiceProvider);
+    final state = ref.watch(createInvoiceProvider).value!;
 
     return Padding(
       // https://m3.material.io/components/dialogs/specs#2b93ced7-9b0d-4a59-9bc4-8ff59dcd24c1
@@ -132,7 +169,7 @@ final class _DetailsState extends ConsumerState<_Details> {
         spacing: 12,
         children: [
           CustomObjectField(
-          isRequired: true,
+            isRequired: true,
             label: localizations.date,
             onTap: () {
               showDatePicker(

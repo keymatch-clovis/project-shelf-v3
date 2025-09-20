@@ -1,9 +1,10 @@
+import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 
 abstract interface class InvoiceDraftService {
-  /// CREATE related
-  InvoiceDraft create();
+  Id save(InvoiceDraft date);
 
-  /// READ related
-  List<InvoiceDraft> find();
+  Future<List<InvoiceDraft>> get();
+
+  Future<void> delete(Id id);
 }

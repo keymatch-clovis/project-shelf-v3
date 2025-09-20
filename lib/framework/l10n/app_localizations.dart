@@ -140,6 +140,18 @@ abstract class AppLocalizations {
   /// **'City'**
   String get city;
 
+  /// No description provided for @invoice_drafts.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice drafts'**
+  String get invoice_drafts;
+
+  /// No description provided for @no_invoice_drafts_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoice drafts found'**
+  String get no_invoice_drafts_found;
+
   /// No description provided for @address.
   ///
   /// In en, this message translates to:

@@ -30,6 +30,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get city => 'City';
 
   @override
+  String get invoice_drafts => 'Invoice drafts';
+
+  @override
+  String get no_invoice_drafts_found => 'No invoice drafts found';
+
+  @override
   String get address => 'Address';
 
   @override

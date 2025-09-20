@@ -7,6 +7,8 @@
     "photos": "Photos",
     "business_name": "Business name",
     "city": "City",
+    "invoice_drafts": "Invoice drafts",
+    "no_invoice_drafts_found": "No invoice drafts found",
     "address": "Address",
     "phone_number": "Phone number",
     "add_customer": "Add customer",

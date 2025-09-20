@@ -5,5 +5,4 @@ class ViewModelPrinter extends LogPrinter{
   List<String> log(LogEvent event) {
     return ['[🥑 VIEW-MODEL] ${event.message}'];
   }
-
 }

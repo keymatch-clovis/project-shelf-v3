@@ -4,18 +4,21 @@ import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.d
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
+import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/city_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/customer_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/invoice_draft_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/invoice_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
+import 'package:project_shelf_v3/app/service/invoice_draft_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart';
@@ -24,6 +27,8 @@ import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.
 import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/get_invoice_drafts_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/watch_invoices_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
@@ -39,6 +44,7 @@ import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/framework/flutter/root_bundle_wrapper.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/object_box/invoice_draft_box.dart';
 import 'package:project_shelf_v3/framework/object_box/object_box.dart';
 import 'package:project_shelf_v3/framework/shared_preferences/shared_preferences_wrapper.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
@@ -69,6 +75,7 @@ void main() async {
   getIt.registerSingleton<ProductRepository>(ProductDao());
   getIt.registerSingleton<CustomerRepository>(CustomerDao());
   getIt.registerSingleton<InvoiceRepository>(InvoiceDao());
+  getIt.registerSingleton<InvoiceDraftRepository>(InvoiceDraftBox());
 
   /// Services related
   getIt.registerSingleton<AssetService>(AssetServiceImpl());
@@ -77,6 +84,7 @@ void main() async {
   getIt.registerSingleton<ProductService>(ProductServiceImpl());
   getIt.registerSingleton<CustomerService>(CustomerServiceImpl());
   getIt.registerSingleton<InvoiceService>(InvoiceServiceImpl());
+  getIt.registerSingleton<InvoiceDraftService>(InvoiceDraftServiceImpl());
 
   /// Use case related.
   getIt.registerLazySingleton<GetAppPreferencesUseCase>(
@@ -135,6 +143,14 @@ void main() async {
   // Invoice related.
   getIt.registerLazySingleton<WatchInvoicesUseCase>(
     () => WatchInvoicesUseCase(),
+  );
+
+  getIt.registerLazySingleton<GetInvoiceDraftsUseCase>(
+    () => GetInvoiceDraftsUseCase(),
+  );
+
+  getIt.registerLazySingleton<CreateInvoiceDraftUseCase>(
+    () => CreateInvoiceDraftUseCase(),
   );
 
   runApp(

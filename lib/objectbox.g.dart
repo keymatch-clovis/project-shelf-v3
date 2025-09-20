@@ -230,7 +230,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       objectToFB: (InvoiceDraftDto object, fb.Builder fbb) {
         fbb.startTable(5);
         fbb.addInt64(0, object.id);
-        fbb.addInt64(1, object.date?.millisecondsSinceEpoch);
+        fbb.addInt64(1, object.date.millisecondsSinceEpoch);
         fbb.addInt64(2, object.remainingUnpaidBalance);
         fbb.addInt64(3, object.customerId);
         fbb.finish(fbb.endTable());
@@ -239,14 +239,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
       objectFromFB: (obx.Store store, ByteData fbData) {
         final buffer = fb.BufferContext(fbData);
         final rootOffset = buffer.derefObject(0);
-        final dateValue = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          6,
+        final dateParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
         );
-        final dateParam = dateValue == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(dateValue);
         final remainingUnpaidBalanceParam = const fb.Int64Reader()
             .vTableGetNullable(buffer, rootOffset, 8);
         final customerIdParam = const fb.Int64Reader().vTableGetNullable(

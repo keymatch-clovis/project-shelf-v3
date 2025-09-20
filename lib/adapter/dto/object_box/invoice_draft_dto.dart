@@ -7,12 +7,16 @@ class InvoiceDraftDto {
   int id = 0;
 
   @Property(type: PropertyType.date)
-  DateTime? date;
+  DateTime date;
 
   int? remainingUnpaidBalance;
   int? customerId;
 
   final products = ToMany<InvoiceDraftProductDto>();
 
-  InvoiceDraftDto({this.date, this.remainingUnpaidBalance, this.customerId});
+  InvoiceDraftDto({
+    required this.date,
+    this.remainingUnpaidBalance,
+    this.customerId,
+  });
 }

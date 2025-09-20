@@ -1,0 +1,60 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_dto.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_draft_items_provider.dart';
+
+part "invoice_draft_list_provider.freezed.dart";
+
+enum InvoiceDraftListMode { LIST, SELECT }
+
+@freezed
+abstract class InvoiceDraftListState with _$InvoiceDraftListState {
+  factory InvoiceDraftListState({
+    @Default(InvoiceDraftListMode.LIST) InvoiceDraftListMode mode,
+    @Default(<InvoiceDraftDto>{}) Set<InvoiceDraftDto> selected,
+    required AsyncValue<List<InvoiceDraftDto>> items,
+  }) = _InvoiceDraftListState;
+}
+
+final class InvoiceDraftListNotifier extends Notifier<InvoiceDraftListState> {
+  @override
+  InvoiceDraftListState build() {
+    return InvoiceDraftListState(items: ref.watch(invoiceDraftItemsProvider));
+  }
+
+  void setMode(InvoiceDraftListMode mode) {
+    if (mode == InvoiceDraftListMode.LIST) {
+      state = state.copyWith(selected: {});
+    }
+    state = state.copyWith(mode: mode);
+  }
+
+  void selectAll() {
+    state = state.copyWith(
+      selected: {...state.items.value!},
+      mode: InvoiceDraftListMode.SELECT,
+    );
+  }
+
+  void select(InvoiceDraftDto dto) {
+    state = state.copyWith(
+      selected: {...state.selected, dto},
+      mode: InvoiceDraftListMode.SELECT,
+    );
+  }
+
+  void deselect(InvoiceDraftDto dto) {
+    state = state.copyWith(selected: {...state.selected}..remove(dto));
+  }
+
+  void deselectAll() {
+    state = state.copyWith(selected: {});
+  }
+
+  Future<void> deleteSelected() async {
+  }
+}
+
+final invoiceDraftListProvider = NotifierProvider.autoDispose(
+  InvoiceDraftListNotifier.new,
+);

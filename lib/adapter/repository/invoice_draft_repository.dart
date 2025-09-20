@@ -13,23 +13,26 @@ final class CreateProductDto {
 }
 
 final class CreateArgs {
-  final DateTime? date;
+  final DateTime date;
   final int? remainingUnpaidBalance;
   final int? customerId;
   final List<CreateProductDto> products;
 
   const CreateArgs({
-    this.date,
+    required this.date,
+
     this.remainingUnpaidBalance,
     this.customerId,
-    required this.products,
+    this.products = const [],
   });
 }
 
 abstract interface class InvoiceDraftRepository {
   /// CREATE related
-  int createInvoiceDraft(CreateArgs args);
+  int create(CreateArgs args);
 
   /// READ related
-  List<InvoiceDraftDto> getInvoiceDrafts();
+  Future<List<InvoiceDraftDto>> get();
+
+  Future<void> delete(int id);
 }

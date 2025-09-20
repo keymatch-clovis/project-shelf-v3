@@ -26,7 +26,15 @@ final class _Screen extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(localizations.invoices)),
+      appBar: AppBar(
+        title: Text(localizations.invoices),
+        actions: [
+          IconButton(
+            onPressed: () => context.go(CustomRoute.INVOICE_DRAFTS.route),
+            icon: const Icon(Icons.history_outlined),
+          ),
+        ],
+      ),
       body: _Body(),
       floatingActionButton: FloatingActionButton.large(
         onPressed: () => context.go(CustomRoute.INVOICE_CREATE.route),

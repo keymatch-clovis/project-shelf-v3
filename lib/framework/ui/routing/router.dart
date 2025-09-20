@@ -4,6 +4,7 @@ import 'package:project_shelf_v3/framework/ui/screen/customer/create_customer_sc
 import 'package:project_shelf_v3/framework/ui/screen/customer/customer_details_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/customer/customer_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/invoice/create_invoice_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/invoice/invoice_draft_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/invoice/invoice_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/main_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/create_product_screen.dart';
@@ -28,7 +29,8 @@ enum CustomRoute {
   INVOICE(route: "/invoice", part: "invoice"),
   INVOICE_DETAILS(route: "/invoice/details", part: "details"),
   INVOICE_EDIT(route: "/invoice/details/edit", part: "edit"),
-  INVOICE_CREATE(route: "/invoice/create", part: "create");
+  INVOICE_CREATE(route: "/invoice/create", part: "create"),
+  INVOICE_DRAFTS(route: "/invoice/draft", part: "draft");
 
   final String route;
   final String part;
@@ -139,6 +141,10 @@ final goRouter = GoRouter(
                 GoRoute(
                   path: CustomRoute.INVOICE_CREATE.part,
                   builder: (_, _) => const CreateInvoiceScreen(),
+                ),
+                GoRoute(
+                  path: CustomRoute.INVOICE_DRAFTS.part,
+                  builder: (_, _) => const InvoiceDraftListScreen(),
                 ),
               ],
             ),

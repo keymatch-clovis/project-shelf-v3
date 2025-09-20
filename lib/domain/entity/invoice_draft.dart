@@ -17,21 +17,22 @@ final class InvoiceDraftProduct {
 }
 
 final class InvoiceDraft {
-  final DateTime date = DateTime.now();
+  final DateTime date;
 
-  final Id? id;
+  Id? id;
   final Id? customerId;
   final int? remainingUnpaidBalance;
 
   final List<InvoiceDraftProduct> products;
 
   InvoiceDraft({
+    DateTime? date,
     this.id,
     this.customerId,
     this.remainingUnpaidBalance,
 
     this.products = const [],
-  });
+  }) : date = date ?? DateTime.now();
 
   void addProduct({
     required int productId,
