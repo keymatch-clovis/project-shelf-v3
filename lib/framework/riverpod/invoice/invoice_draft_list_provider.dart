@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_dto.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/delete_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_draft_items_provider.dart';
+import 'package:project_shelf_v3/main.dart';
 
 part "invoice_draft_list_provider.freezed.dart";
 
@@ -17,6 +19,8 @@ abstract class InvoiceDraftListState with _$InvoiceDraftListState {
 }
 
 final class InvoiceDraftListNotifier extends Notifier<InvoiceDraftListState> {
+  final _deleteInvoiceDraftUseCase = getIt.get<DeleteInvoiceDraftUseCase>();
+
   @override
   InvoiceDraftListState build() {
     return InvoiceDraftListState(items: ref.watch(invoiceDraftItemsProvider));
@@ -52,6 +56,11 @@ final class InvoiceDraftListNotifier extends Notifier<InvoiceDraftListState> {
   }
 
   Future<void> deleteSelected() async {
+    for (final product in state.selected) {
+      await _deleteInvoiceDraftUseCase.exec(product.id);
+    }
+
+    ref.invalidate(invoiceDraftItemsProvider);
   }
 }
 

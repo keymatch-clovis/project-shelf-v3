@@ -356,11 +356,23 @@ abstract class AppLocalizations {
   /// **'Customer deleted'**
   String get customer_deleted;
 
+  /// No description provided for @no_invoice_products.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoice products'**
+  String get no_invoice_products;
+
   /// No description provided for @products.
   ///
   /// In en, this message translates to:
   /// **'Products'**
   String get products;
+
+  /// No description provided for @no_date_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'No date selected'**
+  String get no_date_selected;
 
   /// No description provided for @save.
   ///

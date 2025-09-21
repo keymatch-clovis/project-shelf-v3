@@ -11,6 +11,6 @@ final class DeleteInvoiceDraftUseCase {
 
   Future<void> exec(Id id) async {
     _logger.d("Deleting invoice draft with ID: $id");
-    _service.delete(id);
+    await _service.delete(id);
   }
 }

@@ -1,3 +1,5 @@
 {
-    "@@locale": "es"
+    "@@locale": "es",
+    "products": "Productos",
+    "no_date_selected": "Fecha sin seleccionar"
 }

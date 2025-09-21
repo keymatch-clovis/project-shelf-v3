@@ -138,7 +138,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customer_deleted => 'Customer deleted';
 
   @override
+  String get no_invoice_products => 'No invoice products';
+
+  @override
   String get products => 'Products';
+
+  @override
+  String get no_date_selected => 'No date selected';
 
   @override
   String get save => 'Save';

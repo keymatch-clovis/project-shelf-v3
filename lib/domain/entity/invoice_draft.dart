@@ -17,22 +17,33 @@ final class InvoiceDraftProduct {
 }
 
 final class InvoiceDraft {
-  final DateTime date;
+  final DateTime createdAt;
+
+  InvoiceDraft({
+    this.date,
+    this.id,
+    this.customerId,
+    this.remainingUnpaidBalance,
+    this.products = const [],
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 
   Id? id;
+
+  // We can use this structure for checking fields:
+  //
+  // DateTime? _date;
+  // DateTime? get date => _date;
+  // set date(DateTime? date) {
+  //   _date = date;
+  // }
+
+  DateTime? date;
+
   final Id? customerId;
   final int? remainingUnpaidBalance;
 
   final List<InvoiceDraftProduct> products;
-
-  InvoiceDraft({
-    DateTime? date,
-    this.id,
-    this.customerId,
-    this.remainingUnpaidBalance,
-
-    this.products = const [],
-  }) : date = date ?? DateTime.now();
 
   void addProduct({
     required int productId,

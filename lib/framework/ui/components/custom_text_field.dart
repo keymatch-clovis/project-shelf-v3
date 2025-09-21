@@ -99,6 +99,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       children: [
         TextFormField(
           readOnly: widget.readOnly,
+          showCursor: widget.readOnly,
+
           maxLength: widget.maxLength,
           controller: _controller,
           focusNode: _focusNode,

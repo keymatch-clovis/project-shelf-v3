@@ -1,5 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_product_dto.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 
 @Entity()
 class InvoiceDraftDto {
@@ -7,16 +8,30 @@ class InvoiceDraftDto {
   int id = 0;
 
   @Property(type: PropertyType.date)
-  DateTime date;
+  DateTime? date;
 
   int? remainingUnpaidBalance;
   int? customerId;
 
+  @Property(type: PropertyType.date)
+  DateTime createdAt;
+
   final products = ToMany<InvoiceDraftProductDto>();
 
   InvoiceDraftDto({
-    required this.date,
+    required this.createdAt,
+
+    this.date,
     this.remainingUnpaidBalance,
     this.customerId,
   });
+
+  InvoiceDraft toEntity() {
+    return InvoiceDraft(
+      id: id,
+      date: date,
+      customerId: customerId,
+      createdAt: createdAt,
+    );
+  }
 }

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateInvoiceState {
 
- CreateInvoiceStatus get status; ObjectInput<CustomerDto> get customerInput; Id? get invoiceDraftId;
+ CreateInvoiceStatus get status; ObjectInput<DateTime> get dateInput; ObjectInput<CustomerDto> get customerInput; List<ObjectInput<InvoiceProductDto>> get invoiceProductInputs;
 /// Create a copy of CreateInvoiceState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CreateInvoiceStateCopyWith<CreateInvoiceState> get copyWith => _$CreateInvoiceS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.customerInput, customerInput) || other.customerInput == customerInput)&&(identical(other.invoiceDraftId, invoiceDraftId) || other.invoiceDraftId == invoiceDraftId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.dateInput, dateInput) || other.dateInput == dateInput)&&(identical(other.customerInput, customerInput) || other.customerInput == customerInput)&&const DeepCollectionEquality().equals(other.invoiceProductInputs, invoiceProductInputs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,customerInput,invoiceDraftId);
+int get hashCode => Object.hash(runtimeType,status,dateInput,customerInput,const DeepCollectionEquality().hash(invoiceProductInputs));
 
 @override
 String toString() {
-  return 'CreateInvoiceState(status: $status, customerInput: $customerInput, invoiceDraftId: $invoiceDraftId)';
+  return 'CreateInvoiceState(status: $status, dateInput: $dateInput, customerInput: $customerInput, invoiceProductInputs: $invoiceProductInputs)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CreateInvoiceStateCopyWith<$Res>  {
   factory $CreateInvoiceStateCopyWith(CreateInvoiceState value, $Res Function(CreateInvoiceState) _then) = _$CreateInvoiceStateCopyWithImpl;
 @useResult
 $Res call({
- CreateInvoiceStatus status, ObjectInput<CustomerDto> customerInput, Id? invoiceDraftId
+ CreateInvoiceStatus status, ObjectInput<DateTime> dateInput, ObjectInput<CustomerDto> customerInput, List<ObjectInput<InvoiceProductDto>> invoiceProductInputs
 });
 
 
@@ -62,12 +62,13 @@ class _$CreateInvoiceStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateInvoiceState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? customerInput = null,Object? invoiceDraftId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? dateInput = null,Object? customerInput = null,Object? invoiceProductInputs = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as CreateInvoiceStatus,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<CustomerDto>,invoiceDraftId: freezed == invoiceDraftId ? _self.invoiceDraftId : invoiceDraftId // ignore: cast_nullable_to_non_nullable
-as Id?,
+as CreateInvoiceStatus,dateInput: null == dateInput ? _self.dateInput : dateInput // ignore: cast_nullable_to_non_nullable
+as ObjectInput<DateTime>,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
+as ObjectInput<CustomerDto>,invoiceProductInputs: null == invoiceProductInputs ? _self.invoiceProductInputs : invoiceProductInputs // ignore: cast_nullable_to_non_nullable
+as List<ObjectInput<InvoiceProductDto>>,
   ));
 }
 
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  ObjectInput<CustomerDto> customerInput,  Id? invoiceDraftId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  ObjectInput<DateTime> dateInput,  ObjectInput<CustomerDto> customerInput,  List<ObjectInput<InvoiceProductDto>> invoiceProductInputs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateInvoiceState() when $default != null:
-return $default(_that.status,_that.customerInput,_that.invoiceDraftId);case _:
+return $default(_that.status,_that.dateInput,_that.customerInput,_that.invoiceProductInputs);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.status,_that.customerInput,_that.invoiceDraftId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  ObjectInput<CustomerDto> customerInput,  Id? invoiceDraftId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  ObjectInput<DateTime> dateInput,  ObjectInput<CustomerDto> customerInput,  List<ObjectInput<InvoiceProductDto>> invoiceProductInputs)  $default,) {final _that = this;
 switch (_that) {
 case _CreateInvoiceState():
-return $default(_that.status,_that.customerInput,_that.invoiceDraftId);case _:
+return $default(_that.status,_that.dateInput,_that.customerInput,_that.invoiceProductInputs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.status,_that.customerInput,_that.invoiceDraftId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateInvoiceStatus status,  ObjectInput<CustomerDto> customerInput,  Id? invoiceDraftId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateInvoiceStatus status,  ObjectInput<DateTime> dateInput,  ObjectInput<CustomerDto> customerInput,  List<ObjectInput<InvoiceProductDto>> invoiceProductInputs)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateInvoiceState() when $default != null:
-return $default(_that.status,_that.customerInput,_that.invoiceDraftId);case _:
+return $default(_that.status,_that.dateInput,_that.customerInput,_that.invoiceProductInputs);case _:
   return null;
 
 }
@@ -208,12 +209,19 @@ return $default(_that.status,_that.customerInput,_that.invoiceDraftId);case _:
 
 
 class _CreateInvoiceState extends CreateInvoiceState {
-  const _CreateInvoiceState({this.status = CreateInvoiceStatus.INITIAL, required this.customerInput, this.invoiceDraftId}): super._();
+  const _CreateInvoiceState({this.status = CreateInvoiceStatus.INITIAL, required this.dateInput, required this.customerInput, required final  List<ObjectInput<InvoiceProductDto>> invoiceProductInputs}): _invoiceProductInputs = invoiceProductInputs,super._();
   
 
 @override@JsonKey() final  CreateInvoiceStatus status;
+@override final  ObjectInput<DateTime> dateInput;
 @override final  ObjectInput<CustomerDto> customerInput;
-@override final  Id? invoiceDraftId;
+ final  List<ObjectInput<InvoiceProductDto>> _invoiceProductInputs;
+@override List<ObjectInput<InvoiceProductDto>> get invoiceProductInputs {
+  if (_invoiceProductInputs is EqualUnmodifiableListView) return _invoiceProductInputs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_invoiceProductInputs);
+}
+
 
 /// Create a copy of CreateInvoiceState
 /// with the given fields replaced by the non-null parameter values.
@@ -225,16 +233,16 @@ _$CreateInvoiceStateCopyWith<_CreateInvoiceState> get copyWith => __$CreateInvoi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.customerInput, customerInput) || other.customerInput == customerInput)&&(identical(other.invoiceDraftId, invoiceDraftId) || other.invoiceDraftId == invoiceDraftId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceState&&(identical(other.status, status) || other.status == status)&&(identical(other.dateInput, dateInput) || other.dateInput == dateInput)&&(identical(other.customerInput, customerInput) || other.customerInput == customerInput)&&const DeepCollectionEquality().equals(other._invoiceProductInputs, _invoiceProductInputs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,customerInput,invoiceDraftId);
+int get hashCode => Object.hash(runtimeType,status,dateInput,customerInput,const DeepCollectionEquality().hash(_invoiceProductInputs));
 
 @override
 String toString() {
-  return 'CreateInvoiceState(status: $status, customerInput: $customerInput, invoiceDraftId: $invoiceDraftId)';
+  return 'CreateInvoiceState(status: $status, dateInput: $dateInput, customerInput: $customerInput, invoiceProductInputs: $invoiceProductInputs)';
 }
 
 
@@ -245,7 +253,7 @@ abstract mixin class _$CreateInvoiceStateCopyWith<$Res> implements $CreateInvoic
   factory _$CreateInvoiceStateCopyWith(_CreateInvoiceState value, $Res Function(_CreateInvoiceState) _then) = __$CreateInvoiceStateCopyWithImpl;
 @override @useResult
 $Res call({
- CreateInvoiceStatus status, ObjectInput<CustomerDto> customerInput, Id? invoiceDraftId
+ CreateInvoiceStatus status, ObjectInput<DateTime> dateInput, ObjectInput<CustomerDto> customerInput, List<ObjectInput<InvoiceProductDto>> invoiceProductInputs
 });
 
 
@@ -262,12 +270,13 @@ class __$CreateInvoiceStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateInvoiceState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? customerInput = null,Object? invoiceDraftId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? dateInput = null,Object? customerInput = null,Object? invoiceProductInputs = null,}) {
   return _then(_CreateInvoiceState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as CreateInvoiceStatus,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<CustomerDto>,invoiceDraftId: freezed == invoiceDraftId ? _self.invoiceDraftId : invoiceDraftId // ignore: cast_nullable_to_non_nullable
-as Id?,
+as CreateInvoiceStatus,dateInput: null == dateInput ? _self.dateInput : dateInput // ignore: cast_nullable_to_non_nullable
+as ObjectInput<DateTime>,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
+as ObjectInput<CustomerDto>,invoiceProductInputs: null == invoiceProductInputs ? _self._invoiceProductInputs : invoiceProductInputs // ignore: cast_nullable_to_non_nullable
+as List<ObjectInput<InvoiceProductDto>>,
   ));
 }
 

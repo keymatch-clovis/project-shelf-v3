@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
@@ -28,7 +30,9 @@ import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/delete_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/get_invoice_drafts_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/watch_invoices_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
@@ -58,6 +62,8 @@ void main() async {
 
   // Almost all projects have this.
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Jiffy.setLocale(PlatformDispatcher.instance.locale.languageCode);
 
   /// Base services related
   getIt.registerSingleton<ShelfDatabase>(
@@ -151,6 +157,14 @@ void main() async {
 
   getIt.registerLazySingleton<CreateInvoiceDraftUseCase>(
     () => CreateInvoiceDraftUseCase(),
+  );
+
+  getIt.registerLazySingleton<DeleteInvoiceDraftUseCase>(
+    () => DeleteInvoiceDraftUseCase(),
+  );
+
+  getIt.registerLazySingleton<UpdateInvoiceDraftUseCase>(
+    () => UpdateInvoiceDraftUseCase(),
   );
 
   runApp(

@@ -93,7 +93,10 @@ final class _CreateCustomerDetailsFormState
               return CustomObjectField<CityDto>(
                 label: localizations.city,
                 isRequired: true,
-                textValue: state.cityInput.value?.name,
+                value: state.cityInput.value,
+                body: state.cityInput.value != null
+                    ? Text("test")
+                    : Text("tester"),
                 onTap: () {
                   _businessNameFieldFocus.requestFocus();
                   _citySearchController.openView();

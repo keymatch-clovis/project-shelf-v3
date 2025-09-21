@@ -3,12 +3,18 @@ import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 
 final class InvoiceDraftDto {
   final Id id;
-  final DateTime date;
+  final DateTime createdAt;
 
-  const InvoiceDraftDto({required this.id, required this.date});
+  final DateTime? date;
+
+  const InvoiceDraftDto({required this.id, required this.createdAt, this.date});
 
   factory InvoiceDraftDto.fromEntity(InvoiceDraft invoiceDraft) {
-    return InvoiceDraftDto(id: invoiceDraft.id!, date: invoiceDraft.date);
+    return InvoiceDraftDto(
+      id: invoiceDraft.id!,
+      createdAt: invoiceDraft.createdAt,
+      date: invoiceDraft.date,
+    );
   }
 
   @override
@@ -21,4 +27,12 @@ final class InvoiceDraftDto {
 
   @override
   int get hashCode => id;
+
+  InvoiceDraftDto copyWith({DateTime? date}) {
+    return InvoiceDraftDto(
+      id: id,
+      createdAt: createdAt,
+      date: date ?? this.date,
+    );
+  }
 }

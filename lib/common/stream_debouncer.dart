@@ -2,21 +2,19 @@ import 'dart:async';
 
 const DEFAULT_DURATION_MILLIS = 500;
 
-class Debouncer<T> {
-  Completer<T> completer = Completer<T>();
+class StreamDebouncer<T> {
+  Completer<Stream<T>> completer = Completer();
   Duration duration;
   Timer? _timer;
 
-  Debouncer({Duration? duration})
+  StreamDebouncer({Duration? duration})
     : duration = duration ?? Duration(milliseconds: DEFAULT_DURATION_MILLIS);
 
-  void debounce(dynamic Function() execute) {
+  void debounce(Stream<T> Function() execute) {
     _timer?.cancel();
     _timer = Timer(duration, () async {
-      final result = await execute();
-      completer.complete(result);
-
-      completer = Completer<T>();
+      completer.complete(execute());
+      completer = Completer();
     });
   }
 }

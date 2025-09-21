@@ -9,11 +9,11 @@ final class CreateInvoiceDraftUseCase {
 
   final _service = getIt.get<InvoiceDraftService>();
 
-  InvoiceDraft exec() {
+  Future<InvoiceDraft> exec() async {
     final invoiceDraft = InvoiceDraft();
 
     _logger.d("Creating invoice draft");
-    final id = _service.save(invoiceDraft);
+    final id = await _service.create(invoiceDraft);
 
     invoiceDraft.id = id;
 

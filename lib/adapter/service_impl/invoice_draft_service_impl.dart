@@ -12,7 +12,7 @@ final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   final _repository = getIt.get<InvoiceDraftRepository>();
 
   @override
-  Id save(InvoiceDraft invoiceDraft) {
+  Future<Id> create(InvoiceDraft invoiceDraft) {
     _logger.d("Creating invoice draft");
     return _repository.create(CreateArgs(date: invoiceDraft.date));
   }
@@ -21,13 +21,7 @@ final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   Future<List<InvoiceDraft>> get() {
     _logger.d("Finding invoice drafts");
     return _repository.get().then((it) {
-      return it.map((it) {
-        return InvoiceDraft(
-          id: it.id,
-          date: it.date,
-          customerId: it.customerId,
-        );
-      }).toList();
+      return it.map((it) => it.toEntity()).toList();
     });
   }
 
@@ -35,5 +29,19 @@ final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   Future<void> delete(Id id) async {
     _logger.d("Deleting invoice draft with ID: $id");
     await _repository.delete(id);
+  }
+
+  @override
+  Future<InvoiceDraft> findWithId(Id id) {
+    _logger.d("Finding invoice draft with ID: $id");
+    return _repository.findWithId(id).then((it) => it.toEntity());
+  }
+
+  @override
+  Future<void> update(InvoiceDraft invoiceDraft) {
+    _logger.d("Updating invoice draft with: $invoiceDraft");
+    return _repository.update(
+      UpdateArgs(id: invoiceDraft.id!, date: invoiceDraft.date),
+    );
   }
 }

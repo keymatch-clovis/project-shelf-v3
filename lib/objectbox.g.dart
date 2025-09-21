@@ -65,7 +65,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(3, 274034651463492387),
     name: 'InvoiceDraftDto',
-    lastPropertyId: const obx_int.IdUid(4, 5155951367029643794),
+    lastPropertyId: const obx_int.IdUid(5, 1134292592962932140),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -90,6 +90,12 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(4, 5155951367029643794),
         name: 'customerId',
         type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 1134292592962932140),
+        name: 'createdAt',
+        type: 10,
         flags: 0,
       ),
     ],
@@ -228,20 +234,29 @@ obx_int.ModelDefinition getObjectBoxModel() {
         object.id = id;
       },
       objectToFB: (InvoiceDraftDto object, fb.Builder fbb) {
-        fbb.startTable(5);
+        fbb.startTable(6);
         fbb.addInt64(0, object.id);
-        fbb.addInt64(1, object.date.millisecondsSinceEpoch);
+        fbb.addInt64(1, object.date?.millisecondsSinceEpoch);
         fbb.addInt64(2, object.remainingUnpaidBalance);
         fbb.addInt64(3, object.customerId);
+        fbb.addInt64(4, object.createdAt.millisecondsSinceEpoch);
         fbb.finish(fbb.endTable());
         return object.id;
       },
       objectFromFB: (obx.Store store, ByteData fbData) {
         final buffer = fb.BufferContext(fbData);
         final rootOffset = buffer.derefObject(0);
-        final dateParam = DateTime.fromMillisecondsSinceEpoch(
-          const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
+        final dateValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          6,
         );
+        final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
+        );
+        final dateParam = dateValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dateValue);
         final remainingUnpaidBalanceParam = const fb.Int64Reader()
             .vTableGetNullable(buffer, rootOffset, 8);
         final customerIdParam = const fb.Int64Reader().vTableGetNullable(
@@ -250,6 +265,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           10,
         );
         final object = InvoiceDraftDto(
+          createdAt: createdAtParam,
           date: dateParam,
           remainingUnpaidBalance: remainingUnpaidBalanceParam,
           customerId: customerIdParam,
@@ -315,6 +331,11 @@ class InvoiceDraftDto_ {
   /// See [InvoiceDraftDto.customerId].
   static final customerId = obx.QueryIntegerProperty<InvoiceDraftDto>(
     _entities[1].properties[3],
+  );
+
+  /// See [InvoiceDraftDto.createdAt].
+  static final createdAt = obx.QueryDateProperty<InvoiceDraftDto>(
+    _entities[1].properties[4],
   );
 
   /// see [InvoiceDraftDto.products]

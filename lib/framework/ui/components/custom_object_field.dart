@@ -7,8 +7,9 @@ final class CustomObjectField<T> extends StatefulWidget {
   final void Function()? onTap;
 
   /// Custom fields
+  final Widget? body;
+  final String? emptyLabel;
   final T? value;
-  final String? textValue;
   final String label;
   final bool isRequired;
   final void Function()? onClear;
@@ -16,11 +17,12 @@ final class CustomObjectField<T> extends StatefulWidget {
 
   const CustomObjectField({
     super.key,
+    required this.body,
+    this.emptyLabel,
+    this.value,
     this.focusNode,
     this.onTap,
     // Custom fields
-    this.value,
-    this.textValue,
     required this.label,
     this.isRequired = false,
     this.onClear,
@@ -83,44 +85,54 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Material(
-                      clipBehavior: Clip.antiAlias,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color:
-                              widget.errors.isEmpty ||
-                                  _status == CustomObjectFieldStatus.INITIAL
-                              ? theme.colorScheme.outline
-                              : theme.colorScheme.error,
+              Material(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    color:
+                        widget.errors.isEmpty ||
+                            _status == CustomObjectFieldStatus.INITIAL
+                        ? theme.colorScheme.outline
+                        : theme.colorScheme.error,
+                  ),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    _focusNode.requestFocus();
+                    widget.onTap?.call();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child:
+                              widget.body ??
+                              Text(
+                                widget.emptyLabel ?? widget.label,
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
                         ),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          _focusNode.requestFocus();
-
-                          if (_status != CustomObjectFieldStatus.DIRTY) {
-                            setState(() {
-                              _status = CustomObjectFieldStatus.DIRTY;
-                            });
-                          }
-
-                          widget.onTap?.call();
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 11,
-                            vertical: 18,
+                        const SizedBox(height: 48),
+                        if (widget.onClear != null && widget.value != null)
+                          Focus(
+                            // We need to set a focus for this button, so it
+                            // does not tamper with the form traversal.
+                            descendantsAreFocusable: false,
+                            canRequestFocus: false,
+                            child: IconButton(
+                              onPressed: widget.onClear,
+                              icon: const Icon(Icons.close_rounded),
+                            ),
                           ),
-                          child: Text(widget.label),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
               Positioned(
                 left: 6,
@@ -135,6 +147,7 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                     widget.label,
                     status: _status,
                     isRequired: widget.isRequired,
+                    hasErrors: widget.errors.isNotEmpty,
                   ),
                 ),
               ),
@@ -144,76 +157,31 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
         ],
       ),
     );
-
-    // return Column(
-    //   children: [
-    //
-    //     TextFormField(
-    //       controller: _controller,
-    //       readOnly: true,
-    //       enableInteractiveSelection: true,
-    //       showCursor: true,
-    //       textCapitalization: TextCapitalization.characters,
-    //       keyboardType: TextInputType.text,
-    //       decoration: InputDecoration(
-    //         border: OutlineInputBorder(),
-    //         label: _renderLabel(widget.label, isRequired: widget.isRequired),
-    //         suffixIcon: widget.onClear != null && _controller.text.isNotEmpty
-    //             ? Focus(
-    //                 // We need to set a focus for this button, so it does
-    //                 // not tamper with the form traversal.
-    //                 descendantsAreFocusable: false,
-    //                 canRequestFocus: false,
-    //                 child: IconButton(
-    //                   onPressed: () {
-    //                     if (!_isDirty) {
-    //                       setState(() {
-    //                         _isDirty = true;
-    //                       });
-    //                     }
-    //
-    //                     _controller.clear();
-    //                     widget.onClear?.call();
-    //                   },
-    //                   icon: const Icon(Icons.clear_rounded),
-    //                 ),
-    //               )
-    //             : null,
-    //       ),
-    //       onTap: () {
-    //         widget.onTap?.call();
-    //
-    //         if (!_isDirty) {
-    //           setState(() {
-    //             _isDirty = true;
-    //           });
-    //         }
-    //       },
-    //       forceErrorText: _isDirty ? widget.errors.firstOrNull : null,
-    //     ),
-    //     // When the errors are showing, try to preserve the padding.
-    //     if (widget.errors.isEmpty || !_isDirty) SizedBox(height: 22),
-    //   ],
-    // );
   }
 }
 
 final class _Label extends StatelessWidget {
   final bool isRequired;
   final String label;
+  final bool hasErrors;
   final CustomObjectFieldStatus status;
 
-  const _Label(this.label, {required this.status, this.isRequired = false});
+  const _Label(
+    this.label, {
+    required this.status,
+    this.hasErrors = false,
+    this.isRequired = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = TextStyle(
-      fontSize: 12,
-      color: status == CustomObjectFieldStatus.INITIAL
-          ? theme.colorScheme.onSurfaceVariant
-          : theme.colorScheme.error,
-    );
+
+    final color = !hasErrors || status == CustomObjectFieldStatus.INITIAL
+        ? theme.colorScheme.onSurfaceVariant
+        : theme.colorScheme.error;
+
+    final style = TextStyle(fontSize: 12, color: color);
 
     if (isRequired) {
       return Row(
@@ -225,9 +193,7 @@ final class _Label extends StatelessWidget {
             style: TextStyle(
               fontSize: 8,
               fontWeight: FontWeight.bold,
-              color: status == CustomObjectFieldStatus.INITIAL
-                  ? theme.colorScheme.onSurfaceVariant
-                  : theme.colorScheme.error,
+              color: color,
             ),
           ),
           const SizedBox(width: 4),
@@ -241,10 +207,10 @@ final class _Label extends StatelessWidget {
 }
 
 final class _ErrorsLabel extends StatelessWidget {
-  final List<String> errors;
   final CustomObjectFieldStatus status;
+  final List<String> errors;
 
-  const _ErrorsLabel({required this.errors, required this.status});
+  const _ErrorsLabel({required this.status, required this.errors});
 
   @override
   Widget build(BuildContext context) {

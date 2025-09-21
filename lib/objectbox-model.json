@@ -42,7 +42,7 @@
     },
     {
       "id": "3:274034651463492387",
-      "lastPropertyId": "4:5155951367029643794",
+      "lastPropertyId": "5:1134292592962932140",
       "name": "InvoiceDraftDto",
       "properties": [
         {
@@ -65,6 +65,11 @@
           "id": "4:5155951367029643794",
           "name": "customerId",
           "type": 6
+        },
+        {
+          "id": "5:1134292592962932140",
+          "name": "createdAt",
+          "type": 10
         }
       ],
       "relations": [

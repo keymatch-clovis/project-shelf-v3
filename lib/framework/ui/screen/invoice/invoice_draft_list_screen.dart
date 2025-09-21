@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_draft_list_provider.dart';
+import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
 final class InvoiceDraftListScreen extends StatelessWidget {
   const InvoiceDraftListScreen({super.key});
@@ -30,7 +33,9 @@ final class _Screen extends ConsumerWidget {
               .read(invoiceDraftListProvider.notifier)
               .setMode(InvoiceDraftListMode.LIST);
         } else {
-          Navigator.of(context).pop();
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            context.go(CustomRoute.INVOICE.route);
+          });
         }
       },
       child: Scaffold(
@@ -163,7 +168,7 @@ final class _Tile extends ConsumerWidget {
     final state = ref.watch(invoiceDraftListProvider);
 
     return ListTile(
-      title: Text("invoice: ${dto.date}"),
+      title: Text("invoice: ${dto.createdAt}"),
       onTap: () {
         if (state.mode == InvoiceDraftListMode.SELECT) {
           state.selected.contains(dto)
