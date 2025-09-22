@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/common/object_input.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/date_time_extensions.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_search_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_draft_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_product_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
@@ -26,13 +26,17 @@ final class CreateInvoiceScreen extends ConsumerWidget {
     ref.listen(customerSearchProvider, (_, _) {});
 
     ref.listen(
-      createInvoiceProvider.select((it) => it.value!.createInvoiceProductState),
-      (_, state) {
-        if (state.productInput.value != null) {
-          showDialog(
+      createInvoiceProductProvider.select((it) => it.value!.productInput.value),
+      (_, product) {
+        if (product != null) {
+          showDialog<InvoiceProductDto>(
             context: context,
-            builder: (_) => CreateInvoiceProductDialog(state),
-          );
+            builder: (_) => CreateInvoiceProductDialog(),
+          ).then((it) {
+            if (it != null) {
+              ref.read(createInvoiceProvider.notifier).addInvoiceProduct(it);
+            }
+          });
         }
       },
     );
@@ -93,18 +97,11 @@ final class _Screen extends StatefulWidget {
 final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
   late TabController _tabController;
 
-  int _selectedTab = 0;
-
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 2, vsync: this)
-      ..addListener(() {
-        setState(() {
-          _selectedTab = _tabController.index;
-        });
-      });
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -136,7 +133,17 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
-      floatingActionButton: _FloatingActionButton(_selectedTab),
+      floatingActionButton: AnimatedBuilder(
+        animation: _tabController.animation!,
+        builder: (context, _) {
+          final tab = _tabController.animation!.value.round();
+          return _FloatingActionButton(tab);
+        },
+      ),
+      // floatingActionButton: _FloatingActionButton(
+      //   currentTab: _selectedTab,
+      //   animation: _tabController.animation!,
+      // ),
       bottomNavigationBar: BottomAppBar(child: Row(children: [])),
     );
   }
@@ -149,13 +156,14 @@ final class _FloatingActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProductSearchAnchor(
-      onSelect: (product) {
-        ref
-            .read(createInvoiceProvider.notifier)
-            .setCreateInvoiceProduct(product);
-      },
-    );
+    return switch (currentTab) {
+      1 => ProductSearchAnchor(
+        onSelect: (product) {
+          ref.read(createInvoiceProductProvider.notifier).setProduct(product);
+        },
+      ),
+      _ => const SizedBox.shrink(),
+    };
   }
 }
 
@@ -258,7 +266,7 @@ final class _Products extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final products = ref.watch(
-      createInvoiceProvider.select((it) => it.value!.invoiceProductInputs),
+      createInvoiceProvider.select((it) => it.value!.invoiceProducts),
     );
 
     if (products.isEmpty) {
@@ -292,13 +300,13 @@ final class _Products extends ConsumerWidget {
 }
 
 final class _ProductListTile extends ConsumerWidget {
-  final ObjectInput<InvoiceProductDto> item;
+  final InvoiceProductDto item;
 
   const _ProductListTile(this.item);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListTile(title: Text("test"));
+    return ListTile(title: Text(item.product.name));
   }
 }
 

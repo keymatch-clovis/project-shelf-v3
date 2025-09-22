@@ -18,12 +18,6 @@ final class _State extends ConsumerState<ProductSearchAnchor> {
   final searchController = SearchController();
 
   @override
-  void dispose() {
-    super.dispose();
-    searchController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SearchAnchor(
       viewPadding: EdgeInsets.zero,

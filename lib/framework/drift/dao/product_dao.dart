@@ -44,6 +44,7 @@ class ProductDao implements ProductRepository {
       ProductTableCompanion(
         name: Value(args.name),
         defaultPrice: Value(args.defaultPrice),
+        purchasePrice: Value(args.purchasePrice),
         stock: Value(args.stock),
         updatedAt: Value(DateTime.now()),
       ),

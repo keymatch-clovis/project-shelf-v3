@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EditProductState {
 
- EditProductStatus get status; ProductDto get product; Input get nameInput; Input get defaultPriceInput; Input get purchasePriceInput; Input get stockInput; List<File> get photoFiles;
+ EditProductStatus get status; Currency get currency; ProductDto get product; Input get nameInput; Input get defaultPriceInput; Input get purchasePriceInput; Input get stockInput; List<File> get photoFiles;
 /// Create a copy of EditProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $EditProductStateCopyWith<EditProductState> get copyWith => _$EditProductStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProductState&&(identical(other.status, status) || other.status == status)&&(identical(other.product, product) || other.product == product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other.photoFiles, photoFiles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProductState&&(identical(other.status, status) || other.status == status)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.product, product) || other.product == product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other.photoFiles, photoFiles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,product,nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(photoFiles));
+int get hashCode => Object.hash(runtimeType,status,currency,product,nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(photoFiles));
 
 @override
 String toString() {
-  return 'EditProductState(status: $status, product: $product, nameInput: $nameInput, defaultPriceInput: $defaultPriceInput, purchasePriceInput: $purchasePriceInput, stockInput: $stockInput, photoFiles: $photoFiles)';
+  return 'EditProductState(status: $status, currency: $currency, product: $product, nameInput: $nameInput, defaultPriceInput: $defaultPriceInput, purchasePriceInput: $purchasePriceInput, stockInput: $stockInput, photoFiles: $photoFiles)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $EditProductStateCopyWith<$Res>  {
   factory $EditProductStateCopyWith(EditProductState value, $Res Function(EditProductState) _then) = _$EditProductStateCopyWithImpl;
 @useResult
 $Res call({
- EditProductStatus status, ProductDto product, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input stockInput, List<File> photoFiles
+ EditProductStatus status, Currency currency, ProductDto product, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input stockInput, List<File> photoFiles
 });
 
 
@@ -62,10 +62,11 @@ class _$EditProductStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? product = null,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? currency = null,Object? product = null,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as EditProductStatus,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as EditProductStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as Currency,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
 as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EditProductStatus status,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EditProductState() when $default != null:
-return $default(_that.status,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
+return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.status,_that.product,_that.nameInput,_that.defaultPriceInp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EditProductStatus status,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)  $default,) {final _that = this;
 switch (_that) {
 case _EditProductState():
-return $default(_that.status,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
+return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.status,_that.product,_that.nameInput,_that.defaultPriceInp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EditProductStatus status,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)?  $default,) {final _that = this;
 switch (_that) {
 case _EditProductState() when $default != null:
-return $default(_that.status,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
+return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
   return null;
 
 }
@@ -212,10 +213,11 @@ return $default(_that.status,_that.product,_that.nameInput,_that.defaultPriceInp
 
 
 class _EditProductState extends EditProductState {
-  const _EditProductState({this.status = EditProductStatus.initial, required this.product, required this.nameInput, required this.defaultPriceInput, required this.purchasePriceInput, required this.stockInput, final  List<File> photoFiles = const []}): _photoFiles = photoFiles,super._();
+  const _EditProductState({this.status = EditProductStatus.initial, required this.currency, required this.product, required this.nameInput, required this.defaultPriceInput, required this.purchasePriceInput, required this.stockInput, final  List<File> photoFiles = const []}): _photoFiles = photoFiles,super._();
   
 
 @override@JsonKey() final  EditProductStatus status;
+@override final  Currency currency;
 @override final  ProductDto product;
 @override final  Input nameInput;
 @override final  Input defaultPriceInput;
@@ -239,16 +241,16 @@ _$EditProductStateCopyWith<_EditProductState> get copyWith => __$EditProductStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditProductState&&(identical(other.status, status) || other.status == status)&&(identical(other.product, product) || other.product == product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other._photoFiles, _photoFiles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditProductState&&(identical(other.status, status) || other.status == status)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.product, product) || other.product == product)&&(identical(other.nameInput, nameInput) || other.nameInput == nameInput)&&(identical(other.defaultPriceInput, defaultPriceInput) || other.defaultPriceInput == defaultPriceInput)&&(identical(other.purchasePriceInput, purchasePriceInput) || other.purchasePriceInput == purchasePriceInput)&&(identical(other.stockInput, stockInput) || other.stockInput == stockInput)&&const DeepCollectionEquality().equals(other._photoFiles, _photoFiles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,product,nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(_photoFiles));
+int get hashCode => Object.hash(runtimeType,status,currency,product,nameInput,defaultPriceInput,purchasePriceInput,stockInput,const DeepCollectionEquality().hash(_photoFiles));
 
 @override
 String toString() {
-  return 'EditProductState(status: $status, product: $product, nameInput: $nameInput, defaultPriceInput: $defaultPriceInput, purchasePriceInput: $purchasePriceInput, stockInput: $stockInput, photoFiles: $photoFiles)';
+  return 'EditProductState(status: $status, currency: $currency, product: $product, nameInput: $nameInput, defaultPriceInput: $defaultPriceInput, purchasePriceInput: $purchasePriceInput, stockInput: $stockInput, photoFiles: $photoFiles)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$EditProductStateCopyWith<$Res> implements $EditProductSta
   factory _$EditProductStateCopyWith(_EditProductState value, $Res Function(_EditProductState) _then) = __$EditProductStateCopyWithImpl;
 @override @useResult
 $Res call({
- EditProductStatus status, ProductDto product, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input stockInput, List<File> photoFiles
+ EditProductStatus status, Currency currency, ProductDto product, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input stockInput, List<File> photoFiles
 });
 
 
@@ -276,10 +278,11 @@ class __$EditProductStateCopyWithImpl<$Res>
 
 /// Create a copy of EditProductState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? product = null,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? currency = null,Object? product = null,Object? nameInput = null,Object? defaultPriceInput = null,Object? purchasePriceInput = null,Object? stockInput = null,Object? photoFiles = null,}) {
   return _then(_EditProductState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as EditProductStatus,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as EditProductStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as Currency,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
 as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable

@@ -20,7 +20,7 @@ class CreateProductUseCase {
 
     _logger.d('Creating product');
     return await _service.create(
-      Product.fromMinorUnits(
+      Product.fromMoney(
         appPreferences.defaultCurrency,
         name: request.name,
         defaultPrice: request.defaultPrice,

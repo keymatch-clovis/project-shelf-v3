@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
@@ -12,6 +13,7 @@ import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart'
 import 'package:project_shelf_v3/app/dto/create_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
+import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 import 'package:project_shelf_v3/main.dart';
@@ -25,6 +27,7 @@ enum CreateProductStatus { initial, loading, success }
 abstract class CreateProductState with _$CreateProductState {
   const factory CreateProductState({
     @Default(CreateProductStatus.initial) CreateProductStatus status,
+    required Currency currency,
     required Input nameInput,
     required Input defaultPriceInput,
     required Input purchasePriceInput,
@@ -52,15 +55,13 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
   @override
   FutureOr<CreateProductState> build() async {
     final appPreferences = await ref.watch(appPreferencesProvider.future);
+    final currency = appPreferences.defaultCurrency;
 
     return CreateProductState(
+      currency: currency,
       nameInput: Input(StringValidator(isRequired: true)),
-      defaultPriceInput: Input(
-        CurrencyValidator(appPreferences.defaultCurrency),
-      ),
-      purchasePriceInput: Input(
-        CurrencyValidator(appPreferences.defaultCurrency),
-      ),
+      defaultPriceInput: Input(CurrencyValidator(currency)),
+      purchasePriceInput: Input(CurrencyValidator(currency)),
       stockInput: Input(IntValidator()),
     );
   }
@@ -129,19 +130,17 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
   }
 
   Future<void> create() async {
-    await future;
-    assert(state.value!.isValid);
+    final value = await future;
+    assert(value.isValid);
 
-    state = AsyncData(
-      state.value!.copyWith(status: CreateProductStatus.loading),
-    );
+    state = AsyncData(value.copyWith(status: CreateProductStatus.loading));
 
     await _createProductUseCase.exec(
       CreateProductRequest(
-        name: state.value!.nameInput.value.trim(),
-        defaultPrice: int.tryParse(state.value!.defaultPriceInput.value),
-        purchasePrice: int.tryParse(state.value!.purchasePriceInput.value),
-        stock: int.tryParse(state.value!.stockInput.value),
+        name: value.nameInput.value.trim(),
+        defaultPrice: value.currency.tryParse(value.defaultPriceInput.value),
+        purchasePrice: value.currency.tryParse(value.purchasePriceInput.value),
+        stock: int.tryParse(value.stockInput.value),
       ),
     );
 

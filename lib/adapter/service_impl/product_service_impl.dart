@@ -30,7 +30,7 @@ class ProductServiceImpl implements ProductService {
   /// UPDATE related
   @override
   Future<Product> update(Product product) async {
-    _logger.d('Updating product');
+    _logger.d('Updating product with: $product');
 
     final defaultCurrency = await _appPreferencesService
         .getAppPreferences()

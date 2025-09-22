@@ -1,6 +1,7 @@
 {
     "@@locale": "en",
     "accept": "Accept",
+    "total": "Total",
     "details": "Details",
     "quantity": "Quantity",
     "unit_price": "Unit price",

@@ -32,12 +32,12 @@ class ProductDto {
       _$ProductDtoFromJson(json);
 
   Product toEntity(Currency currency) {
-    return Product.fromMinorUnits(
+    return Product.fromMoney(
       currency,
       id: id,
       name: name,
-      defaultPrice: defaultPrice,
-      purchasePrice: purchasePrice,
+      defaultPrice: Money.fromIntWithCurrency(defaultPrice, currency),
+      purchasePrice: Money.fromIntWithCurrency(purchasePrice, currency),
       stock: stock,
     );
   }

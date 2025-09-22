@@ -12,6 +12,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accept => 'Accept';
 
   @override
+  String get total => 'Total';
+
+  @override
   String get details => 'Details';
 
   @override

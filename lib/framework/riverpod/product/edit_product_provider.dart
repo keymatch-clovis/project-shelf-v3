@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
@@ -12,6 +13,7 @@ import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/app/dto/update_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
+import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/selected_product_provider.dart';
@@ -26,6 +28,7 @@ enum EditProductStatus { initial, loading, success }
 abstract class EditProductState with _$EditProductState {
   const factory EditProductState({
     @Default(EditProductStatus.initial) EditProductStatus status,
+    required Currency currency,
     required ProductDto product,
     required Input nameInput,
     required Input defaultPriceInput,
@@ -61,6 +64,7 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
     final product = (selectedProductState as Selected).product;
 
     return EditProductState(
+      currency: appPreferences.defaultCurrency,
       product: product,
       nameInput: Input(StringValidator(isRequired: true), value: product.name),
       defaultPriceInput: Input(
@@ -144,19 +148,23 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
   }
 
   Future<void> edit() async {
-    await future;
-    assert(state.value!.isValid);
+    final value = await future;
+    assert(value.isValid);
 
-    state = AsyncData(state.value!.copyWith(status: EditProductStatus.loading));
+    state = AsyncData(value.copyWith(status: EditProductStatus.loading));
 
     await _updateProductUseCase
         .exec(
           UpdateProductRequest(
-            id: state.value!.product.id,
-            name: state.value!.nameInput.value.trim(),
-            defaultPrice: int.tryParse(state.value!.defaultPriceInput.value),
-            purchasePrice: int.tryParse(state.value!.purchasePriceInput.value),
-            stock: int.tryParse(state.value!.stockInput.value),
+            id: value.product.id,
+            name: value.nameInput.value.trim(),
+            defaultPrice: value.currency.tryParse(
+              value.defaultPriceInput.value,
+            ),
+            purchasePrice: value.currency.tryParse(
+              value.purchasePriceInput.value,
+            ),
+            stock: int.tryParse(value.stockInput.value),
           ),
         )
         .then((it) {

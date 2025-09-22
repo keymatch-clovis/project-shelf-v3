@@ -93,14 +93,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     if (widget.value != null) {
       _controller.text = widget.value!;
+
+      final oldValue = _controller.value;
+      TextEditingValue newValue = oldValue;
+
+      widget.inputFormatters?.forEach((it) {
+        newValue = it.formatEditUpdate(oldValue, newValue);
+      });
+
+      _controller.value = newValue;
     }
 
     return Column(
       children: [
         TextFormField(
           readOnly: widget.readOnly,
-          showCursor: widget.readOnly,
-
           maxLength: widget.maxLength,
           controller: _controller,
           focusNode: _focusNode,

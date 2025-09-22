@@ -22,11 +22,11 @@ class Product {
     assert(stock >= 0);
   }
 
-  factory Product.fromMinorUnits(
+  factory Product.fromMoney(
     Currency currency, {
     required String name,
-    int? defaultPrice,
-    int? purchasePrice,
+    Money? defaultPrice,
+    Money? purchasePrice,
     int? stock,
     Id? id,
   }) {
@@ -34,14 +34,15 @@ class Product {
 
     return Product(
       name: name,
-      defaultPrice: defaultPrice != null
-          ? Money.fromIntWithCurrency(defaultPrice, currency)
-          : zero,
-      purchasePrice: purchasePrice != null
-          ? Money.fromIntWithCurrency(purchasePrice, currency)
-          : zero,
+      defaultPrice: defaultPrice ?? zero,
+      purchasePrice: purchasePrice ?? zero,
       stock: stock ?? 0,
       id: id,
     );
+  }
+
+  @override
+  String toString() {
+    return 'Product [$id]: name=$name, defaultPrice=$defaultPrice, purchasePrice=$purchasePrice, stock=$stock';
   }
 }

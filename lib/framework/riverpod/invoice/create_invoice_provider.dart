@@ -2,15 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/object_input.dart';
-import 'package:project_shelf_v3/adapter/common/validator/int_validator.dart';
 import 'package:project_shelf_v3/adapter/common/validator/object_validator.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_draft_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/invoice/state/create_invoice_product_state.dart';
 
 part "create_invoice_provider.freezed.dart";
 
@@ -24,8 +20,7 @@ abstract class CreateInvoiceState with _$CreateInvoiceState {
     @Default(CreateInvoiceStatus.INITIAL) CreateInvoiceStatus status,
     required ObjectInput<DateTime> dateInput,
     required ObjectInput<CustomerDto> customerInput,
-    required List<ObjectInput<InvoiceProductDto>> invoiceProductInputs,
-    required CreateInvoiceProductState createInvoiceProductState,
+    required List<InvoiceProductDto> invoiceProducts,
   }) = _CreateInvoiceState;
 
   const CreateInvoiceState._();
@@ -55,12 +50,7 @@ final class CreateInvoiceAsyncNotifier
       customerInput: ObjectInput<CustomerDto>(
         ObjectValidator(isRequired: true),
       ),
-      invoiceProductInputs: const [],
-      createInvoiceProductState: CreateInvoiceProductState(
-        productInput: ObjectInput(ObjectValidator(isRequired: true)),
-        quantityInput: Input(IntValidator(isRequired: true)),
-        unitPriceInput: Input(IntValidator(isRequired: true)),
-      ),
+      invoiceProducts: const [],
     );
   }
 
@@ -88,17 +78,11 @@ final class CreateInvoiceAsyncNotifier
     ref.read(createInvoiceDraftProvider.notifier).updateCustomerId(dto?.id);
   }
 
-  void setCreateInvoiceProduct(ProductDto dto) async {
+  Future<void> addInvoiceProduct(InvoiceProductDto dto) async {
     final value = await future;
 
     state = AsyncData(
-      value.copyWith(
-        createInvoiceProductState: value.createInvoiceProductState.copyWith(
-          productInput: value.createInvoiceProductState.productInput.copyWith(
-            value: dto,
-          ),
-        ),
-      ),
+      value.copyWith(invoiceProducts: [...value.invoiceProducts, dto]),
     );
   }
 }

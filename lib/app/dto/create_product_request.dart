@@ -1,7 +1,9 @@
+import 'package:money2/money2.dart';
+
 final class CreateProductRequest {
   final String name;
-  final int? defaultPrice;
-  final int? purchasePrice;
+  final Money? defaultPrice;
+  final Money? purchasePrice;
   final int? stock;
 
   CreateProductRequest({

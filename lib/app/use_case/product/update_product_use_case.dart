@@ -12,14 +12,12 @@ class UpdateProductUseCase {
   final _service = getIt.get<ProductService>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
-  UpdateProductUseCase();
-
   Future<Product> exec(UpdateProductRequest request) async {
     final appPreferences = await _appPreferencesService.getAppPreferences();
 
-    _logger.d('Updating product');
+    _logger.d('Updating product with: $request');
     return await _service.update(
-      Product.fromMinorUnits(
+      Product.fromMoney(
         appPreferences.defaultCurrency,
         id: request.id,
         name: request.name,

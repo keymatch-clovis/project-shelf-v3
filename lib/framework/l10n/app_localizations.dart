@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Accept'**
   String get accept;
 
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:
