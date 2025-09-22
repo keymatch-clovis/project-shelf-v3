@@ -110,6 +110,24 @@ abstract class AppLocalizations {
   /// **'Details'**
   String get details;
 
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided for @unit_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit price'**
+  String get unit_price;
+
+  /// No description provided for @no_products_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found'**
+  String get no_products_found;
+
   /// No description provided for @create_customer.
   ///
   /// In en, this message translates to:

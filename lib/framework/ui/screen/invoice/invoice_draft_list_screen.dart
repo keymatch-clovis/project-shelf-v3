@@ -27,7 +27,11 @@ final class _Screen extends ConsumerWidget {
 
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_, _) {
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          return;
+        }
+
         if (mode == InvoiceDraftListMode.SELECT) {
           ref
               .read(invoiceDraftListProvider.notifier)

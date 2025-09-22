@@ -15,6 +15,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get details => 'Details';
 
   @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get unit_price => 'Unit price';
+
+  @override
+  String get no_products_found => 'No products found';
+
+  @override
   String get create_customer => 'Create customer';
 
   @override

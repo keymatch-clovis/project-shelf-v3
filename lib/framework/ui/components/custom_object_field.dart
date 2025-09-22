@@ -98,10 +98,12 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: InkWell(
-                  onTap: () {
-                    _focusNode.requestFocus();
-                    widget.onTap?.call();
-                  },
+                  onTap: widget.onTap != null
+                      ? () {
+                          _focusNode.requestFocus();
+                          widget.onTap?.call();
+                        }
+                      : null,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 12, top: 6, bottom: 6),
                     child: Row(

@@ -11,7 +11,8 @@ import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_draft
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/product_search_delegate.dart';
+import 'package:project_shelf_v3/framework/ui/components/dialog/create_invoice_product_dialog.dart';
+import 'package:project_shelf_v3/framework/ui/components/product_search_anchor.dart';
 
 final class CreateInvoiceScreen extends ConsumerWidget {
   const CreateInvoiceScreen({super.key});
@@ -23,6 +24,18 @@ final class CreateInvoiceScreen extends ConsumerWidget {
     //
     // NOTE: I don't know another way of doing this.
     ref.listen(customerSearchProvider, (_, _) {});
+
+    ref.listen(
+      createInvoiceProvider.select((it) => it.value!.createInvoiceProductState),
+      (_, state) {
+        if (state.productInput.value != null) {
+          showDialog(
+            context: context,
+            builder: (_) => CreateInvoiceProductDialog(state),
+          );
+        }
+      },
+    );
 
     // NOTE: We have to be careful here. This screen is using both the
     // `createInvoiceProvider` and the `createInvoiceDraftProvider`. The
@@ -123,17 +136,25 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
-      floatingActionButton: switch (_selectedTab) {
-        1 => FloatingActionButton(
-          onPressed: () {
-            showSearch(context: context, delegate: ProductSearchDelegate());
-          },
-          elevation: 0,
-          child: const Icon(Icons.add_rounded),
-        ),
-        _ => null,
-      },
+      floatingActionButton: _FloatingActionButton(_selectedTab),
       bottomNavigationBar: BottomAppBar(child: Row(children: [])),
+    );
+  }
+}
+
+final class _FloatingActionButton extends ConsumerWidget {
+  final int currentTab;
+
+  const _FloatingActionButton(this.currentTab);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProductSearchAnchor(
+      onSelect: (product) {
+        ref
+            .read(createInvoiceProvider.notifier)
+            .setCreateInvoiceProduct(product);
+      },
     );
   }
 }
