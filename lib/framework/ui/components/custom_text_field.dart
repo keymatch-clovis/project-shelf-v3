@@ -11,6 +11,7 @@ final class CustomTextField extends StatefulWidget {
   final void Function(String)? onFieldSubmitted;
   final int? maxLength;
   final bool readOnly;
+  final String? helperText;
 
   /// Custom fields
   final String label;
@@ -30,6 +31,7 @@ final class CustomTextField extends StatefulWidget {
     this.onFieldSubmitted,
     this.maxLength,
     this.readOnly = false,
+    this.helperText,
 
     /// Custom fields
     required this.label,
@@ -105,6 +107,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     }
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
           readOnly: widget.readOnly,
@@ -112,6 +115,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           controller: _controller,
           focusNode: _focusNode,
           decoration: InputDecoration(
+            helperText: widget.helperText,
             border: OutlineInputBorder(),
             label: _renderLabel(widget.label, isRequired: widget.isRequired),
             suffixIcon: widget.onClear != null && _controller.text.isNotEmpty

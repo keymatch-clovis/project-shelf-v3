@@ -127,7 +127,13 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                             descendantsAreFocusable: false,
                             canRequestFocus: false,
                             child: IconButton(
-                              onPressed: widget.onClear,
+                              onPressed: () {
+                                setState(() {
+                                  _status = CustomObjectFieldStatus.DIRTY;
+                                });
+
+                                widget.onClear?.call();
+                              },
                               icon: const Icon(Icons.close_rounded),
                             ),
                           ),

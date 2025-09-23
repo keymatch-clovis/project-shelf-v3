@@ -27,10 +27,12 @@ import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preference
 import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/delete_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/get_invoice_drafts_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/watch_invoices_use_case.dart';
@@ -130,6 +132,8 @@ void main() async {
   );
 
   // Customer related.
+  getIt.registerLazySingleton<FindCustomerUseCase>(() => FindCustomerUseCase());
+
   getIt.registerLazySingleton<WatchCustomersUseCase>(
     () => WatchCustomersUseCase(),
   );
@@ -165,6 +169,10 @@ void main() async {
 
   getIt.registerLazySingleton<UpdateInvoiceDraftUseCase>(
     () => UpdateInvoiceDraftUseCase(),
+  );
+
+  getIt.registerLazySingleton<FindInvoiceDraftUseCase>(
+    () => FindInvoiceDraftUseCase(),
   );
 
   runApp(

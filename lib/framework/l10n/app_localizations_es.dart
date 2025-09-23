@@ -120,6 +120,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get customer => 'Customer';
 
   @override
+  String current_product_stock(int stock) {
+    final intl.NumberFormat stockNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String stockString = stockNumberFormat.format(stock);
+
+    return 'Current product stock: $stockString';
+  }
+
+  @override
   String get date => 'Date';
 
   @override

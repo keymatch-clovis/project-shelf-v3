@@ -23,8 +23,11 @@ final class CreateInvoiceScreen extends ConsumerWidget {
     // search anchor is closed.
     //
     // NOTE: I don't know another way of doing this.
-    ref.listen(customerSearchProvider, (_, _) {});
+    // ref.listen(customerSearchProvider, (_, _) {});
 
+    // When the invoice product creation provider changes, it means the user
+    // has selected a product to add to the invoice. We need to open a dialog
+    // to set the product properties.
     ref.listen(
       createInvoiceProductProvider.select((it) => it.value!.productInput.value),
       (_, product) {
@@ -158,8 +161,15 @@ final class _FloatingActionButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return switch (currentTab) {
       1 => ProductSearchAnchor(
-        onSelect: (product) {
-          ref.read(createInvoiceProductProvider.notifier).setProduct(product);
+        onSelect: (product) async {
+          final currentStock = await ref
+              .read(createInvoiceProvider.notifier)
+              .getCurrentProductQuantity(product.id)
+              .then((it) => product.stock - it);
+
+          ref
+              .read(createInvoiceProductProvider.notifier)
+              .setProduct(product: product, currentStock: currentStock);
         },
       ),
       _ => const SizedBox.shrink(),

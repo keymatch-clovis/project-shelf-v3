@@ -49,41 +49,46 @@ final class _Dialog extends ConsumerWidget {
           children: [
             Text(localizations.add_product, style: theme.textTheme.titleMedium),
             const SizedBox(height: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 6,
-              children: [
-                CustomObjectField(
-                  isRequired: true,
-                  body: Text(state.productInput.value?.name ?? ""),
-                  label: localizations.product,
-                ),
-                CustomTextField(
-                  isRequired: true,
-                  textInputAction: TextInputAction.next,
-                  value: state.unitPriceInput.value,
-                  label: localizations.unit_price,
-                  keyboardType: TextInputType.number,
-                  errors: state.unitPriceInput.errors.parseErrors(context),
-                  onChanged: ref
-                      .read(createInvoiceProductProvider.notifier)
-                      .setUnitPrice,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    CurrencyInputFormatter(currency: state.currency),
-                  ],
-                ),
-                CustomTextField(
-                  isRequired: true,
-                  label: localizations.quantity,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  errors: state.quantityInput.errors.parseErrors(context),
-                  onChanged: ref
-                      .read(createInvoiceProductProvider.notifier)
-                      .setQuantity,
-                ),
-              ],
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 6,
+                children: [
+                  CustomObjectField(
+                    isRequired: true,
+                    body: Text(state.productInput.value!.name),
+                    label: localizations.product,
+                  ),
+                  CustomTextField(
+                    isRequired: true,
+                    textInputAction: TextInputAction.next,
+                    value: state.unitPriceInput.value,
+                    label: localizations.unit_price,
+                    keyboardType: TextInputType.number,
+                    errors: state.unitPriceInput.errors.parseErrors(context),
+                    onChanged: ref
+                        .read(createInvoiceProductProvider.notifier)
+                        .setUnitPrice,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CurrencyInputFormatter(currency: state.currency),
+                    ],
+                  ),
+                  CustomTextField(
+                    isRequired: true,
+                    label: localizations.quantity,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    errors: state.quantityInput.errors.parseErrors(context),
+                    helperText: localizations.current_product_stock(
+                      state.currentStock!,
+                    ),
+                    onChanged: ref
+                        .read(createInvoiceProductProvider.notifier)
+                        .setQuantity,
+                  ),
+                ],
+              ),
             ),
             const Divider(),
             _Total(state.invoiceProduct?.total),

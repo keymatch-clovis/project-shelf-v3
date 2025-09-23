@@ -3,22 +3,31 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_search_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_draft_list_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
-final class InvoiceDraftListScreen extends StatelessWidget {
+final class InvoiceDraftListScreen extends ConsumerWidget {
   const InvoiceDraftListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const _Screen();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _Screen(
+      onSelect: (invoiceDraft) {
+        ref.read(selectedInvoiceDraftProvider.notifier).select(invoiceDraft);
+
+        context.go(CustomRoute.INVOICE_CREATE.route);
+      },
+    );
   }
 }
 
 final class _Screen extends ConsumerWidget {
-  const _Screen();
+  const _Screen({required this.onSelect});
+
+  final void Function(InvoiceDraftSearchDto) onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,7 +64,7 @@ final class _Screen extends ConsumerWidget {
               : null,
           actions: [_SelectAction(), _DeleteAction()],
         ),
-        body: _Body(),
+        body: _Body(onSelect: onSelect),
       ),
     );
   }
@@ -105,14 +114,16 @@ final class _SelectAction extends ConsumerWidget {
 }
 
 final class _Body extends ConsumerWidget {
-  const _Body();
+  const _Body({required this.onSelect});
+
+  final void Function(InvoiceDraftSearchDto) onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(invoiceDraftListProvider.select((it) => it.items));
 
     return items.when(
-      data: (items) => _List(items),
+      data: (items) => _List(items, onSelect: onSelect),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, _) {
         Logger().f(err);
@@ -123,9 +134,10 @@ final class _Body extends ConsumerWidget {
 }
 
 final class _List extends StatelessWidget {
-  final List<InvoiceDraftDto> items;
+  final List<InvoiceDraftSearchDto> items;
+  final void Function(InvoiceDraftSearchDto) onSelect;
 
-  const _List(this.items);
+  const _List(this.items, {required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -156,16 +168,17 @@ final class _List extends StatelessWidget {
       itemCount: items.length,
       separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, index) {
-        return _Tile(items[index]);
+        return _Tile(items[index], onSelect: onSelect);
       },
     );
   }
 }
 
 final class _Tile extends ConsumerWidget {
-  final InvoiceDraftDto dto;
+  final InvoiceDraftSearchDto dto;
+  final void Function(InvoiceDraftSearchDto) onSelect;
 
-  const _Tile(this.dto);
+  const _Tile(this.dto, {required this.onSelect});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -174,10 +187,13 @@ final class _Tile extends ConsumerWidget {
     return ListTile(
       title: Text("invoice: ${dto.createdAt}"),
       onTap: () {
-        if (state.mode == InvoiceDraftListMode.SELECT) {
-          state.selected.contains(dto)
-              ? ref.read(invoiceDraftListProvider.notifier).deselect(dto)
-              : ref.read(invoiceDraftListProvider.notifier).select(dto);
+        switch (state.mode) {
+          case InvoiceDraftListMode.SELECT:
+            state.selected.contains(dto)
+                ? ref.read(invoiceDraftListProvider.notifier).deselect(dto)
+                : ref.read(invoiceDraftListProvider.notifier).select(dto);
+          case InvoiceDraftListMode.LIST:
+            onSelect(dto);
         }
       },
       onLongPress: () =>

@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:objectbox/objectbox.dart';
 import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_product_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart';
@@ -72,43 +73,39 @@ final class InvoiceDraftBox implements InvoiceDraftRepository {
 
   @override
   Future<void> update(UpdateArgs args) async {
-    final draftBox = _objectBox.store.box<InvoiceDraftDto>();
-    final draftProductBox = _objectBox.store.box<InvoiceDraftProductDto>();
-
-    final draft = (await draftBox.getAsync(args.id))!;
-
-    // Remove the products from the draft invoice, and add the new ones.
-    //
-    // NOTE: This is not as performant, as we are updating the products each
-    // time any of the draft properties change. We can leave it like this for
-    // now though, as they are not that many, and maybe the biggest invoice
-    // might have 100+ products, and that is not that bad for a single
-    // transaction.
-    await draftProductBox.removeManyAsync(
-      draft.products.map((it) => it.id).toList(),
-    );
-
-    draft.products.clear();
-
-    final products =
-        args.products.map(
-          (it) => InvoiceDraftProductDto(
-            productId: it.productId,
-            quantity: it.quantity,
-            unitPrice: it.unitPrice,
-          ),
-        )..forEach((it) {
-          it.invoice.target = draft;
-        });
-
-    await draftProductBox.putManyAsync(products.toList());
-
-    draft.products.addAll(products);
-
-    // Update other simple properties
-    draft.date = args.date;
-
     _logger.d("Updating invoice draft with: $args");
-    draftBox.putAsync(draft);
+    await _objectBox.store.runInTransactionAsync(TxMode.write, (store, args) {
+      final draftBox = store.box<InvoiceDraftDto>();
+      final draftProductBox = store.box<InvoiceDraftProductDto>();
+
+      final draft = (draftBox.get(args.id))!;
+
+      // Remove the products from the draft invoice, and add the new ones.
+      //
+      // NOTE: This is not as performant, as we are updating the products each
+      // time any of the draft properties change. We can leave it like this for
+      // now though, as they are not that many, and maybe the biggest invoice
+      // might have 100+ products, and that is not that bad for a single
+      // transaction.
+      draftProductBox.removeMany(draft.products.map((it) => it.id).toList());
+
+      draft.products.clear();
+
+      final products = args.products.map(
+        (it) => InvoiceDraftProductDto(
+          productId: it.productId,
+          quantity: it.quantity,
+          unitPrice: it.unitPrice,
+        ),
+      );
+
+      draft.products.addAll(products);
+
+      // Update other simple properties
+      draft.date = args.date;
+      draft.customerId = args.customerId;
+
+      draftBox.put(draft);
+    }, args);
   }
 }

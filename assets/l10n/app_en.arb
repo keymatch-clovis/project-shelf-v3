@@ -37,6 +37,15 @@
     "err_value_required": "A value is required",
     "invoices": "Invoices",
     "customer": "Customer",
+    "current_product_stock": "Current product stock: {stock}",
+    "@current_product_stock": {
+      "placeholders": {
+        "stock": {
+          "type": "int",
+          "format": "decimalPattern"
+        }
+      }
+    },
     "date": "Date",
     "no_customers_found": "No customers found",
     "edit_product": "Edit product",

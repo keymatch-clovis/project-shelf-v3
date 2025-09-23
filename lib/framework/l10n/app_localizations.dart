@@ -320,6 +320,12 @@ abstract class AppLocalizations {
   /// **'Customer'**
   String get customer;
 
+  /// No description provided for @current_product_stock.
+  ///
+  /// In en, this message translates to:
+  /// **'Current product stock: {stock}'**
+  String current_product_stock(int stock);
+
   /// No description provided for @date.
   ///
   /// In en, this message translates to:

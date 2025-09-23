@@ -13,7 +13,6 @@ class ProductServiceImpl implements ProductService {
   final _repository = getIt.get<ProductRepository>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
-  /// CREATE related
   @override
   Future<Id> create(Product product) async {
     _logger.d('Creating product');
@@ -27,7 +26,6 @@ class ProductServiceImpl implements ProductService {
     );
   }
 
-  /// UPDATE related
   @override
   Future<Product> update(Product product) async {
     _logger.d('Updating product with: $product');
@@ -49,7 +47,6 @@ class ProductServiceImpl implements ProductService {
         .then((dto) => dto.toEntity(defaultCurrency));
   }
 
-  /// READ related
   @override
   Stream<List<Product>> watch() {
     _logger.d('Watching products');
@@ -119,7 +116,6 @@ class ProductServiceImpl implements ProductService {
         .then((dto) => dto.toEntity(appPreferences.defaultCurrency));
   }
 
-  /// DELETE related
   @override
   Future<void> delete(Id id) async {
     _logger.d('Deleting product with ID: $id');

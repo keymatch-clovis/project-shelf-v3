@@ -2,13 +2,13 @@ import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_dto.dart';
 
 final class CreateProductDto {
   final int productId;
-  final int quantity;
   final int unitPrice;
+  final int quantity;
 
   const CreateProductDto({
     required this.productId,
-    required this.quantity,
     required this.unitPrice,
+    required this.quantity,
   });
 }
 
@@ -31,7 +31,7 @@ final class UpdateArgs {
   final DateTime? date;
   final int? remainingUnpaidBalance;
   final int? customerId;
-  final List<CreateProductDto> products;
+  final Iterable<CreateProductDto> products;
 
   const UpdateArgs({
     required this.id,

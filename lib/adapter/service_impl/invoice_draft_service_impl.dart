@@ -41,7 +41,18 @@ final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   Future<void> update(InvoiceDraft invoiceDraft) {
     _logger.d("Updating invoice draft with: $invoiceDraft");
     return _repository.update(
-      UpdateArgs(id: invoiceDraft.id!, date: invoiceDraft.date),
+      UpdateArgs(
+        id: invoiceDraft.id!,
+        date: invoiceDraft.date,
+        customerId: invoiceDraft.customerId,
+        products: invoiceDraft.products.map(
+          (it) => CreateProductDto(
+            productId: it.productId,
+            unitPrice: it.unitPrice.minorUnits.toInt(),
+            quantity: it.quantity,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -12,7 +12,6 @@ class ProductDao implements ProductRepository {
 
   final _database = getIt.get<ShelfDatabase>();
 
-  /// CREATE related
   @override
   Future<Id> create(CreateArgs args) async {
     _logger.d("Creating product with: $args");
@@ -32,7 +31,6 @@ class ProductDao implements ProductRepository {
         );
   }
 
-  /// UPDATE related
   @override
   Future<ProductDto> update(UpdateArgs args) async {
     _logger.d("Updating product with: $args");
@@ -53,7 +51,6 @@ class ProductDao implements ProductRepository {
     return await findById(args.id);
   }
 
-  /// READ related
   @override
   Stream<List<ProductDto>> watch() {
     _logger.d("Watching products");
@@ -111,7 +108,6 @@ class ProductDao implements ProductRepository {
         .getSingle();
   }
 
-  /// DELETE related
   @override
   Future<void> delete(Id id) async {
     _logger.d("Deleting product with ID: $id");

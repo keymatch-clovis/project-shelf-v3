@@ -99,14 +99,14 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
     ],
-    relations: <obx_int.ModelRelation>[
-      obx_int.ModelRelation(
-        id: const obx_int.IdUid(1, 7112647908102025118),
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
         name: 'products',
-        targetId: const obx_int.IdUid(2, 833941145084202839),
+        srcEntity: 'InvoiceDraftProductDto',
+        srcField: 'invoice',
       ),
     ],
-    backlinks: <obx_int.ModelBacklink>[],
   ),
 ];
 
@@ -162,7 +162,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       7593264896029825046,
       3863485180279580678,
     ],
-    retiredRelationUids: const [],
+    retiredRelationUids: const [7112647908102025118],
     modelVersion: 5,
     modelVersionParserMinimum: 5,
     version: 1,
@@ -227,7 +227,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
       model: _entities[1],
       toOneRelations: (InvoiceDraftDto object) => [],
       toManyRelations: (InvoiceDraftDto object) => {
-        obx_int.RelInfo<InvoiceDraftDto>.toMany(1, object.id): object.products,
+        obx_int.RelInfo<InvoiceDraftProductDto>.toOneBacklink(
+          7,
+          object.id,
+          (InvoiceDraftProductDto srcObject) => srcObject.invoice,
+        ): object.products,
       },
       getId: (InvoiceDraftDto object) => object.id,
       setId: (InvoiceDraftDto object, int id) {
@@ -273,7 +277,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
         obx_int.InternalToManyAccess.setRelInfo<InvoiceDraftDto>(
           object.products,
           store,
-          obx_int.RelInfo<InvoiceDraftDto>.toMany(1, object.id),
+          obx_int.RelInfo<InvoiceDraftProductDto>.toOneBacklink(
+            7,
+            object.id,
+            (InvoiceDraftProductDto srcObject) => srcObject.invoice,
+          ),
         );
         return object;
       },
@@ -340,7 +348,7 @@ class InvoiceDraftDto_ {
 
   /// see [InvoiceDraftDto.products]
   static final products =
-      obx.QueryRelationToMany<InvoiceDraftDto, InvoiceDraftProductDto>(
-        _entities[1].relations[0],
+      obx.QueryBacklinkToMany<InvoiceDraftProductDto, InvoiceDraftDto>(
+        InvoiceDraftProductDto_.invoice,
       );
 }

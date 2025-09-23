@@ -16,6 +16,7 @@ class InvoiceDraftDto {
   @Property(type: PropertyType.date)
   DateTime createdAt;
 
+  @Backlink("invoice")
   final products = ToMany<InvoiceDraftProductDto>();
 
   InvoiceDraftDto({

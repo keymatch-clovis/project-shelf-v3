@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_search_dto.dart';
 
 /// State related
 enum SelectedInvoiceDraftStatus { INITIAL, LOADING, DELETED }
@@ -14,15 +14,18 @@ sealed class SelectedInvoiceDraftState {
 final class None extends SelectedInvoiceDraftState {}
 
 final class Selected extends SelectedInvoiceDraftState {
-  final InvoiceDraftDto dto;
+  final InvoiceDraftSearchDto searchDto;
 
-  Selected({required this.dto, super.status});
+  Selected({required this.searchDto, super.status});
 
   Selected copyWith({
-    InvoiceDraftDto? dto,
+    InvoiceDraftSearchDto? searchDto,
     SelectedInvoiceDraftStatus? status,
   }) {
-    return Selected(dto: dto ?? this.dto, status: status ?? this.status);
+    return Selected(
+      searchDto: searchDto ?? this.searchDto,
+      status: status ?? this.status,
+    );
   }
 }
 
@@ -34,8 +37,12 @@ final class SelectedInvoiceDraftNotifier
     return None();
   }
 
-  void select(InvoiceDraftDto dto) {
-    state = Selected(dto: dto);
+  void select(InvoiceDraftSearchDto dto) {
+    state = Selected(searchDto: dto);
+  }
+
+  void clear() {
+    state = None();
   }
 }
 

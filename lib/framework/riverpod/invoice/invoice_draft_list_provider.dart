@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_draft_search_dto.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/delete_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_draft_items_provider.dart';
 import 'package:project_shelf_v3/main.dart';
@@ -13,8 +13,8 @@ enum InvoiceDraftListMode { LIST, SELECT }
 abstract class InvoiceDraftListState with _$InvoiceDraftListState {
   factory InvoiceDraftListState({
     @Default(InvoiceDraftListMode.LIST) InvoiceDraftListMode mode,
-    @Default(<InvoiceDraftDto>{}) Set<InvoiceDraftDto> selected,
-    required AsyncValue<List<InvoiceDraftDto>> items,
+    @Default(<InvoiceDraftSearchDto>{}) Set<InvoiceDraftSearchDto> selected,
+    required AsyncValue<List<InvoiceDraftSearchDto>> items,
   }) = _InvoiceDraftListState;
 }
 
@@ -40,14 +40,14 @@ final class InvoiceDraftListNotifier extends Notifier<InvoiceDraftListState> {
     );
   }
 
-  void select(InvoiceDraftDto dto) {
+  void select(InvoiceDraftSearchDto dto) {
     state = state.copyWith(
       selected: {...state.selected, dto},
       mode: InvoiceDraftListMode.SELECT,
     );
   }
 
-  void deselect(InvoiceDraftDto dto) {
+  void deselect(InvoiceDraftSearchDto dto) {
     state = state.copyWith(selected: {...state.selected}..remove(dto));
   }
 

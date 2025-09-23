@@ -18,15 +18,17 @@ final class InvoiceDraftProduct {
 
 final class InvoiceDraft {
   final DateTime createdAt;
+  final List<InvoiceDraftProduct> products;
 
   InvoiceDraft({
     this.date,
     this.id,
     this.customerId,
     this.remainingUnpaidBalance,
-    this.products = const [],
+    List<InvoiceDraftProduct>? products,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  }) : createdAt = createdAt ?? DateTime.now(),
+       products = products ?? [];
 
   Id? id;
 
@@ -40,10 +42,8 @@ final class InvoiceDraft {
 
   DateTime? date;
 
-  final Id? customerId;
-  final int? remainingUnpaidBalance;
-
-  final List<InvoiceDraftProduct> products;
+  Id? customerId;
+  int? remainingUnpaidBalance;
 
   void addProduct({
     required int productId,

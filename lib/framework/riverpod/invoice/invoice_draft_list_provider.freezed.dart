@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$InvoiceDraftListState {
 
- InvoiceDraftListMode get mode; Set<InvoiceDraftDto> get selected; AsyncValue<List<InvoiceDraftDto>> get items;
+ InvoiceDraftListMode get mode; Set<InvoiceDraftSearchDto> get selected; AsyncValue<List<InvoiceDraftSearchDto>> get items;
 /// Create a copy of InvoiceDraftListState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $InvoiceDraftListStateCopyWith<$Res>  {
   factory $InvoiceDraftListStateCopyWith(InvoiceDraftListState value, $Res Function(InvoiceDraftListState) _then) = _$InvoiceDraftListStateCopyWithImpl;
 @useResult
 $Res call({
- InvoiceDraftListMode mode, Set<InvoiceDraftDto> selected, AsyncValue<List<InvoiceDraftDto>> items
+ InvoiceDraftListMode mode, Set<InvoiceDraftSearchDto> selected, AsyncValue<List<InvoiceDraftSearchDto>> items
 });
 
 
@@ -66,8 +66,8 @@ class _$InvoiceDraftListStateCopyWithImpl<$Res>
   return _then(_self.copyWith(
 mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as InvoiceDraftListMode,selected: null == selected ? _self.selected : selected // ignore: cast_nullable_to_non_nullable
-as Set<InvoiceDraftDto>,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as AsyncValue<List<InvoiceDraftDto>>,
+as Set<InvoiceDraftSearchDto>,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as AsyncValue<List<InvoiceDraftSearchDto>>,
   ));
 }
 
@@ -152,7 +152,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( InvoiceDraftListMode mode,  Set<InvoiceDraftDto> selected,  AsyncValue<List<InvoiceDraftDto>> items)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( InvoiceDraftListMode mode,  Set<InvoiceDraftSearchDto> selected,  AsyncValue<List<InvoiceDraftSearchDto>> items)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InvoiceDraftListState() when $default != null:
 return $default(_that.mode,_that.selected,_that.items);case _:
@@ -173,7 +173,7 @@ return $default(_that.mode,_that.selected,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( InvoiceDraftListMode mode,  Set<InvoiceDraftDto> selected,  AsyncValue<List<InvoiceDraftDto>> items)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( InvoiceDraftListMode mode,  Set<InvoiceDraftSearchDto> selected,  AsyncValue<List<InvoiceDraftSearchDto>> items)  $default,) {final _that = this;
 switch (_that) {
 case _InvoiceDraftListState():
 return $default(_that.mode,_that.selected,_that.items);case _:
@@ -193,7 +193,7 @@ return $default(_that.mode,_that.selected,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( InvoiceDraftListMode mode,  Set<InvoiceDraftDto> selected,  AsyncValue<List<InvoiceDraftDto>> items)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( InvoiceDraftListMode mode,  Set<InvoiceDraftSearchDto> selected,  AsyncValue<List<InvoiceDraftSearchDto>> items)?  $default,) {final _that = this;
 switch (_that) {
 case _InvoiceDraftListState() when $default != null:
 return $default(_that.mode,_that.selected,_that.items);case _:
@@ -208,18 +208,18 @@ return $default(_that.mode,_that.selected,_that.items);case _:
 
 
 class _InvoiceDraftListState implements InvoiceDraftListState {
-   _InvoiceDraftListState({this.mode = InvoiceDraftListMode.LIST, final  Set<InvoiceDraftDto> selected = const <InvoiceDraftDto>{}, required this.items}): _selected = selected;
+   _InvoiceDraftListState({this.mode = InvoiceDraftListMode.LIST, final  Set<InvoiceDraftSearchDto> selected = const <InvoiceDraftSearchDto>{}, required this.items}): _selected = selected;
   
 
 @override@JsonKey() final  InvoiceDraftListMode mode;
- final  Set<InvoiceDraftDto> _selected;
-@override@JsonKey() Set<InvoiceDraftDto> get selected {
+ final  Set<InvoiceDraftSearchDto> _selected;
+@override@JsonKey() Set<InvoiceDraftSearchDto> get selected {
   if (_selected is EqualUnmodifiableSetView) return _selected;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableSetView(_selected);
 }
 
-@override final  AsyncValue<List<InvoiceDraftDto>> items;
+@override final  AsyncValue<List<InvoiceDraftSearchDto>> items;
 
 /// Create a copy of InvoiceDraftListState
 /// with the given fields replaced by the non-null parameter values.
@@ -251,7 +251,7 @@ abstract mixin class _$InvoiceDraftListStateCopyWith<$Res> implements $InvoiceDr
   factory _$InvoiceDraftListStateCopyWith(_InvoiceDraftListState value, $Res Function(_InvoiceDraftListState) _then) = __$InvoiceDraftListStateCopyWithImpl;
 @override @useResult
 $Res call({
- InvoiceDraftListMode mode, Set<InvoiceDraftDto> selected, AsyncValue<List<InvoiceDraftDto>> items
+ InvoiceDraftListMode mode, Set<InvoiceDraftSearchDto> selected, AsyncValue<List<InvoiceDraftSearchDto>> items
 });
 
 
@@ -272,8 +272,8 @@ class __$InvoiceDraftListStateCopyWithImpl<$Res>
   return _then(_InvoiceDraftListState(
 mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as InvoiceDraftListMode,selected: null == selected ? _self._selected : selected // ignore: cast_nullable_to_non_nullable
-as Set<InvoiceDraftDto>,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as AsyncValue<List<InvoiceDraftDto>>,
+as Set<InvoiceDraftSearchDto>,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as AsyncValue<List<InvoiceDraftSearchDto>>,
   ));
 }
 

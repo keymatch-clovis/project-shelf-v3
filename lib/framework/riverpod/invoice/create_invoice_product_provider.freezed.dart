@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateInvoiceProductState {
 
- Currency get currency; ObjectInput<ProductDto> get productInput; Input get unitPriceInput; Input get quantityInput;
+ Currency get currency; ObjectInput<ProductDto> get productInput; Input get unitPriceInput; Input get quantityInput; int? get currentStock;
 /// Create a copy of CreateInvoiceProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CreateInvoiceProductStateCopyWith<CreateInvoiceProductState> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.currentStock, currentStock) || other.currentStock == currentStock));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currency,productInput,unitPriceInput,quantityInput);
+int get hashCode => Object.hash(runtimeType,currency,productInput,unitPriceInput,quantityInput,currentStock);
 
 @override
 String toString() {
-  return 'CreateInvoiceProductState(currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput)';
+  return 'CreateInvoiceProductState(currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput, currentStock: $currentStock)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CreateInvoiceProductStateCopyWith<$Res>  {
   factory $CreateInvoiceProductStateCopyWith(CreateInvoiceProductState value, $Res Function(CreateInvoiceProductState) _then) = _$CreateInvoiceProductStateCopyWithImpl;
 @useResult
 $Res call({
- Currency currency, ObjectInput<ProductDto> productInput, Input unitPriceInput, Input quantityInput
+ Currency currency, ObjectInput<ProductDto> productInput, Input unitPriceInput, Input quantityInput, int? currentStock
 });
 
 
@@ -62,13 +62,14 @@ class _$CreateInvoiceProductStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateInvoiceProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currency = null,Object? productInput = null,Object? unitPriceInput = null,Object? quantityInput = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currency = null,Object? productInput = null,Object? unitPriceInput = null,Object? quantityInput = null,Object? currentStock = freezed,}) {
   return _then(_self.copyWith(
 currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,productInput: null == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable
 as ObjectInput<ProductDto>,unitPriceInput: null == unitPriceInput ? _self.unitPriceInput : unitPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,quantityInput: null == quantityInput ? _self.quantityInput : quantityInput // ignore: cast_nullable_to_non_nullable
-as Input,
+as Input,currentStock: freezed == currentStock ? _self.currentStock : currentStock // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Currency currency,  ObjectInput<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Currency currency,  ObjectInput<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput,  int? currentStock)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateInvoiceProductState() when $default != null:
-return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput);case _:
+return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput,_that.currentStock);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.qua
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Currency currency,  ObjectInput<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Currency currency,  ObjectInput<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput,  int? currentStock)  $default,) {final _that = this;
 switch (_that) {
 case _CreateInvoiceProductState():
-return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput);case _:
+return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput,_that.currentStock);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.qua
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Currency currency,  ObjectInput<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Currency currency,  ObjectInput<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput,  int? currentStock)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateInvoiceProductState() when $default != null:
-return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput);case _:
+return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput,_that.currentStock);case _:
   return null;
 
 }
@@ -209,13 +210,14 @@ return $default(_that.currency,_that.productInput,_that.unitPriceInput,_that.qua
 
 
 class _CreateInvoiceProductState extends CreateInvoiceProductState {
-  const _CreateInvoiceProductState({required this.currency, required this.productInput, required this.unitPriceInput, required this.quantityInput}): super._();
+  const _CreateInvoiceProductState({required this.currency, required this.productInput, required this.unitPriceInput, required this.quantityInput, this.currentStock}): super._();
   
 
 @override final  Currency currency;
 @override final  ObjectInput<ProductDto> productInput;
 @override final  Input unitPriceInput;
 @override final  Input quantityInput;
+@override final  int? currentStock;
 
 /// Create a copy of CreateInvoiceProductState
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +229,16 @@ _$CreateInvoiceProductStateCopyWith<_CreateInvoiceProductState> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.currentStock, currentStock) || other.currentStock == currentStock));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currency,productInput,unitPriceInput,quantityInput);
+int get hashCode => Object.hash(runtimeType,currency,productInput,unitPriceInput,quantityInput,currentStock);
 
 @override
 String toString() {
-  return 'CreateInvoiceProductState(currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput)';
+  return 'CreateInvoiceProductState(currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput, currentStock: $currentStock)';
 }
 
 
@@ -247,7 +249,7 @@ abstract mixin class _$CreateInvoiceProductStateCopyWith<$Res> implements $Creat
   factory _$CreateInvoiceProductStateCopyWith(_CreateInvoiceProductState value, $Res Function(_CreateInvoiceProductState) _then) = __$CreateInvoiceProductStateCopyWithImpl;
 @override @useResult
 $Res call({
- Currency currency, ObjectInput<ProductDto> productInput, Input unitPriceInput, Input quantityInput
+ Currency currency, ObjectInput<ProductDto> productInput, Input unitPriceInput, Input quantityInput, int? currentStock
 });
 
 
@@ -264,13 +266,14 @@ class __$CreateInvoiceProductStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateInvoiceProductState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currency = null,Object? productInput = null,Object? unitPriceInput = null,Object? quantityInput = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currency = null,Object? productInput = null,Object? unitPriceInput = null,Object? quantityInput = null,Object? currentStock = freezed,}) {
   return _then(_CreateInvoiceProductState(
 currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,productInput: null == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable
 as ObjectInput<ProductDto>,unitPriceInput: null == unitPriceInput ? _self.unitPriceInput : unitPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,quantityInput: null == quantityInput ? _self.quantityInput : quantityInput // ignore: cast_nullable_to_non_nullable
-as Input,
+as Input,currentStock: freezed == currentStock ? _self.currentStock : currentStock // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
