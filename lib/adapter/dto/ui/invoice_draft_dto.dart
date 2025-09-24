@@ -1,3 +1,4 @@
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 
@@ -7,6 +8,7 @@ final class InvoiceDraftDto {
     required this.createdAt,
     this.date,
     this.customerId,
+    this.products = const [],
   });
 
   final Id id;
@@ -14,6 +16,8 @@ final class InvoiceDraftDto {
 
   final DateTime? date;
   final Id? customerId;
+
+  final List<InvoiceProductDto> products;
 
   factory InvoiceDraftDto.fromEntity(InvoiceDraft invoiceDraft) {
     return InvoiceDraftDto(

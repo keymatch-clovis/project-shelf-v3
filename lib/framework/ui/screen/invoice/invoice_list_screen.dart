@@ -5,6 +5,7 @@ import 'package:logger/web.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_list_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
 final class InvoiceListScreen extends StatelessWidget {
@@ -18,11 +19,11 @@ final class InvoiceListScreen extends StatelessWidget {
   }
 }
 
-final class _Screen extends StatelessWidget {
+final class _Screen extends ConsumerWidget {
   const _Screen();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -37,7 +38,18 @@ final class _Screen extends StatelessWidget {
       ),
       body: _Body(),
       floatingActionButton: FloatingActionButton.large(
-        onPressed: () => context.go(CustomRoute.INVOICE_CREATE.route),
+        onPressed: () {
+          //  > Modifying other providers during init is the wrong architecture.
+          //  > https://github.com/rrousselGit/riverpod/issues/1505#issuecomment-1191878788
+          //
+          // As such, we can't just change the selected draft invoice for
+          // creation (if there was one selected at this moment) when we are
+          // building the provider for invoice creation. We need to do that
+          // here first.
+          ref.read(selectedInvoiceDraftProvider.notifier).clear();
+
+          context.go(CustomRoute.INVOICE_CREATE.route);
+        },
         child: const Icon(Icons.add),
       ),
     );

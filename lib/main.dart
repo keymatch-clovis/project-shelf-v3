@@ -39,6 +39,7 @@ import 'package:project_shelf_v3/app/use_case/invoice/watch_invoices_use_case.da
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/find_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
@@ -118,6 +119,8 @@ void main() async {
   getIt.registerLazySingleton<UpdateProductUseCase>(
     () => UpdateProductUseCase(),
   );
+
+  getIt.registerLazySingleton<FindProductUseCase>(() => FindProductUseCase());
 
   getIt.registerLazySingleton<SearchProductUseCase>(
     () => SearchProductUseCase(),

@@ -6,7 +6,6 @@ import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/date_time_extensions.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_search_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_product_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
@@ -188,7 +187,7 @@ final class _AppBar extends ConsumerWidget {
 
     // This provider MUST be loaded if we reach this point.
     final draftStatus = ref.watch(
-      createInvoiceDraftProvider.select((it) => it.value!.status),
+      createInvoiceProvider.select((it) => it.value!.status),
     );
 
     return SliverAppBar(
@@ -196,7 +195,7 @@ final class _AppBar extends ConsumerWidget {
       actions: [
         IconButton(
           onPressed: () {},
-          icon: draftStatus == CreateInvoiceDraftStatus.LOADING
+          icon: draftStatus == CreateInvoiceStatus.SAVING_DRAFT
               ? CircularProgressIndicator(
                   strokeWidth: 3,
                   strokeCap: StrokeCap.round,
@@ -209,11 +208,8 @@ final class _AppBar extends ConsumerWidget {
       bottom: TabBar.secondary(
         controller: _tabController,
         tabs: [
-          Tab(
-            icon: const Icon(Icons.notes_rounded),
-            text: localizations.details,
-          ),
-          Tab(icon: const Icon(Icons.category), text: localizations.products),
+          Tab(icon: const Icon(Icons.notes_rounded)),
+          Tab(icon: const Icon(Icons.category)),
         ],
       ),
     );
@@ -278,6 +274,9 @@ final class _Products extends ConsumerWidget {
     final products = ref.watch(
       createInvoiceProvider.select((it) => it.value!.invoiceProducts),
     );
+    final totalValue = ref.watch(
+      createInvoiceProvider.select((it) => it.value!.totalValue),
+    );
 
     if (products.isEmpty) {
       return Center(
@@ -298,13 +297,126 @@ final class _Products extends ConsumerWidget {
       );
     }
 
-    return ListView.separated(
-      padding: EdgeInsets.zero,
-      itemCount: products.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        return _ProductListTile(products[index]);
-      },
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Container(
+        decoration: BoxDecoration(
+          border: BoxBorder.all(color: theme.colorScheme.outline),
+          borderRadius: const BorderRadius.all(Radius.circular(6)),
+        ),
+        child: Table(
+          columnWidths: const <int, TableColumnWidth>{
+            0: FlexColumnWidth(),
+            1: IntrinsicColumnWidth(),
+            2: IntrinsicColumnWidth(),
+            3: IntrinsicColumnWidth(),
+          },
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          children: [
+            TableRow(
+              decoration: BoxDecoration(
+                border: BoxBorder.fromLTRB(
+                  bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+                ),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    localizations.name,
+                    style: theme.textTheme.labelSmall,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    localizations.unit_price,
+                    style: theme.textTheme.labelSmall,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    localizations.quantity,
+                    style: theme.textTheme.labelSmall,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text("t", style: theme.textTheme.labelSmall),
+                ),
+              ],
+            ),
+            ...products.indexed.map((it) {
+              return TableRow(
+                decoration: it.$1 < products.length - 1
+                    ? BoxDecoration(
+                        border: BoxBorder.fromLTRB(
+                          bottom: BorderSide(
+                            color: theme.colorScheme.outlineVariant,
+                          ),
+                        ),
+                      )
+                    : null,
+                children: [
+                  Text(it.$2.product.name),
+                  Text(it.$2.unitPrice.toString()),
+                  Text(it.$2.quantity.toString()),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.more_vert_rounded),
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: BoxBorder.all(color: theme.colorScheme.outline),
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                ),
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: products.length,
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    return _ProductListTile(products[index]);
+                  },
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              spacing: 8,
+              children: [
+                Text(localizations.total, style: theme.textTheme.titleMedium),
+                Text(totalValue.toString()),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -316,7 +428,38 @@ final class _ProductListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListTile(title: Text(item.product.name));
+    final theme = Theme.of(context);
+    final leadingTextStyle = const TextStyle();
+
+    return ListTile(
+      subtitle: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${item.unitPrice} × ${item.quantity}",
+            style: leadingTextStyle
+                .merge(theme.textTheme.labelSmall)
+                .copyWith(color: theme.colorScheme.outline, height: 0),
+          ),
+          Text(
+            item.total.toString(),
+            style: leadingTextStyle
+                .merge(theme.textTheme.labelLarge)
+                .copyWith(height: 0),
+          ),
+        ],
+      ),
+      title: Text(
+        item.product.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.more_vert_rounded),
+      ),
+    );
   }
 }
 

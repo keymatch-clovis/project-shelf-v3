@@ -45,6 +45,10 @@ final class InvoiceDraft {
   Id? customerId;
   int? remainingUnpaidBalance;
 
+  void clearProducts() {
+    products.clear();
+  }
+
   void addProduct({
     required int productId,
     required Money unitPrice,

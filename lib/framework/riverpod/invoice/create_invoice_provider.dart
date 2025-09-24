@@ -2,25 +2,37 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/object_input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/object_validator.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
+import 'package:project_shelf_v3/app/dto/update_invoice_draft_request.dart';
 import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/find_product_use_case.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_draft_provider.dart';
+import 'package:project_shelf_v3/domain/entity/invoice.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
+import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/main.dart';
 
 part "create_invoice_provider.freezed.dart";
 
 /// State related
 
-enum CreateInvoiceStatus { INITIAL, LOADING, SUCCESS }
+enum CreateInvoiceStatus { INITIAL, SAVING_DRAFT, LOADING, SUCCESS }
 
 @freezed
 abstract class CreateInvoiceState with _$CreateInvoiceState {
   const factory CreateInvoiceState({
     @Default(CreateInvoiceStatus.INITIAL) CreateInvoiceStatus status,
+    required Currency currency,
+    required Id invoiceDraftId,
     required ObjectInput<DateTime> dateInput,
     required ObjectInput<CustomerDto> customerInput,
     required List<InvoiceProductDto> invoiceProducts,
@@ -29,42 +41,74 @@ abstract class CreateInvoiceState with _$CreateInvoiceState {
   const CreateInvoiceState._();
 
   bool get isVaild => false;
+
+  Money get totalValue {
+    return invoiceProducts.fold(Money.fromNumWithCurrency(0, currency), (
+      acc,
+      it,
+    ) {
+      return acc + it.total;
+    });
+  }
 }
 
 /// Provider related
 final class CreateInvoiceAsyncNotifier
     extends AsyncNotifier<CreateInvoiceState> {
+  final _findProductUseCase = getIt.get<FindProductUseCase>();
   final _findCustomerUseCase = getIt.get<FindCustomerUseCase>();
+  final _findInvoiceDraftUseCase = getIt.get<FindInvoiceDraftUseCase>();
+  final _createInvoiceDraftUseCase = getIt.get<CreateInvoiceDraftUseCase>();
+  final _updateInvoiceDraftUseCase = getIt.get<UpdateInvoiceDraftUseCase>();
 
   @override
   FutureOr<CreateInvoiceState> build() async {
-    // Wait for the invoice draft to be created or fetched from storage. After
-    // this, we will just read once the whole state. We need to make this
-    // distintion, as if we change the invoice draft as a whole, this provider
-    // will also change.
-    await ref.watch(
-      createInvoiceDraftProvider.selectAsync((it) => it.invoiceDraftId),
-    );
-    final draftState = ref.read(createInvoiceDraftProvider).value!;
+    final appPreferences = await ref.watch(appPreferencesProvider.future);
+
+    final selectedInvoiceDraft = ref.watch(selectedInvoiceDraftProvider);
+
+    InvoiceDraft invoiceDraft = await switch (selectedInvoiceDraft) {
+      None() => _createInvoiceDraftUseCase.exec(),
+      Selected() => _findInvoiceDraftUseCase.exec(
+        selectedInvoiceDraft.searchDto.id,
+      ),
+    };
 
     late DateTime date;
-    if (draftState.date != null) {
-      date = draftState.date!;
+    if (invoiceDraft.date != null) {
+      date = invoiceDraft.date!;
     } else {
       date = DateTime.now();
-      await ref.read(createInvoiceDraftProvider.notifier).updateDate(date);
     }
 
     late CustomerDto? customer;
-    if (draftState.customerId != null) {
+    if (invoiceDraft.customerId != null) {
       customer = await _findCustomerUseCase
-          .exec(draftState.customerId!)
+          .exec(invoiceDraft.customerId!)
           .then(CustomerDto.fromEntity);
     } else {
       customer = null;
     }
 
+    List<InvoiceProductDto> invoiceProducts = [];
+    for (final draftProduct in invoiceDraft.products) {
+      final product = await _findProductUseCase.exec(
+        id: draftProduct.productId,
+      );
+
+      invoiceProducts.add(
+        InvoiceProductDto(
+          product: ProductDto.fromEntity(product),
+          unitPrice: draftProduct.unitPrice,
+          quantity: draftProduct.quantity,
+          total: draftProduct.unitPrice * draftProduct.quantity,
+        ),
+      );
+    }
+
     return CreateInvoiceState(
+      currency: appPreferences.defaultCurrency,
+      invoiceDraftId: invoiceDraft.id!,
       dateInput: ObjectInput<DateTime>(
         ObjectValidator(isRequired: true),
         value: date,
@@ -73,7 +117,7 @@ final class CreateInvoiceAsyncNotifier
         ObjectValidator(isRequired: true),
         value: customer,
       ),
-      invoiceProducts: const [],
+      invoiceProducts: invoiceProducts,
     );
   }
 
@@ -85,9 +129,8 @@ final class CreateInvoiceAsyncNotifier
       value.copyWith(dateInput: value.dateInput.copyWith(value: date)),
     );
 
-    // Update the draft state
-    await ref.read(createInvoiceDraftProvider.notifier).updateDate(date);
-    await ref.read(createInvoiceDraftProvider.notifier).save();
+    // Save the draft state.
+    _saveDraft();
   }
 
   Future<void> updateCustomer(CustomerDto? dto) async {
@@ -98,11 +141,8 @@ final class CreateInvoiceAsyncNotifier
       value.copyWith(customerInput: value.customerInput.copyWith(value: dto)),
     );
 
-    // Update the draft state
-    await ref
-        .read(createInvoiceDraftProvider.notifier)
-        .updateCustomerId(dto?.id);
-    await ref.read(createInvoiceDraftProvider.notifier).save();
+    // Save the draft state.
+    _saveDraft();
   }
 
   Future<void> addInvoiceProduct(InvoiceProductDto dto) async {
@@ -113,9 +153,8 @@ final class CreateInvoiceAsyncNotifier
       value.copyWith(invoiceProducts: [...value.invoiceProducts, dto]),
     );
 
-    // Update the draft state.
-    await ref.read(createInvoiceDraftProvider.notifier).addInvoiceProduct(dto);
-    await ref.read(createInvoiceDraftProvider.notifier).save();
+    // Save the draft state.
+    _saveDraft();
   }
 
   Future<int> getCurrentProductQuantity(Id productId) async {
@@ -129,6 +168,29 @@ final class CreateInvoiceAsyncNotifier
     });
     // I hate this language. :3
     return result;
+  }
+
+  Future<void> _saveDraft() async {
+    final value = await future;
+
+    state = AsyncData(value.copyWith(status: CreateInvoiceStatus.SAVING_DRAFT));
+
+    await _updateInvoiceDraftUseCase.exec(
+      UpdateInvoiceDraftRequest(
+        id: value.invoiceDraftId,
+        date: value.dateInput.value,
+        customerId: value.customerInput.value?.id,
+        invoiceProducts: value.invoiceProducts.map((it) {
+          return InvoiceProduct(
+            productId: it.product.id,
+            unitPrice: it.unitPrice,
+            quantity: it.quantity,
+          );
+        }),
+      ),
+    );
+
+    state = AsyncData(value.copyWith(status: CreateInvoiceStatus.INITIAL));
   }
 }
 

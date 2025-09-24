@@ -1,3 +1,4 @@
+import 'package:money2/money2.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_product_dto.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
@@ -27,10 +28,11 @@ class InvoiceDraftDto {
     this.customerId,
   });
 
-  InvoiceDraft toEntity() {
+  InvoiceDraft toEntity(Currency currency) {
     return InvoiceDraft(
       id: id,
       date: date,
+      products: products.map((it) => it.toEntity(currency)).toList(),
       customerId: customerId,
       createdAt: createdAt,
     );
