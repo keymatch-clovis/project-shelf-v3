@@ -272,6 +272,12 @@ abstract class AppLocalizations {
   /// **'The value must be decimal'**
   String get err_invalid_decimal_value;
 
+  /// No description provided for @err_value_too_big.
+  ///
+  /// In en, this message translates to:
+  /// **'The value is too big'**
+  String get err_value_too_big;
+
   /// No description provided for @err_invalid_integer_value.
   ///
   /// In en, this message translates to:

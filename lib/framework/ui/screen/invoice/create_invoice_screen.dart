@@ -3,15 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
-import 'package:project_shelf_v3/common/date_time_extensions.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_search_provider.dart';
-import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_product_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_product_form_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_provider.dart';
-import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
+import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/dialog/create_invoice_product_dialog.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_search_anchor.dart';
+import 'package:project_shelf_v3/common/date_time_extensions.dart';
 
 final class CreateInvoiceScreen extends ConsumerWidget {
   const CreateInvoiceScreen({super.key});
@@ -28,7 +28,7 @@ final class CreateInvoiceScreen extends ConsumerWidget {
     // has selected a product to add to the invoice. We need to open a dialog
     // to set the product properties.
     ref.listen(
-      createInvoiceProductProvider.select((it) => it.value!.productInput.value),
+      invoiceProductFormProvider.select((it) => it.value!.productInput.value),
       (_, product) {
         if (product != null) {
           showDialog<InvoiceProductDto>(
@@ -142,11 +142,13 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
           return _FloatingActionButton(tab);
         },
       ),
-      // floatingActionButton: _FloatingActionButton(
-      //   currentTab: _selectedTab,
-      //   animation: _tabController.animation!,
-      // ),
-      bottomNavigationBar: BottomAppBar(child: Row(children: [])),
+      bottomNavigationBar: AnimatedBuilder(
+        animation: _tabController.animation!,
+        builder: (context, _) {
+          final tab = _tabController.animation!.value.round();
+          return _Actions(tab);
+        },
+      ),
     );
   }
 }
@@ -167,12 +169,40 @@ final class _FloatingActionButton extends ConsumerWidget {
               .then((it) => product.stock - it);
 
           ref
-              .read(createInvoiceProductProvider.notifier)
+              .read(invoiceProductFormProvider.notifier)
               .setProduct(product: product, currentStock: currentStock);
         },
       ),
       _ => const SizedBox.shrink(),
     };
+  }
+}
+
+final class _Actions extends ConsumerWidget {
+  final int currentTab;
+
+  const _Actions(this.currentTab);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isProductsEmpty = ref.watch(
+      createInvoiceProvider.select((it) => it.value!.invoiceProducts.isEmpty),
+    );
+
+    var children = <Widget>[];
+    switch (currentTab) {
+      case 1:
+        children = [
+          IconButton(
+            onPressed: isProductsEmpty
+                ? null
+                : ref.read(createInvoiceProvider.notifier).clearProducts,
+            icon: const Icon(Icons.delete_sweep_rounded),
+          ),
+        ];
+    }
+
+    return BottomAppBar(child: Row(children: children));
   }
 }
 
@@ -240,7 +270,7 @@ final class _DetailsState extends ConsumerState<_Details> {
             errors: state.dateInput.errors.parseErrors(context),
             emptyLabel: localizations.no_date_selected,
             body: state.dateInput.value != null
-                ? Text(state.dateInput.value.toJiffy()!.yMd)
+                ? Text(state.dateInput.value!.toJiffy()!.yMd)
                 : null,
             onTap: () {
               showDatePicker(
@@ -255,7 +285,7 @@ final class _DetailsState extends ConsumerState<_Details> {
               });
             },
             onClear: () {
-              ref.read(createInvoiceProvider.notifier).updateDate(null);
+              ref.read(createInvoiceProvider.notifier).clearDate();
             },
           ),
           _CustomerSearchAnchor(),
@@ -279,20 +309,29 @@ final class _Products extends ConsumerWidget {
     );
 
     if (products.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.category_rounded,
-              size: 96,
-              color: theme.colorScheme.outlineVariant,
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: Container(
+          decoration: BoxDecoration(
+            border: BoxBorder.all(color: theme.colorScheme.outline),
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.category_rounded,
+                  size: 96,
+                  color: theme.colorScheme.outlineVariant,
+                ),
+                Text(
+                  localizations.no_invoice_products,
+                  style: TextStyle(color: theme.colorScheme.outline),
+                ),
+              ],
             ),
-            Text(
-              localizations.no_invoice_products,
-              style: TextStyle(color: theme.colorScheme.outline),
-            ),
-          ],
+          ),
         ),
       );
     }
@@ -304,118 +343,178 @@ final class _Products extends ConsumerWidget {
           border: BoxBorder.all(color: theme.colorScheme.outline),
           borderRadius: const BorderRadius.all(Radius.circular(6)),
         ),
-        child: Table(
-          columnWidths: const <int, TableColumnWidth>{
-            0: FlexColumnWidth(),
-            1: IntrinsicColumnWidth(),
-            2: IntrinsicColumnWidth(),
-            3: IntrinsicColumnWidth(),
-          },
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        child: Column(
           children: [
-            TableRow(
-              decoration: BoxDecoration(
-                border: BoxBorder.fromLTRB(
-                  bottom: BorderSide(color: theme.colorScheme.outlineVariant),
-                ),
-              ),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    localizations.name,
-                    style: theme.textTheme.labelSmall,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    localizations.unit_price,
-                    style: theme.textTheme.labelSmall,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    localizations.quantity,
-                    style: theme.textTheme.labelSmall,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text("t", style: theme.textTheme.labelSmall),
-                ),
-              ],
-            ),
-            ...products.indexed.map((it) {
-              return TableRow(
-                decoration: it.$1 < products.length - 1
-                    ? BoxDecoration(
+            Expanded(
+              child: SingleChildScrollView(
+                child: Table(
+                  columnWidths: const <int, TableColumnWidth>{
+                    0: IntrinsicColumnWidth(),
+                    1: FlexColumnWidth(),
+                    2: IntrinsicColumnWidth(),
+                    3: IntrinsicColumnWidth(),
+                    4: IntrinsicColumnWidth(),
+                  },
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(
+                      decoration: BoxDecoration(
                         border: BoxBorder.fromLTRB(
                           bottom: BorderSide(
                             color: theme.colorScheme.outlineVariant,
                           ),
                         ),
-                      )
-                    : null,
-                children: [
-                  Text(it.$2.product.name),
-                  Text(it.$2.unitPrice.toString()),
-                  Text(it.$2.quantity.toString()),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 2,
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text("#", style: theme.textTheme.labelSmall),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            localizations.name,
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text("×", style: theme.textTheme.labelSmall),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            localizations.unit_price,
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            localizations.total,
+                            style: theme.textTheme.labelSmall,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.more_vert_rounded),
-                    ),
-                  ),
-                ],
-              );
-            }),
-          ],
-        ),
-      ),
-    );
 
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: BoxBorder.all(color: theme.colorScheme.outline),
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                ),
-                child: ListView.separated(
-                  padding: EdgeInsets.zero,
-                  itemCount: products.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    return _ProductListTile(products[index]);
-                  },
+                    // ...[for (var i = 0; i < 50; i++) i].map((it) {
+                    //   return TableRow(
+                    //     children: [
+                    //       TableRowInkWell(onTap: () {}, child: Text("test")),
+                    //       TableRowInkWell(onTap: () {}, child: Text("test")),
+                    //       TableRowInkWell(onTap: () {}, child: Text("test")),
+                    //       TableRowInkWell(onTap: () {}, child: Text("test")),
+                    //       TableRowInkWell(onTap: () {}, child: Text("test")),
+                    //     ],
+                    //   );
+                    // }),
+                    ...products.indexed.map((it) {
+                      return TableRow(
+                        decoration: it.$1 < products.length - 1
+                            ? BoxDecoration(
+                                border: BoxBorder.fromLTRB(
+                                  bottom: BorderSide(
+                                    color: theme.colorScheme.outlineVariant,
+                                  ),
+                                ),
+                              )
+                            : null,
+                        children: [
+                          TableRowInkWell(
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 2,
+                              ),
+                              child: Text(
+                                (it.$1 + 1).toString(),
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TableRowInkWell(
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 2,
+                              ),
+                              child: Text(
+                                it.$2.product.name,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TableRowInkWell(
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 2,
+                              ),
+                              child: Text(
+                                it.$2.quantity.toString(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TableRowInkWell(
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 2,
+                              ),
+                              child: Text(
+                                it.$2.unitPrice.toString(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TableRowInkWell(
+                            onTap: () {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: BoxBorder.fromLTRB(
+                                  left: BorderSide(
+                                    color: theme.colorScheme.outlineVariant,
+                                  ),
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 2,
+                              ),
+                              child: Text(
+                                it.$2.total.toString(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              spacing: 8,
-              children: [
-                Text(localizations.total, style: theme.textTheme.titleMedium),
-                Text(totalValue.toString()),
-              ],
-            ),
-          ),
-        ],
+            Divider(height: 0),
+            Row(children: [Text("TOTAL"), Text(totalValue.toString())]),
+          ],
+        ),
       ),
     );
   }

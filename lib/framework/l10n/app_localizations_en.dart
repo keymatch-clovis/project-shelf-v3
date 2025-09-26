@@ -96,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get err_invalid_decimal_value => 'The value must be decimal';
 
   @override
+  String get err_value_too_big => 'The value is too big';
+
+  @override
   String get err_invalid_integer_value => 'The value must be an integer';
 
   @override

@@ -25,12 +25,12 @@ $CreateInvoiceProductStateCopyWith<CreateInvoiceProductState> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&const DeepCollectionEquality().equals(other.productInput, productInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currency,productInput,quantityInput,unitPriceInput);
+int get hashCode => Object.hash(runtimeType,currency,const DeepCollectionEquality().hash(productInput),quantityInput,unitPriceInput);
 
 @override
 String toString() {
@@ -62,10 +62,10 @@ class _$CreateInvoiceProductStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateInvoiceProductState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currency = null,Object? productInput = null,Object? quantityInput = null,Object? unitPriceInput = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currency = null,Object? productInput = freezed,Object? quantityInput = null,Object? unitPriceInput = null,}) {
   return _then(_self.copyWith(
 currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
-as Currency,productInput: null == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable
+as Currency,productInput: freezed == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable
 as ObjectInput<ProductDto>,quantityInput: null == quantityInput ? _self.quantityInput : quantityInput // ignore: cast_nullable_to_non_nullable
 as Input,unitPriceInput: null == unitPriceInput ? _self.unitPriceInput : unitPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,
@@ -227,12 +227,12 @@ _$CreateInvoiceProductStateCopyWith<_CreateInvoiceProductState> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceProductState&&(identical(other.currency, currency) || other.currency == currency)&&const DeepCollectionEquality().equals(other.productInput, productInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currency,productInput,quantityInput,unitPriceInput);
+int get hashCode => Object.hash(runtimeType,currency,const DeepCollectionEquality().hash(productInput),quantityInput,unitPriceInput);
 
 @override
 String toString() {
@@ -264,10 +264,10 @@ class __$CreateInvoiceProductStateCopyWithImpl<$Res>
 
 /// Create a copy of CreateInvoiceProductState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currency = null,Object? productInput = null,Object? quantityInput = null,Object? unitPriceInput = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currency = null,Object? productInput = freezed,Object? quantityInput = null,Object? unitPriceInput = null,}) {
   return _then(_CreateInvoiceProductState(
 currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
-as Currency,productInput: null == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable
+as Currency,productInput: freezed == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable
 as ObjectInput<ProductDto>,quantityInput: null == quantityInput ? _self.quantityInput : quantityInput // ignore: cast_nullable_to_non_nullable
 as Input,unitPriceInput: null == unitPriceInput ? _self.unitPriceInput : unitPriceInput // ignore: cast_nullable_to_non_nullable
 as Input,

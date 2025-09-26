@@ -12,22 +12,22 @@ part of 'invoice_product_form_provider.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$CreateInvoiceProductState {
+mixin _$InvoiceProductFormState {
 
 // We'll use this index to know if we are editing an invoice product, or
 // creating a new one.
  int? get index; Currency get currency; Input<ProductDto> get productInput; Input get unitPriceInput; Input get quantityInput; int? get currentStock;
-/// Create a copy of CreateInvoiceProductState
+/// Create a copy of InvoiceProductFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$CreateInvoiceProductStateCopyWith<CreateInvoiceProductState> get copyWith => _$CreateInvoiceProductStateCopyWithImpl<CreateInvoiceProductState>(this as CreateInvoiceProductState, _$identity);
+$InvoiceProductFormStateCopyWith<InvoiceProductFormState> get copyWith => _$InvoiceProductFormStateCopyWithImpl<InvoiceProductFormState>(this as InvoiceProductFormState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateInvoiceProductState&&(identical(other.index, index) || other.index == index)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.currentStock, currentStock) || other.currentStock == currentStock));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvoiceProductFormState&&(identical(other.index, index) || other.index == index)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.currentStock, currentStock) || other.currentStock == currentStock));
 }
 
 
@@ -36,15 +36,15 @@ int get hashCode => Object.hash(runtimeType,index,currency,productInput,unitPric
 
 @override
 String toString() {
-  return 'CreateInvoiceProductState(index: $index, currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput, currentStock: $currentStock)';
+  return 'InvoiceProductFormState(index: $index, currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput, currentStock: $currentStock)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $CreateInvoiceProductStateCopyWith<$Res>  {
-  factory $CreateInvoiceProductStateCopyWith(CreateInvoiceProductState value, $Res Function(CreateInvoiceProductState) _then) = _$CreateInvoiceProductStateCopyWithImpl;
+abstract mixin class $InvoiceProductFormStateCopyWith<$Res>  {
+  factory $InvoiceProductFormStateCopyWith(InvoiceProductFormState value, $Res Function(InvoiceProductFormState) _then) = _$InvoiceProductFormStateCopyWithImpl;
 @useResult
 $Res call({
  int? index, Currency currency, Input<ProductDto> productInput, Input unitPriceInput, Input quantityInput, int? currentStock
@@ -55,14 +55,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$CreateInvoiceProductStateCopyWithImpl<$Res>
-    implements $CreateInvoiceProductStateCopyWith<$Res> {
-  _$CreateInvoiceProductStateCopyWithImpl(this._self, this._then);
+class _$InvoiceProductFormStateCopyWithImpl<$Res>
+    implements $InvoiceProductFormStateCopyWith<$Res> {
+  _$InvoiceProductFormStateCopyWithImpl(this._self, this._then);
 
-  final CreateInvoiceProductState _self;
-  final $Res Function(CreateInvoiceProductState) _then;
+  final InvoiceProductFormState _self;
+  final $Res Function(InvoiceProductFormState) _then;
 
-/// Create a copy of CreateInvoiceProductState
+/// Create a copy of InvoiceProductFormState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? index = freezed,Object? currency = null,Object? productInput = null,Object? unitPriceInput = null,Object? quantityInput = null,Object? currentStock = freezed,}) {
   return _then(_self.copyWith(
@@ -79,8 +79,8 @@ as int?,
 }
 
 
-/// Adds pattern-matching-related methods to [CreateInvoiceProductState].
-extension CreateInvoiceProductStatePatterns on CreateInvoiceProductState {
+/// Adds pattern-matching-related methods to [InvoiceProductFormState].
+extension InvoiceProductFormStatePatterns on InvoiceProductFormState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -93,10 +93,10 @@ extension CreateInvoiceProductStatePatterns on CreateInvoiceProductState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CreateInvoiceProductState value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _InvoiceProductFormState value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _CreateInvoiceProductState() when $default != null:
+case _InvoiceProductFormState() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -115,10 +115,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CreateInvoiceProductState value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _InvoiceProductFormState value)  $default,){
 final _that = this;
 switch (_that) {
-case _CreateInvoiceProductState():
+case _InvoiceProductFormState():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -136,10 +136,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CreateInvoiceProductState value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _InvoiceProductFormState value)?  $default,){
 final _that = this;
 switch (_that) {
-case _CreateInvoiceProductState() when $default != null:
+case _InvoiceProductFormState() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? index,  Currency currency,  Input<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput,  int? currentStock)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _CreateInvoiceProductState() when $default != null:
+case _InvoiceProductFormState() when $default != null:
 return $default(_that.index,_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput,_that.currentStock);case _:
   return orElse();
 
@@ -180,7 +180,7 @@ return $default(_that.index,_that.currency,_that.productInput,_that.unitPriceInp
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? index,  Currency currency,  Input<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput,  int? currentStock)  $default,) {final _that = this;
 switch (_that) {
-case _CreateInvoiceProductState():
+case _InvoiceProductFormState():
 return $default(_that.index,_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput,_that.currentStock);case _:
   throw StateError('Unexpected subclass');
 
@@ -200,7 +200,7 @@ return $default(_that.index,_that.currency,_that.productInput,_that.unitPriceInp
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? index,  Currency currency,  Input<ProductDto> productInput,  Input unitPriceInput,  Input quantityInput,  int? currentStock)?  $default,) {final _that = this;
 switch (_that) {
-case _CreateInvoiceProductState() when $default != null:
+case _InvoiceProductFormState() when $default != null:
 return $default(_that.index,_that.currency,_that.productInput,_that.unitPriceInput,_that.quantityInput,_that.currentStock);case _:
   return null;
 
@@ -212,8 +212,8 @@ return $default(_that.index,_that.currency,_that.productInput,_that.unitPriceInp
 /// @nodoc
 
 
-class _CreateInvoiceProductState extends CreateInvoiceProductState {
-  const _CreateInvoiceProductState({this.index, required this.currency, required this.productInput, required this.unitPriceInput, required this.quantityInput, this.currentStock}): super._();
+class _InvoiceProductFormState extends InvoiceProductFormState {
+  const _InvoiceProductFormState({this.index, required this.currency, required this.productInput, required this.unitPriceInput, required this.quantityInput, this.currentStock}): super._();
   
 
 // We'll use this index to know if we are editing an invoice product, or
@@ -225,17 +225,17 @@ class _CreateInvoiceProductState extends CreateInvoiceProductState {
 @override final  Input quantityInput;
 @override final  int? currentStock;
 
-/// Create a copy of CreateInvoiceProductState
+/// Create a copy of InvoiceProductFormState
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CreateInvoiceProductStateCopyWith<_CreateInvoiceProductState> get copyWith => __$CreateInvoiceProductStateCopyWithImpl<_CreateInvoiceProductState>(this, _$identity);
+_$InvoiceProductFormStateCopyWith<_InvoiceProductFormState> get copyWith => __$InvoiceProductFormStateCopyWithImpl<_InvoiceProductFormState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateInvoiceProductState&&(identical(other.index, index) || other.index == index)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.currentStock, currentStock) || other.currentStock == currentStock));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InvoiceProductFormState&&(identical(other.index, index) || other.index == index)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.productInput, productInput) || other.productInput == productInput)&&(identical(other.unitPriceInput, unitPriceInput) || other.unitPriceInput == unitPriceInput)&&(identical(other.quantityInput, quantityInput) || other.quantityInput == quantityInput)&&(identical(other.currentStock, currentStock) || other.currentStock == currentStock));
 }
 
 
@@ -244,15 +244,15 @@ int get hashCode => Object.hash(runtimeType,index,currency,productInput,unitPric
 
 @override
 String toString() {
-  return 'CreateInvoiceProductState(index: $index, currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput, currentStock: $currentStock)';
+  return 'InvoiceProductFormState(index: $index, currency: $currency, productInput: $productInput, unitPriceInput: $unitPriceInput, quantityInput: $quantityInput, currentStock: $currentStock)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CreateInvoiceProductStateCopyWith<$Res> implements $CreateInvoiceProductStateCopyWith<$Res> {
-  factory _$CreateInvoiceProductStateCopyWith(_CreateInvoiceProductState value, $Res Function(_CreateInvoiceProductState) _then) = __$CreateInvoiceProductStateCopyWithImpl;
+abstract mixin class _$InvoiceProductFormStateCopyWith<$Res> implements $InvoiceProductFormStateCopyWith<$Res> {
+  factory _$InvoiceProductFormStateCopyWith(_InvoiceProductFormState value, $Res Function(_InvoiceProductFormState) _then) = __$InvoiceProductFormStateCopyWithImpl;
 @override @useResult
 $Res call({
  int? index, Currency currency, Input<ProductDto> productInput, Input unitPriceInput, Input quantityInput, int? currentStock
@@ -263,17 +263,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$CreateInvoiceProductStateCopyWithImpl<$Res>
-    implements _$CreateInvoiceProductStateCopyWith<$Res> {
-  __$CreateInvoiceProductStateCopyWithImpl(this._self, this._then);
+class __$InvoiceProductFormStateCopyWithImpl<$Res>
+    implements _$InvoiceProductFormStateCopyWith<$Res> {
+  __$InvoiceProductFormStateCopyWithImpl(this._self, this._then);
 
-  final _CreateInvoiceProductState _self;
-  final $Res Function(_CreateInvoiceProductState) _then;
+  final _InvoiceProductFormState _self;
+  final $Res Function(_InvoiceProductFormState) _then;
 
-/// Create a copy of CreateInvoiceProductState
+/// Create a copy of InvoiceProductFormState
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? index = freezed,Object? currency = null,Object? productInput = null,Object? unitPriceInput = null,Object? quantityInput = null,Object? currentStock = freezed,}) {
-  return _then(_CreateInvoiceProductState(
+  return _then(_InvoiceProductFormState(
 index: freezed == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int?,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,productInput: null == productInput ? _self.productInput : productInput // ignore: cast_nullable_to_non_nullable

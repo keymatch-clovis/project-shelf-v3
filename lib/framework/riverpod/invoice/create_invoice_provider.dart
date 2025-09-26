@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/adapter/common/object_input.dart';
-import 'package:project_shelf_v3/adapter/common/validator/object_validator.dart';
+import 'package:project_shelf_v3/adapter/common/input.dart';
+import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
@@ -33,8 +33,8 @@ abstract class CreateInvoiceState with _$CreateInvoiceState {
     @Default(CreateInvoiceStatus.INITIAL) CreateInvoiceStatus status,
     required Currency currency,
     required Id invoiceDraftId,
-    required ObjectInput<DateTime> dateInput,
-    required ObjectInput<CustomerDto> customerInput,
+    required Input<DateTime> dateInput,
+    required Input customerInput,
     required List<InvoiceProductDto> invoiceProducts,
   }) = _CreateInvoiceState;
 
@@ -109,24 +109,33 @@ final class CreateInvoiceAsyncNotifier
     return CreateInvoiceState(
       currency: appPreferences.defaultCurrency,
       invoiceDraftId: invoiceDraft.id!,
-      dateInput: ObjectInput<DateTime>(
-        ObjectValidator(isRequired: true),
-        value: date,
-      ),
-      customerInput: ObjectInput<CustomerDto>(
-        ObjectValidator(isRequired: true),
+      dateInput: Input(value: date, validationRules: {IsRequiredRule()}),
+      customerInput: Input<CustomerDto>(
         value: customer,
+        validationRules: {IsRequiredRule()},
       ),
       invoiceProducts: invoiceProducts,
     );
   }
 
-  Future<void> updateDate(DateTime? date) async {
+  Future<void> updateDate(DateTime date) async {
     final value = await future;
 
     // Update the state
     state = AsyncData(
       value.copyWith(dateInput: value.dateInput.copyWith(value: date)),
+    );
+
+    // Save the draft state.
+    _saveDraft();
+  }
+
+  Future<void> clearDate() async {
+    final value = await future;
+
+    // Update the state
+    state = AsyncData(
+      value.copyWith(dateInput: value.dateInput.copyWithoutValue()),
     );
 
     // Save the draft state.
@@ -168,6 +177,16 @@ final class CreateInvoiceAsyncNotifier
     });
     // I hate this language. :3
     return result;
+  }
+
+  Future<void> clearProducts() async {
+    final value = await future;
+
+    // Update the state.
+    state = AsyncData(value.copyWith(invoiceProducts: []));
+
+    // Save the draft state.
+    _saveDraft();
   }
 
   Future<void> _saveDraft() async {

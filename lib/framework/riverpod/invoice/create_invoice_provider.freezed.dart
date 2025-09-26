@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateInvoiceState {
 
- CreateInvoiceStatus get status; Currency get currency; Id get invoiceDraftId; ObjectInput<DateTime> get dateInput; ObjectInput<CustomerDto> get customerInput; List<InvoiceProductDto> get invoiceProducts;
+ CreateInvoiceStatus get status; Currency get currency; Id get invoiceDraftId; Input<DateTime> get dateInput; Input get customerInput; List<InvoiceProductDto> get invoiceProducts;
 /// Create a copy of CreateInvoiceState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $CreateInvoiceStateCopyWith<$Res>  {
   factory $CreateInvoiceStateCopyWith(CreateInvoiceState value, $Res Function(CreateInvoiceState) _then) = _$CreateInvoiceStateCopyWithImpl;
 @useResult
 $Res call({
- CreateInvoiceStatus status, Currency currency, Id invoiceDraftId, ObjectInput<DateTime> dateInput, ObjectInput<CustomerDto> customerInput, List<InvoiceProductDto> invoiceProducts
+ CreateInvoiceStatus status, Currency currency, Id invoiceDraftId, Input<DateTime> dateInput, Input customerInput, List<InvoiceProductDto> invoiceProducts
 });
 
 
@@ -68,8 +68,8 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as CreateInvoiceStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,invoiceDraftId: null == invoiceDraftId ? _self.invoiceDraftId : invoiceDraftId // ignore: cast_nullable_to_non_nullable
 as Id,dateInput: null == dateInput ? _self.dateInput : dateInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<DateTime>,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<CustomerDto>,invoiceProducts: null == invoiceProducts ? _self.invoiceProducts : invoiceProducts // ignore: cast_nullable_to_non_nullable
+as Input<DateTime>,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
+as Input,invoiceProducts: null == invoiceProducts ? _self.invoiceProducts : invoiceProducts // ignore: cast_nullable_to_non_nullable
 as List<InvoiceProductDto>,
   ));
 }
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  Currency currency,  Id invoiceDraftId,  ObjectInput<DateTime> dateInput,  ObjectInput<CustomerDto> customerInput,  List<InvoiceProductDto> invoiceProducts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  Currency currency,  Id invoiceDraftId,  Input<DateTime> dateInput,  Input customerInput,  List<InvoiceProductDto> invoiceProducts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateInvoiceState() when $default != null:
 return $default(_that.status,_that.currency,_that.invoiceDraftId,_that.dateInput,_that.customerInput,_that.invoiceProducts);case _:
@@ -176,7 +176,7 @@ return $default(_that.status,_that.currency,_that.invoiceDraftId,_that.dateInput
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  Currency currency,  Id invoiceDraftId,  ObjectInput<DateTime> dateInput,  ObjectInput<CustomerDto> customerInput,  List<InvoiceProductDto> invoiceProducts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateInvoiceStatus status,  Currency currency,  Id invoiceDraftId,  Input<DateTime> dateInput,  Input customerInput,  List<InvoiceProductDto> invoiceProducts)  $default,) {final _that = this;
 switch (_that) {
 case _CreateInvoiceState():
 return $default(_that.status,_that.currency,_that.invoiceDraftId,_that.dateInput,_that.customerInput,_that.invoiceProducts);case _:
@@ -196,7 +196,7 @@ return $default(_that.status,_that.currency,_that.invoiceDraftId,_that.dateInput
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateInvoiceStatus status,  Currency currency,  Id invoiceDraftId,  ObjectInput<DateTime> dateInput,  ObjectInput<CustomerDto> customerInput,  List<InvoiceProductDto> invoiceProducts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateInvoiceStatus status,  Currency currency,  Id invoiceDraftId,  Input<DateTime> dateInput,  Input customerInput,  List<InvoiceProductDto> invoiceProducts)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateInvoiceState() when $default != null:
 return $default(_that.status,_that.currency,_that.invoiceDraftId,_that.dateInput,_that.customerInput,_that.invoiceProducts);case _:
@@ -217,8 +217,8 @@ class _CreateInvoiceState extends CreateInvoiceState {
 @override@JsonKey() final  CreateInvoiceStatus status;
 @override final  Currency currency;
 @override final  Id invoiceDraftId;
-@override final  ObjectInput<DateTime> dateInput;
-@override final  ObjectInput<CustomerDto> customerInput;
+@override final  Input<DateTime> dateInput;
+@override final  Input customerInput;
  final  List<InvoiceProductDto> _invoiceProducts;
 @override List<InvoiceProductDto> get invoiceProducts {
   if (_invoiceProducts is EqualUnmodifiableListView) return _invoiceProducts;
@@ -257,7 +257,7 @@ abstract mixin class _$CreateInvoiceStateCopyWith<$Res> implements $CreateInvoic
   factory _$CreateInvoiceStateCopyWith(_CreateInvoiceState value, $Res Function(_CreateInvoiceState) _then) = __$CreateInvoiceStateCopyWithImpl;
 @override @useResult
 $Res call({
- CreateInvoiceStatus status, Currency currency, Id invoiceDraftId, ObjectInput<DateTime> dateInput, ObjectInput<CustomerDto> customerInput, List<InvoiceProductDto> invoiceProducts
+ CreateInvoiceStatus status, Currency currency, Id invoiceDraftId, Input<DateTime> dateInput, Input customerInput, List<InvoiceProductDto> invoiceProducts
 });
 
 
@@ -280,8 +280,8 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as CreateInvoiceStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,invoiceDraftId: null == invoiceDraftId ? _self.invoiceDraftId : invoiceDraftId // ignore: cast_nullable_to_non_nullable
 as Id,dateInput: null == dateInput ? _self.dateInput : dateInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<DateTime>,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
-as ObjectInput<CustomerDto>,invoiceProducts: null == invoiceProducts ? _self._invoiceProducts : invoiceProducts // ignore: cast_nullable_to_non_nullable
+as Input<DateTime>,customerInput: null == customerInput ? _self.customerInput : customerInput // ignore: cast_nullable_to_non_nullable
+as Input,invoiceProducts: null == invoiceProducts ? _self._invoiceProducts : invoiceProducts // ignore: cast_nullable_to_non_nullable
 as List<InvoiceProductDto>,
   ));
 }

@@ -6,7 +6,7 @@ import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/city_search_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/create_customer_provider.dart';
-import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
+import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/city_list.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';

@@ -4,7 +4,7 @@ import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
-import 'package:project_shelf_v3/framework/ui/common/custom_state_error_parser.dart';
+import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
 
 class ProductDetailsForm extends StatefulWidget {

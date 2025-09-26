@@ -29,6 +29,7 @@
     "delete_product": "Delete product?",
     "err_blank_value": "The value can't be blank",
     "err_invalid_decimal_value": "The value must be decimal",
+    "err_value_too_big": "The value is too big",
     "err_invalid_integer_value": "The value must be an integer",
     "err_invalid_value": "The value is invalid",
     "err_negative_value": "The value can't be negative",

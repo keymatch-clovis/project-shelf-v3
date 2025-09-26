@@ -3,13 +3,10 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
-import 'package:project_shelf_v3/adapter/common/object_input.dart';
-import 'package:project_shelf_v3/adapter/common/validator/object_validator.dart';
-import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
+import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/app/dto/create_customer_request.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
-import 'package:project_shelf_v3/common/string_extensions.dart';
 import 'package:project_shelf_v3/main.dart';
 
 part 'create_customer_provider.freezed.dart';
@@ -23,7 +20,7 @@ abstract class CreateCustomerState with _$CreateCustomerState {
     @Default(CreateCustomerStatus.INITIAL) CreateCustomerStatus status,
     required Input nameInput,
     required Input businessNameInput,
-    required ObjectInput<CityDto> cityInput,
+    required Input<CityDto> cityInput,
     required Input addressInput,
     required Input phoneNumberInput,
   }) = _CreateCustomerState;
@@ -48,11 +45,11 @@ class CreateCustomerNotifier extends Notifier<CreateCustomerState> {
   @override
   CreateCustomerState build() {
     return CreateCustomerState(
-      nameInput: Input(StringValidator(isRequired: true)),
-      businessNameInput: Input(StringValidator()),
-      cityInput: ObjectInput<CityDto>(ObjectValidator(isRequired: true)),
-      addressInput: Input(StringValidator()),
-      phoneNumberInput: Input(StringValidator()),
+      nameInput: Input(validationRules: {IsRequiredRule()}),
+      businessNameInput: Input(),
+      cityInput: Input<CityDto>(validationRules: {IsRequiredRule()}),
+      addressInput: Input(),
+      phoneNumberInput: Input(),
     );
   }
 

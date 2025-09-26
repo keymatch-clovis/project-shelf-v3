@@ -6,9 +6,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
-import 'package:project_shelf_v3/adapter/common/validator/currency_validator.dart';
-import 'package:project_shelf_v3/adapter/common/validator/int_validator.dart';
-import 'package:project_shelf_v3/adapter/common/validator/string_validator.dart';
+import 'package:project_shelf_v3/adapter/common/validator/rule/is_integer_rule.dart';
+import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dart';
+import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
+import 'package:project_shelf_v3/adapter/common/validator/validation_error.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/app/dto/update_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
@@ -62,55 +63,59 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
     assert(selectedProductState is Selected);
 
     final product = (selectedProductState as Selected).product;
+    final isMoneyRule = IsMoneyRule(appPreferences.defaultCurrency);
 
     return EditProductState(
       currency: appPreferences.defaultCurrency,
       product: product,
-      nameInput: Input(StringValidator(isRequired: true), value: product.name),
+      nameInput: Input(
+        value: product.name,
+        validationRules: {IsRequiredRule()},
+      ),
       defaultPriceInput: Input(
-        CurrencyValidator(appPreferences.defaultCurrency),
         value: product.defaultPrice.minorUnits > BigInt.zero
             ? product.defaultPrice.minorUnits.toString()
             : null,
+        validationRules: {isMoneyRule},
       ),
       purchasePriceInput: Input(
-        CurrencyValidator(appPreferences.defaultCurrency),
         value: product.purchasePrice.minorUnits > BigInt.zero
             ? product.purchasePrice.minorUnits.toString()
             : null,
+        validationRules: {isMoneyRule},
       ),
       stockInput: Input(
-        IntValidator(),
         value: product.stock > 0 ? product.stock.toString() : null,
+        validationRules: {IsIntegerRule()},
       ),
     );
   }
 
-  Future<void> updateName(String value) async {
-    await future;
+  Future<void> updateName(String name) async {
+    final value = await future;
 
     state = AsyncData(
-      state.value!.copyWith(
+      value.copyWith(
         status: EditProductStatus.loading,
-        nameInput: state.value!.nameInput.copyWith(value: value),
+        nameInput: value.nameInput.copyWith(value: name),
       ),
     );
 
-    _debouncer.debounce(() => _searchProductUseCase.exec(name: value));
+    _debouncer.debounce(() => _searchProductUseCase.exec(name: name));
     await _debouncer.completer.future.then((it) {
       if (it != null) {
         state = AsyncData(
-          state.value!.copyWith(
-            nameInput: state.value!.nameInput.copyWith(
-              errors: state.value!.nameInput.errors
-                ..add(CustomStateError.productNameTaken),
+          value.copyWith(
+            nameInput: value.nameInput.copyWith(
+              errors: value.nameInput.errors
+                ..add(ValidationError.PRODUCT_NAME_TAKEN),
             ),
           ),
         );
       }
     });
 
-    state = AsyncData(state.value!.copyWith(status: EditProductStatus.initial));
+    state = AsyncData(value.copyWith(status: EditProductStatus.initial));
   }
 
   Future<void> updateDefaultPrice(String value) async {
