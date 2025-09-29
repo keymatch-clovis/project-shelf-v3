@@ -18,6 +18,7 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_product_form_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/main.dart';
 
@@ -187,6 +188,28 @@ final class CreateInvoiceAsyncNotifier
 
     // Save the draft state.
     _saveDraft();
+  }
+
+  Future<void> editInvoiceProduct({
+    required int index,
+    required InvoiceProductDto invoiceProduct,
+  }) async {
+    final currentStock = await getCurrentProductQuantity(
+      invoiceProduct.product.id,
+    ).then((it) => invoiceProduct.product.stock - it);
+
+    await ref
+        .read(invoiceProductFormProvider.notifier)
+        .setForm(
+          invoiceProduct: invoiceProduct,
+          index: index,
+          currentStock: currentStock,
+        );
+  }
+
+  Future<void> clearInvoiceProductForm() async {
+      print("clearing");
+    await ref.read(invoiceProductFormProvider.notifier).clearForm();
   }
 
   Future<void> _saveDraft() async {

@@ -15,7 +15,7 @@ final class CreateInvoiceProductDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(createInvoiceProductProvider);
+    final state = ref.watch(invoiceProductFormProvider);
 
     return state.when(
       data: (data) => _Dialog(data),
@@ -29,7 +29,7 @@ final class CreateInvoiceProductDialog extends ConsumerWidget {
 }
 
 final class _Dialog extends ConsumerWidget {
-  final CreateInvoiceProductState state;
+  final InvoiceProductFormState state;
 
   const _Dialog(this.state);
 
@@ -56,7 +56,7 @@ final class _Dialog extends ConsumerWidget {
                 children: [
                   CustomObjectField(
                     isRequired: true,
-                    body: Text(state.productInput.value!.name),
+                    body: Text(state.productInput.value?.name ?? ""),
                     label: localizations.product,
                   ),
                   CustomTextField(
@@ -67,7 +67,7 @@ final class _Dialog extends ConsumerWidget {
                     keyboardType: TextInputType.number,
                     errors: state.unitPriceInput.errors.parseErrors(context),
                     onChanged: ref
-                        .read(createInvoiceProductProvider.notifier)
+                        .read(invoiceProductFormProvider.notifier)
                         .setUnitPrice,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -76,15 +76,16 @@ final class _Dialog extends ConsumerWidget {
                   ),
                   CustomTextField(
                     isRequired: true,
+                    value: state.quantityInput.value,
                     label: localizations.quantity,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     errors: state.quantityInput.errors.parseErrors(context),
                     helperText: localizations.current_product_stock(
-                      state.currentStock!,
+                      state.currentStock ?? 0,
                     ),
                     onChanged: ref
-                        .read(createInvoiceProductProvider.notifier)
+                        .read(invoiceProductFormProvider.notifier)
                         .setQuantity,
                   ),
                 ],

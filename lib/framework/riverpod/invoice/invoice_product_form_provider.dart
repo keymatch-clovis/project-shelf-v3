@@ -152,6 +152,20 @@ final class InvoiceProductFormNotifier
       ),
     );
   }
+
+  Future<void> clearForm() async {
+    final value = await future;
+
+    state = AsyncData(
+      value.copyWith(
+        index: null,
+        productInput: value.productInput.copyWith(value: null),
+        unitPriceInput: value.unitPriceInput.copyWith(value: null),
+        quantityInput: value.quantityInput.copyWith(value: null),
+        currentStock: null,
+      ),
+    );
+  }
 }
 
 final invoiceProductFormProvider = AsyncNotifierProvider.autoDispose(

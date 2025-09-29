@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
-import 'package:project_shelf_v3/adapter/common/custom_state_error.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_integer_rule.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dart';
