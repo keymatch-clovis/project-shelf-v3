@@ -15,8 +15,16 @@ final class InvoiceProductTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    final titleStyle = theme.textTheme.labelSmall!;
+    final bodyStyle = theme.textTheme.labelMedium!.copyWith(
+      fontWeight: FontWeight.normal,
+    );
+
+    final titlePadding = const EdgeInsets.symmetric(horizontal: 6);
+    final bodyPadding = const EdgeInsets.symmetric(horizontal: 6, vertical: 12);
 
     return Table(
       columnWidths: const <int, TableColumnWidth>{
@@ -36,48 +44,30 @@ final class InvoiceProductTable extends StatelessWidget {
           ),
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text("#", style: theme.textTheme.labelSmall),
+              padding: titlePadding,
+              child: _renderTitleCell("#", style: titleStyle),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                localizations.name,
-                style: theme.textTheme.labelSmall,
-              ),
+              padding: titlePadding,
+              child: _renderTitleCell(localizations.name, style: titleStyle),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text("×", style: theme.textTheme.labelSmall),
+              padding: titlePadding,
+              child: _renderTitleCell("×", style: titleStyle),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
+              padding: titlePadding,
+              child: _renderTitleCell(
                 localizations.unit_price,
-                style: theme.textTheme.labelSmall,
+                style: titleStyle,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                localizations.total,
-                style: theme.textTheme.labelSmall,
-              ),
+              padding: titlePadding,
+              child: _renderTitleCell(localizations.total, style: titleStyle),
             ),
           ],
         ),
-
-        // ...[for (var i = 0; i < 50; i++) i].map((it) {
-        //   return TableRow(
-        //     children: [
-        //       TableRowInkWell(onTap: () {}, child: Text("test")),
-        //       TableRowInkWell(onTap: () {}, child: Text("test")),
-        //       TableRowInkWell(onTap: () {}, child: Text("test")),
-        //       TableRowInkWell(onTap: () {}, child: Text("test")),
-        //       TableRowInkWell(onTap: () {}, child: Text("test")),
-        //     ],
-        //   );
-        // }),
         ...items.indexed.map((it) {
           return TableRow(
             decoration: it.$1 < items.length - 1
@@ -94,16 +84,11 @@ final class InvoiceProductTable extends StatelessWidget {
                 onTap: () =>
                     onSelect?.call(index: it.$1, invoiceProduct: it.$2),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
+                  padding: bodyPadding,
                   child: Text(
-                    (it.$1 + 1).toString(),
+                    "${it.$1 + 1}.",
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: bodyStyle,
                   ),
                 ),
               ),
@@ -111,31 +96,19 @@ final class InvoiceProductTable extends StatelessWidget {
                 onTap: () =>
                     onSelect?.call(index: it.$1, invoiceProduct: it.$2),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
-                  child: Text(
-                    it.$2.product.name,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
+                  padding: bodyPadding,
+                  child: Text(it.$2.product.name, style: bodyStyle),
                 ),
               ),
               TableRowInkWell(
                 onTap: () =>
                     onSelect?.call(index: it.$1, invoiceProduct: it.$2),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
+                  padding: bodyPadding,
                   child: Text(
                     it.$2.quantity.toString(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: bodyStyle,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -143,16 +116,8 @@ final class InvoiceProductTable extends StatelessWidget {
                 onTap: () =>
                     onSelect?.call(index: it.$1, invoiceProduct: it.$2),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
-                  child: Text(
-                    it.$2.unitPrice.toString(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
+                  padding: bodyPadding,
+                  child: Text(it.$2.unitPrice.toString(), style: bodyStyle),
                 ),
               ),
               TableRowInkWell(
@@ -164,16 +129,8 @@ final class InvoiceProductTable extends StatelessWidget {
                       left: BorderSide(color: theme.colorScheme.outlineVariant),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 2,
-                  ),
-                  child: Text(
-                    it.$2.total.toString(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
+                  padding: bodyPadding,
+                  child: Text(it.$2.total.toString(), style: bodyStyle),
                 ),
               ),
             ],
@@ -182,4 +139,8 @@ final class InvoiceProductTable extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget _renderTitleCell(String title, {required TextStyle style}) {
+  return Text(title, style: style, textAlign: TextAlign.center);
 }

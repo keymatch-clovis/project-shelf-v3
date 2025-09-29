@@ -4,6 +4,7 @@
     "total": "Total",
     "details": "Details",
     "quantity": "Quantity",
+    "remaining_unpaid_balance": "Remaining unpaid balance",
     "unit_price": "Unit price",
     "no_products_found": "No products found",
     "create_customer": "Create customer",

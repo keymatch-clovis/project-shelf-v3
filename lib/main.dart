@@ -31,6 +31,7 @@ import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.da
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/delete_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/get_invoice_drafts_use_case.dart';
@@ -176,6 +177,10 @@ void main() async {
 
   getIt.registerLazySingleton<FindInvoiceDraftUseCase>(
     () => FindInvoiceDraftUseCase(),
+  );
+
+  getIt.registerLazySingleton<CreateInvoiceUseCase>(
+    () => CreateInvoiceUseCase(),
   );
 
   runApp(

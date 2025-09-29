@@ -1,3 +1,4 @@
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 
@@ -7,12 +8,14 @@ final class UpdateInvoiceDraftRequest {
 
   final DateTime? date;
   final Id? customerId;
+  final Money? remainingUnpaidBalance;
 
   const UpdateInvoiceDraftRequest({
     required this.id,
     this.invoiceProducts = const [],
     this.date,
     this.customerId,
+    this.remainingUnpaidBalance,
   });
 
   @override

@@ -10,15 +10,24 @@ import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dar
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
 
-final class CreateInvoiceProductDialog extends ConsumerWidget {
-  const CreateInvoiceProductDialog({super.key});
+final class InvoiceProductFormDialog extends ConsumerWidget {
+  final InvoiceProductFormArgs args;
+
+  const InvoiceProductFormDialog(this.args, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(invoiceProductFormProvider);
+    final provider = invoiceProductFormProvider(args);
+    final state = ref.watch(provider);
 
     return state.when(
-      data: (data) => _Dialog(data),
+      data: (data) => _Dialog(
+        data,
+        onUnitPriceChanged: ref.read(provider.notifier).setUnitPrice,
+        onQuantityChanged: ref.read(provider.notifier).setQuantity,
+        onDismissed: () => Navigator.pop(context),
+        onSubmitted: () => Navigator.pop(context, data.invoiceProduct),
+      ),
       loading: () => const _LoadingDialog(),
       error: (err, _) {
         Logger().f(err);
@@ -28,13 +37,23 @@ final class CreateInvoiceProductDialog extends ConsumerWidget {
   }
 }
 
-final class _Dialog extends ConsumerWidget {
+final class _Dialog extends StatelessWidget {
   final InvoiceProductFormState state;
+  final void Function(String) onUnitPriceChanged;
+  final void Function(String) onQuantityChanged;
+  final void Function() onDismissed;
+  final void Function() onSubmitted;
 
-  const _Dialog(this.state);
+  const _Dialog(
+    this.state, {
+    required this.onUnitPriceChanged,
+    required this.onQuantityChanged,
+    required this.onDismissed,
+    required this.onSubmitted,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -56,7 +75,7 @@ final class _Dialog extends ConsumerWidget {
                 children: [
                   CustomObjectField(
                     isRequired: true,
-                    body: Text(state.productInput.value?.name ?? ""),
+                    body: Text(state.productInput.value!.name),
                     label: localizations.product,
                   ),
                   CustomTextField(
@@ -66,9 +85,7 @@ final class _Dialog extends ConsumerWidget {
                     label: localizations.unit_price,
                     keyboardType: TextInputType.number,
                     errors: state.unitPriceInput.errors.parseErrors(context),
-                    onChanged: ref
-                        .read(invoiceProductFormProvider.notifier)
-                        .setUnitPrice,
+                    onChanged: onUnitPriceChanged,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       CurrencyInputFormatter(currency: state.currency),
@@ -82,11 +99,9 @@ final class _Dialog extends ConsumerWidget {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     errors: state.quantityInput.errors.parseErrors(context),
                     helperText: localizations.current_product_stock(
-                      state.currentStock ?? 0,
+                      state.availableStock!,
                     ),
-                    onChanged: ref
-                        .read(invoiceProductFormProvider.notifier)
-                        .setQuantity,
+                    onChanged: onQuantityChanged,
                   ),
                 ],
               ),
@@ -100,15 +115,11 @@ final class _Dialog extends ConsumerWidget {
               spacing: 4,
               children: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: onDismissed,
                   child: Text(localizations.close),
                 ),
                 FilledButton(
-                  onPressed: state.isValid
-                      ? () => Navigator.pop(context, state.invoiceProduct!)
-                      : null,
+                  onPressed: state.isValid ? onSubmitted : null,
                   child: Text(localizations.accept),
                 ),
               ],

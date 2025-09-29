@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'Quantity'**
   String get quantity;
 
+  /// No description provided for @remaining_unpaid_balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining unpaid balance'**
+  String get remaining_unpaid_balance;
+
   /// No description provided for @unit_price.
   ///
   /// In en, this message translates to:

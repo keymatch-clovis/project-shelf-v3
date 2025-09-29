@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/common/date_time_extensions.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_search_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_product_form_provider.dart';
+import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/dialog/create_invoice_product_dialog.dart';
+import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/dialog/invoice_product_form_dialog.dart';
 import 'package:project_shelf_v3/framework/ui/components/invoice_product_table.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_search_anchor.dart';
 
@@ -19,38 +23,6 @@ final class CreateInvoiceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // We need to listen to this provider for it to not autodispose when the
-    // search anchor is closed.
-    //
-    // NOTE: I don't know another way of doing this.
-    // ref.listen(customerSearchProvider, (_, _) {});
-
-    // When the invoice product creation provider changes, it means the user
-    // has selected a product to add to the invoice. We need to open a dialog
-    // to set the product properties.
-    ref.listen(
-      invoiceProductFormProvider.select((it) => it.value!.productInput.value),
-      (_, product) {
-        print(product);
-        if (product != null) {
-          showDialog<InvoiceProductDto>(
-            context: context,
-            builder: (_) => CreateInvoiceProductDialog(),
-          ).then((it) async {
-            if (it != null) {
-              await ref
-                  .read(createInvoiceProvider.notifier)
-                  .addInvoiceProduct(it);
-            }
-            // Always clear the selected invoice product form after it closes.
-            await ref
-                .read(createInvoiceProvider.notifier)
-                .clearInvoiceProductForm();
-          });
-        }
-      },
-    );
-
     // NOTE: We have to be careful here. This screen is using both the
     // `createInvoiceProvider` and the `createInvoiceDraftProvider`. The
     // `createInvoiceDraftProvider` is also used by the `createInvoiceProvider`
@@ -60,22 +32,58 @@ final class CreateInvoiceScreen extends ConsumerWidget {
         .watch(createInvoiceProvider)
         .when(
           data: (_) => _Screen(
-            onInvoiceProductSelected: (invoiceProduct, index) {
+            onInvoiceProductSelected: (invoiceProduct) {
+              var availableStock = ref
+                  .read(createInvoiceProvider.notifier)
+                  .getProductAvailableStock(invoiceProduct.product);
+              // This is different, as we are editing. We need the
+              // [availableStock] + the amount we are editing.
+              availableStock += invoiceProduct.quantity;
+
               showDialog<InvoiceProductDto>(
                 context: context,
-                builder: (_) => CreateInvoiceProductDialog(),
+                builder: (_) => InvoiceProductFormDialog(
+                  InvoiceProductFormArgs(
+                    // NOTE: This here seems a bit weird, and it is. Maybe in
+                    // the future we'll find a better way of doing this.
+                    invoiceProduct: invoiceProduct,
+                    product: invoiceProduct.product,
+                    availableStock: availableStock,
+                  ),
+                ),
               ).then((it) async {
                 if (it != null) {
-                  await ref
+                  ref
                       .read(createInvoiceProvider.notifier)
                       .addInvoiceProduct(it);
                 }
-                // Always clear the selected invoice product form after it closes.
-                await ref
-                    .read(createInvoiceProvider.notifier)
-                    .clearInvoiceProductForm();
               });
             },
+            onProductSelected: (product) {
+              final availableStock = ref
+                  .read(createInvoiceProvider.notifier)
+                  .getProductAvailableStock(product);
+
+              showDialog<InvoiceProductDto>(
+                context: context,
+                builder: (_) => InvoiceProductFormDialog(
+                  InvoiceProductFormArgs(
+                    product: product,
+                    availableStock: availableStock,
+                  ),
+                ),
+              ).then((it) async {
+                if (it != null) {
+                  ref
+                      .read(createInvoiceProvider.notifier)
+                      .addInvoiceProduct(it);
+                }
+              });
+            },
+            onRemainingUnpaidBalanceChanged: ref
+                .read(createInvoiceProvider.notifier)
+                .updateRemainingUnpaidBalance,
+            onCreated: ref.read(createInvoiceProvider.notifier).create,
           ),
           loading: () => _LoadingScreen(),
           error: (err, _) {
@@ -115,9 +123,17 @@ final class _LoadingScreen extends StatelessWidget {
 }
 
 final class _Screen extends StatefulWidget {
-  final void Function(InvoiceProductDto, int index)? onInvoiceProductSelected;
+  final void Function(InvoiceProductDto) onInvoiceProductSelected;
+  final void Function(ProductDto) onProductSelected;
+  final void Function(String) onRemainingUnpaidBalanceChanged;
+  final void Function() onCreated;
 
-  const _Screen({this.onInvoiceProductSelected});
+  const _Screen({
+    required this.onInvoiceProductSelected,
+    required this.onProductSelected,
+    required this.onRemainingUnpaidBalanceChanged,
+    required this.onCreated,
+  });
 
   @override
   State<StatefulWidget> createState() => _ScreenState();
@@ -145,7 +161,7 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _AppBar(_tabController),
+          _AppBar(_tabController, onCreated: widget.onCreated),
           SliverFillRemaining(
             hasScrollBody: false,
             fillOverscroll: true,
@@ -153,7 +169,12 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  SingleChildScrollView(child: _Details()),
+                  SingleChildScrollView(
+                    child: _Details(
+                      onRemainingUnpaidBalanceChanged:
+                          widget.onRemainingUnpaidBalanceChanged,
+                    ),
+                  ),
                   _Products(onSelect: widget.onInvoiceProductSelected),
                 ],
               ),
@@ -166,7 +187,10 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
         animation: _tabController.animation!,
         builder: (context, _) {
           final tab = _tabController.animation!.value.round();
-          return _FloatingActionButton(tab);
+          return _FloatingActionButton(
+            tab,
+            onProductSelected: widget.onProductSelected,
+          );
         },
       ),
       bottomNavigationBar: AnimatedBuilder(
@@ -180,26 +204,19 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
   }
 }
 
-final class _FloatingActionButton extends ConsumerWidget {
+final class _FloatingActionButton extends StatelessWidget {
   final int currentTab;
+  final void Function(ProductDto) onProductSelected;
 
-  const _FloatingActionButton(this.currentTab);
+  const _FloatingActionButton(
+    this.currentTab, {
+    required this.onProductSelected,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return switch (currentTab) {
-      1 => ProductSearchAnchor(
-        onSelect: (product) async {
-          final currentStock = await ref
-              .read(createInvoiceProvider.notifier)
-              .getCurrentProductQuantity(product.id)
-              .then((it) => product.stock - it);
-
-          ref
-              .read(invoiceProductFormProvider.notifier)
-              .setProduct(product: product, currentStock: currentStock);
-        },
-      ),
+      1 => ProductSearchAnchor(onSelect: onProductSelected),
       _ => const SizedBox.shrink(),
     };
   }
@@ -235,8 +252,9 @@ final class _Actions extends ConsumerWidget {
 
 final class _AppBar extends ConsumerWidget {
   final TabController _tabController;
+  final void Function() onCreated;
 
-  const _AppBar(this._tabController);
+  const _AppBar(this._tabController, {required this.onCreated});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -245,6 +263,9 @@ final class _AppBar extends ConsumerWidget {
     // This provider MUST be loaded if we reach this point.
     final draftStatus = ref.watch(
       createInvoiceProvider.select((it) => it.value!.status),
+    );
+    final isValid = ref.watch(
+      createInvoiceProvider.select((it) => it.value!.isValid),
     );
 
     return SliverAppBar(
@@ -260,7 +281,10 @@ final class _AppBar extends ConsumerWidget {
                 )
               : const Icon(Icons.download_done_outlined),
         ),
-        FilledButton(onPressed: () {}, child: Text(localizations.save)),
+        FilledButton(
+          onPressed: isValid ? onCreated : null,
+          child: Text(localizations.save),
+        ),
       ],
       bottom: TabBar.secondary(
         controller: _tabController,
@@ -274,6 +298,10 @@ final class _AppBar extends ConsumerWidget {
 }
 
 final class _Details extends ConsumerStatefulWidget {
+  final void Function(String) onRemainingUnpaidBalanceChanged;
+
+  const _Details({required this.onRemainingUnpaidBalanceChanged});
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _DetailsState();
 }
@@ -316,6 +344,20 @@ final class _DetailsState extends ConsumerState<_Details> {
             },
           ),
           _CustomerSearchAnchor(),
+          CustomTextField(
+            textInputAction: TextInputAction.next,
+            value: state.remainingUnpaidBalanceInput.value,
+            label: localizations.remaining_unpaid_balance,
+            keyboardType: TextInputType.number,
+            errors: state.remainingUnpaidBalanceInput.errors.parseErrors(
+              context,
+            ),
+            onChanged: widget.onRemainingUnpaidBalanceChanged,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              CurrencyInputFormatter(currency: state.currency),
+            ],
+          ),
         ],
       ),
     );
@@ -323,7 +365,7 @@ final class _DetailsState extends ConsumerState<_Details> {
 }
 
 final class _Products extends ConsumerWidget {
-  final void Function(InvoiceProductDto, int index)? onSelect;
+  final void Function(InvoiceProductDto)? onSelect;
 
   const _Products({this.onSelect});
 
@@ -379,9 +421,9 @@ final class _Products extends ConsumerWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: InvoiceProductTable(
-                  products,
+                  products.values.toList(),
                   onSelect: ({required index, required invoiceProduct}) {
-                    onSelect?.call(invoiceProduct, index);
+                    onSelect?.call(invoiceProduct);
                   },
                 ),
               ),

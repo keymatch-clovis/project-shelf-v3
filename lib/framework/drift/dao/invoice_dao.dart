@@ -31,4 +31,51 @@ final class InvoiceDao implements InvoiceRepository {
       }).toList();
     });
   }
+
+  @override
+  Future<int> create(CreateArgs args) {
+    _logger.d("Creating invoice");
+
+    return _database.transaction<int>(() async {
+      final dateTime = DateTime.now();
+
+      final invoiceId = await _database
+          .into(_database.invoiceTable)
+          .insert(
+            InvoiceTableCompanion.insert(
+              number: args.number,
+              date: args.date,
+              remainingUnpaidBalance: args.remainingUnpaidBalance,
+              customer: args.customerId,
+              createdAt: dateTime,
+              updatedAt: dateTime,
+            ),
+          );
+
+      for (final invoiceProduct in args.invoiceProducts) {
+        await _database
+            .into(_database.invoiceProductTable)
+            .insert(
+              InvoiceProductTableCompanion.insert(
+                invoice: invoiceId,
+                product: invoiceProduct.productId,
+                quantity: invoiceProduct.quantity,
+                unitPrice: invoiceProduct.unitPrice,
+                createdAt: dateTime,
+              ),
+            );
+      }
+
+      return invoiceId;
+    });
+  }
+
+  @override
+  Future<int?> getConsecutive() {
+    final maxNumber = _database.invoiceTable.number.max();
+    final query = _database.selectOnly(_database.invoiceTable)
+      ..addColumns([maxNumber]);
+
+    return query.map((it) => it.read(maxNumber)).getSingle();
+  }
 }

@@ -1,24 +1,25 @@
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
-final class CreateInvoiceProductDto {
-  final int productId;
-  final int unitPrice;
+final class CreateInvoiceProductRequest {
+  final Id productId;
+  final Money unitPrice;
   final int quantity;
 
-  const CreateInvoiceProductDto({
+  const CreateInvoiceProductRequest({
     required this.productId,
     required this.unitPrice,
     required this.quantity,
   });
 }
 
-final class CreateInvoiceDto {
+final class CreateInvoiceRequest {
   final DateTime date;
   final Id customerId;
-  final List<CreateInvoiceProductDto> invoiceProducts;
+  final List<CreateInvoiceProductRequest> invoiceProducts;
   final int? remainingUnpaidBalance;
 
-  const CreateInvoiceDto({
+  const CreateInvoiceRequest({
     required this.date,
     required this.customerId,
     required this.invoiceProducts,

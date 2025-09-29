@@ -1,13 +1,20 @@
-import 'package:project_shelf_v3/app/dto/create_invoice_dto.dart';
+import 'package:logger/logger.dart';
+import 'package:project_shelf_v3/app/dto/create_invoice_request.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
+import 'package:project_shelf_v3/app/service/product_service.dart';
+import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/main.dart';
 
 final class CreateInvoiceUseCase {
-  final _service = getIt.get<InvoiceService>();
+  final _logger = Logger(printer: UseCasePrinter());
 
-  Future<void> exec(CreateInvoiceDto dto) async {
-    final number = await _service.getConsecutive();
+  final _service = getIt.get<InvoiceService>();
+  final _productService = getIt.get<ProductService>();
+
+  Future<void> exec(CreateInvoiceRequest dto) async {
+    // If no consecutive is found, it means this is the first invoice.
+    final number = await _service.getConsecutive() ?? 1;
 
     final invoice = Invoice(
       number: number,
@@ -16,6 +23,19 @@ final class CreateInvoiceUseCase {
       customerId: dto.customerId,
     );
 
+    _logger.d("Adding products to invoice");
+    for (final invoiceProduct in dto.invoiceProducts) {
+      final product = await _productService.findById(invoiceProduct.productId);
+
+      invoice.addProduct(
+        productId: product.id!,
+        unitPrice: invoiceProduct.unitPrice,
+        quantity: invoiceProduct.quantity,
+        stock: product.stock,
+      );
+    }
+
+    _logger.d("Creating invoice");
     _service.create(invoice);
   }
 }

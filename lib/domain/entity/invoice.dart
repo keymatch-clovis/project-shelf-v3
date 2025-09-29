@@ -23,7 +23,7 @@ final class Invoice {
   final int remainingUnpaidBalance;
 
   final Id customerId;
-  final List<InvoiceProduct> invoiceProducts = const [];
+  final List<InvoiceProduct> invoiceProducts = [];
 
   Invoice({
     required this.number,
