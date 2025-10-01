@@ -36,6 +36,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get create_invoice => 'Create invoice';
 
   @override
+  String invoice(int number) {
+    final intl.NumberFormat numberNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String numberString = numberNumberFormat.format(number);
+
+    return 'Invoice # $numberString';
+  }
+
+  @override
   String get photos => 'Photos';
 
   @override
@@ -61,6 +70,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get add_product => 'Add product';
+
+  @override
+  String get number => 'Number';
 
   @override
   String get no_products => 'No products';
@@ -117,7 +129,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get err_product_name_taken => 'This name is already taken';
 
   @override
-  String get err_value_required => 'A value is required';
+  String get err_value_required => 'Un valor es requerido';
 
   @override
   String get invoices => 'Invoices';
@@ -135,7 +147,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get date => 'Date';
+  String get date => 'Fecha';
 
   @override
   String get no_customers_found => 'No customers found';

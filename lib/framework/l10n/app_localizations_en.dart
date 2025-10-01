@@ -36,6 +36,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get create_invoice => 'Create invoice';
 
   @override
+  String invoice(int number) {
+    final intl.NumberFormat numberNumberFormat =
+        intl.NumberFormat.decimalPattern(localeName);
+    final String numberString = numberNumberFormat.format(number);
+
+    return 'Invoice # $numberString';
+  }
+
+  @override
   String get photos => 'Photos';
 
   @override
@@ -61,6 +70,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add_product => 'Add product';
+
+  @override
+  String get number => 'Number';
 
   @override
   String get no_products => 'No products';

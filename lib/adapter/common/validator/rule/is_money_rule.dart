@@ -16,12 +16,15 @@ final class IsMoneyRule extends ValidationRule<String> {
 
   @override
   ValidationError? validate(String? value) {
+    if (value?.isEmpty == true) {
+      return null;
+    }
+
     if (value != null) {
       if (_currency.tryParse(value) == null) {
         return error;
       }
     }
-
     return null;
   }
 }

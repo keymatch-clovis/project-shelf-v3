@@ -17,7 +17,7 @@ final class CustomObjectField<T> extends StatefulWidget {
 
   const CustomObjectField({
     super.key,
-    required this.body,
+    this.body,
     this.emptyLabel,
     this.value,
     this.focusNode,
@@ -76,6 +76,8 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasError =
+        widget.errors.isNotEmpty && _status != CustomObjectFieldStatus.INITIAL;
 
     return Focus(
       focusNode: _focusNode,
@@ -89,11 +91,9 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                 clipBehavior: Clip.antiAlias,
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
-                    color:
-                        widget.errors.isEmpty ||
-                            _status == CustomObjectFieldStatus.INITIAL
-                        ? theme.colorScheme.outline
-                        : theme.colorScheme.error,
+                    color: hasError
+                        ? theme.colorScheme.error
+                        : theme.colorScheme.outline,
                   ),
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -115,7 +115,9 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                                 widget.emptyLabel ?? widget.label,
                                 style: TextStyle(
                                   fontStyle: FontStyle.italic,
-                                  color: theme.colorScheme.onSurfaceVariant,
+                                  color: hasError
+                                      ? theme.colorScheme.error
+                                      : theme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
                         ),
@@ -150,7 +152,7 @@ final class _CustomObjectFieldState<T> extends State<CustomObjectField<T>> {
                     color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  padding: EdgeInsets.symmetric(horizontal: 4),
                   child: _Label(
                     widget.label,
                     status: _status,

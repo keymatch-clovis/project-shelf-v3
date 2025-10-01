@@ -196,6 +196,17 @@ final class CreateInvoiceAsyncNotifier
     final newMap = {...value.invoiceProducts};
     newMap[dto.tempId] = dto;
 
+    for (var i = 0; i < 50; i++) {
+      final test = InvoiceProductDto(
+        product: dto.product,
+        unitPrice: dto.unitPrice,
+        quantity: 1,
+        total: dto.unitPrice,
+      );
+
+      newMap[test.tempId] = test;
+    }
+
     state = AsyncData(value.copyWith(invoiceProducts: newMap));
 
     // Save the draft state.

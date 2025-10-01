@@ -15,7 +15,6 @@ import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dar
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/dialog/invoice_product_form_dialog.dart';
-import 'package:project_shelf_v3/framework/ui/components/invoice_product_table.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_search_anchor.dart';
 
 final class CreateInvoiceScreen extends ConsumerWidget {
@@ -23,11 +22,6 @@ final class CreateInvoiceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // NOTE: We have to be careful here. This screen is using both the
-    // `createInvoiceProvider` and the `createInvoiceDraftProvider`. The
-    // `createInvoiceDraftProvider` is also used by the `createInvoiceProvider`
-    // which creates a double dependency. As such, we need to only listen to
-    // the `createInvoiceProvider`, and everything should be loaded correctly.
     return ref
         .watch(createInvoiceProvider)
         .when(
@@ -175,7 +169,7 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
                           widget.onRemainingUnpaidBalanceChanged,
                     ),
                   ),
-                  _Products(onSelect: widget.onInvoiceProductSelected),
+                  _Products(onSelected: widget.onInvoiceProductSelected),
                 ],
               ),
             ),
@@ -241,7 +235,7 @@ final class _Actions extends ConsumerWidget {
             onPressed: isProductsEmpty
                 ? null
                 : ref.read(createInvoiceProvider.notifier).clearProducts,
-            icon: const Icon(Icons.delete_sweep_rounded),
+            icon: const Icon(Icons.delete_sweep_outlined),
           ),
         ];
     }
@@ -345,7 +339,6 @@ final class _DetailsState extends ConsumerState<_Details> {
           ),
           _CustomerSearchAnchor(),
           CustomTextField(
-            textInputAction: TextInputAction.next,
             value: state.remainingUnpaidBalanceInput.value,
             label: localizations.remaining_unpaid_balance,
             keyboardType: TextInputType.number,
@@ -353,6 +346,7 @@ final class _DetailsState extends ConsumerState<_Details> {
               context,
             ),
             onChanged: widget.onRemainingUnpaidBalanceChanged,
+            textInputAction: TextInputAction.done,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               CurrencyInputFormatter(currency: state.currency),
@@ -365,9 +359,9 @@ final class _DetailsState extends ConsumerState<_Details> {
 }
 
 final class _Products extends ConsumerWidget {
-  final void Function(InvoiceProductDto)? onSelect;
+  final void Function(InvoiceProductDto) onSelected;
 
-  const _Products({this.onSelect});
+  const _Products({required this.onSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -382,57 +376,53 @@ final class _Products extends ConsumerWidget {
     );
 
     if (products.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(12),
-        child: Container(
-          decoration: BoxDecoration(
-            border: BoxBorder.all(color: theme.colorScheme.outline),
-            borderRadius: const BorderRadius.all(Radius.circular(6)),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.category_rounded,
-                  size: 96,
-                  color: theme.colorScheme.outlineVariant,
-                ),
-                Text(
-                  localizations.no_invoice_products,
-                  style: TextStyle(color: theme.colorScheme.outline),
-                ),
-              ],
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.category_rounded,
+              size: 96,
+              color: theme.colorScheme.outlineVariant,
             ),
-          ),
+            Text(
+              localizations.no_invoice_products,
+              style: TextStyle(color: theme.colorScheme.outline),
+            ),
+          ],
         ),
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Container(
-        decoration: BoxDecoration(
-          border: BoxBorder.all(color: theme.colorScheme.outline),
-          borderRadius: const BorderRadius.all(Radius.circular(6)),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: InvoiceProductTable(
-                  products.values.toList(),
-                  onSelect: ({required index, required invoiceProduct}) {
-                    onSelect?.call(invoiceProduct);
-                  },
-                ),
-              ),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ...products.values.map<Widget>((it) {
+                  return ListTile(
+                    onTap: () => onSelected(it),
+                    title: Text(it.product.name),
+                    subtitle: Text(it.unitPrice.toString()),
+                    leading: Text("${it.quantity} ×"),
+                    trailing: Text(it.total.toString()),
+                  );
+                }),
+              ],
             ),
-            Divider(height: 0),
-            Row(children: [Text("TOTAL"), Text(totalValue.toString())]),
-          ],
+          ),
         ),
-      ),
+        // https://m3.material.io/foundations/layout/applying-layout/compact#5a83ddd7-137f-4657-ba2d-eb08cac065e7
+        const Divider(height: 0, indent: 16, endIndent: 16),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [Text("TOTAL: $totalValue")],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -522,17 +512,21 @@ final class _CustomerSearchAnchorState
       builder: (_, _) {
         return CustomObjectField<CustomerDto>(
           label: localizations.customer,
+          emptyLabel: localizations.no_cities_found,
           isRequired: true,
           value: customerInput.value,
           body: customerInput.value != null
-              ? Text(customerInput.value!.name)
-              : Text(
-                  "No customer selected",
-                  style: TextStyle(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontStyle: FontStyle.italic,
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(customerInput.value!.name),
+                      Text(customerInput.value!.cityId.toString()),
+                    ],
                   ),
-                ),
+                )
+              : null,
           onTap: () {
             searchController.openView();
           },

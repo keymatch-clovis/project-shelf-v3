@@ -1,5 +1,7 @@
 {
     "@@locale": "es",
     "products": "Productos",
-    "no_date_selected": "Fecha sin seleccionar"
+    "no_date_selected": "Fecha sin seleccionar",
+    "err_value_required": "Un valor es requerido",
+    "date": "Fecha"
 }

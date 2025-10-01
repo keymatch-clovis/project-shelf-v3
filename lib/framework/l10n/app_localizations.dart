@@ -152,6 +152,12 @@ abstract class AppLocalizations {
   /// **'Create invoice'**
   String get create_invoice;
 
+  /// No description provided for @invoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice # {number}'**
+  String invoice(int number);
+
   /// No description provided for @photos.
   ///
   /// In en, this message translates to:
@@ -205,6 +211,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add product'**
   String get add_product;
+
+  /// No description provided for @number.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get number;
 
   /// No description provided for @no_products.
   ///

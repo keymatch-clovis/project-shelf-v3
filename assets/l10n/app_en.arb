@@ -9,6 +9,15 @@
     "no_products_found": "No products found",
     "create_customer": "Create customer",
     "create_invoice": "Create invoice",
+    "invoice": "Invoice # {number}",
+    "@invoice": {
+        "placeholders": {
+            "number": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
     "photos": "Photos",
     "business_name": "Business name",
     "city": "City",
@@ -18,6 +27,7 @@
     "phone_number": "Phone number",
     "add_customer": "Add customer",
     "add_product": "Add product",
+    "number": "Number",
     "no_products": "No products",
     "no_customers": "No customers",
     "no_cities_found": "No cities found",

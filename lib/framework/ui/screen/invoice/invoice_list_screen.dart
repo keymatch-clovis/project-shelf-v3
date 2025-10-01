@@ -6,21 +6,29 @@ import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_list_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
-final class InvoiceListScreen extends StatelessWidget {
+final class InvoiceListScreen extends ConsumerWidget {
   const InvoiceListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Add any listeners here.
 
-    return const _Screen();
+    return _Screen(
+      onSelected: (invoice) {
+        ref.read(selectedInvoiceProvider.notifier).select(invoice.invoice);
+        context.go(CustomRoute.INVOICE_DETAILS.route);
+      },
+    );
   }
 }
 
 final class _Screen extends ConsumerWidget {
-  const _Screen();
+  final void Function(InvoiceWithCustomerDto) onSelected;
+
+  const _Screen({required this.onSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,8 +44,8 @@ final class _Screen extends ConsumerWidget {
           ),
         ],
       ),
-      body: _Body(),
-      floatingActionButton: FloatingActionButton.large(
+      body: _Body(onSelected: onSelected),
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           //  > Modifying other providers during init is the wrong architecture.
           //  > https://github.com/rrousselGit/riverpod/issues/1505#issuecomment-1191878788
@@ -57,12 +65,16 @@ final class _Screen extends ConsumerWidget {
 }
 
 final class _Body extends ConsumerWidget {
+  final void Function(InvoiceWithCustomerDto) onSelected;
+
+  const _Body({required this.onSelected});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(invoiceListProvider);
 
     return state.when(
-      data: (items) => _List(items),
+      data: (items) => _List(items, onSelected: onSelected),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, _) {
         Logger().f(err);
@@ -75,7 +87,9 @@ final class _Body extends ConsumerWidget {
 final class _List extends ConsumerWidget {
   final List<InvoiceWithCustomerDto> items;
 
-  const _List(this.items);
+  final void Function(InvoiceWithCustomerDto) onSelected;
+
+  const _List(this.items, {required this.onSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -106,19 +120,24 @@ final class _List extends ConsumerWidget {
       itemCount: items.length,
       separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, index) {
-        return _Tile(items[index]);
+        return _ListTile(items[index], onSelected: onSelected);
       },
     );
   }
 }
 
-final class _Tile extends StatelessWidget {
-  final InvoiceWithCustomerDto dto;
+final class _ListTile extends StatelessWidget {
+  final InvoiceWithCustomerDto item;
 
-  const _Tile(this.dto);
+  final void Function(InvoiceWithCustomerDto) onSelected;
+
+  const _ListTile(this.item, {required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text("test: ${dto.invoice.number}"));
+    return ListTile(
+      onTap: () => onSelected(item),
+      title: Text("test: ${item.invoice.number}"),
+    );
   }
 }
