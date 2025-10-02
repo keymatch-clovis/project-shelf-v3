@@ -38,7 +38,7 @@ class CustomerListScreen extends StatelessWidget {
                 return ref
                     .watch(customerListProvider)
                     .when(
-                      data: (items) => _CustomerList(items),
+                      data: (items) => _CustomerList(items.toList()),
                       loading: () =>
                           const Center(child: CircularProgressIndicator()),
                       error: (err, _) {
@@ -51,7 +51,7 @@ class CustomerListScreen extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.large(
+      floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => context.go(CustomRoute.CUSTOMER_CREATE.route),
       ),
@@ -60,7 +60,7 @@ class CustomerListScreen extends StatelessWidget {
 }
 
 class _CustomerList extends ConsumerWidget {
-  final List<CustomerWithCityDto> items;
+  final List<CustomerDto> items;
 
   const _CustomerList(this.items);
 

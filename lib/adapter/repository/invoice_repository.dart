@@ -1,4 +1,7 @@
+import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/invoice_product_dto.dart';
 
 final class CreateProductArgs {
   final int productId;
@@ -33,7 +36,10 @@ abstract interface class InvoiceRepository {
   Future<int> create(CreateArgs args);
 
   /// READ related
-  Stream<List<InvoiceWithCustomerDto>> watch();
+  Stream<Iterable<InvoiceDto>> watch();
+  Stream<Iterable<(InvoiceDto, CustomerDto, CityDto)>> watchPopulated();
+  Future<InvoiceDto> findWithId(int id);
+  Future<Iterable<InvoiceProductDto>> findInvoiceProducts(int invoiceId);
 
   /// OTHER related
   Future<int?> getConsecutive();

@@ -488,7 +488,6 @@ final class _CustomerSearchAnchorState
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     final customerInput = ref.watch(
       createInvoiceProvider.select((it) => it.value!.customerInput),
     );
@@ -503,9 +502,7 @@ final class _CustomerSearchAnchorState
       viewOnSubmitted: (_) {
         ref
             .read(createInvoiceProvider.notifier)
-            .updateCustomer(
-              ref.read(customerSearchProvider).value!.first.customer,
-            );
+            .updateCustomer(ref.read(customerSearchProvider).value!.first);
 
         searchController.closeView(null);
       },
@@ -522,7 +519,7 @@ final class _CustomerSearchAnchorState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(customerInput.value!.name),
-                      Text(customerInput.value!.cityId.toString()),
+                      Text(customerInput.value!.city.name),
                     ],
                   ),
                 )
@@ -538,7 +535,7 @@ final class _CustomerSearchAnchorState
       },
       viewBuilder: (_) => _CustomerSearchView(
         onTap: (dto) {
-          ref.read(createInvoiceProvider.notifier).updateCustomer(dto.customer);
+          ref.read(createInvoiceProvider.notifier).updateCustomer(dto);
 
           searchController.closeView(null);
         },
@@ -553,7 +550,7 @@ final class _CustomerSearchAnchorState
 }
 
 final class _CustomerSearchView extends ConsumerWidget {
-  final void Function(CustomerWithCityDto)? onTap;
+  final void Function(CustomerDto)? onTap;
 
   const _CustomerSearchView({this.onTap});
 
@@ -562,7 +559,7 @@ final class _CustomerSearchView extends ConsumerWidget {
     final state = ref.watch(customerSearchProvider);
 
     return state.when(
-      data: (it) => _CustomerSearchList(it, onTap: onTap),
+      data: (it) => _CustomerSearchList(it.toList(), onTap: onTap),
       loading: () {
         return const Center(child: CircularProgressIndicator());
       },
@@ -575,8 +572,8 @@ final class _CustomerSearchView extends ConsumerWidget {
 }
 
 final class _CustomerSearchList extends StatelessWidget {
-  final List<CustomerWithCityDto> items;
-  final void Function(CustomerWithCityDto)? onTap;
+  final List<CustomerDto> items;
+  final void Function(CustomerDto)? onTap;
 
   const _CustomerSearchList(this.items, {this.onTap});
 
@@ -616,8 +613,8 @@ final class _CustomerSearchList extends StatelessWidget {
 }
 
 final class _CustomerSearchTile extends StatelessWidget {
-  final CustomerWithCityDto dto;
-  final void Function(CustomerWithCityDto)? onTap;
+  final CustomerDto dto;
+  final void Function(CustomerDto)? onTap;
 
   const _CustomerSearchTile(this.dto, {this.onTap});
 
@@ -625,7 +622,7 @@ final class _CustomerSearchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => onTap?.call(dto),
-      title: Text(dto.customer.name),
+      title: Text(dto.name),
       subtitle: Text(dto.city.name),
     );
   }

@@ -8,7 +8,7 @@ class InvoiceTable extends Table {
   String get tableName => "invoice";
 
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get number => integer()();
+  IntColumn get number => integer().unique()();
   DateTimeColumn get date => dateTime()();
   IntColumn get remainingUnpaidBalance => integer()();
 

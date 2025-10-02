@@ -1,5 +1,9 @@
-extension NullFunctions on String {
+extension NullFunctions on String? {
   String? get nullIfEmpty {
-    return isEmpty ? null : this;
+    if (this == null) {
+      return null;
+    }
+
+    return this!.isEmpty ? null : this;
   }
 }

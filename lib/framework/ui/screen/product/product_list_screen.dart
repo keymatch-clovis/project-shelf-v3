@@ -40,7 +40,7 @@ class ProductListScreen extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.large(
+      floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => context.go("/product/create"),
       ),

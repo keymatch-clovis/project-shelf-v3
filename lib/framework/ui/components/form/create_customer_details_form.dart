@@ -118,7 +118,7 @@ final class _CreateCustomerDetailsFormState
                     .when(
                       data: (it) {
                         return CityList(
-                          items: it,
+                          items: it.toList(),
                           onTap: (city) {
                             ref
                                 .read(createCustomerProvider.notifier)

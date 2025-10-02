@@ -16,15 +16,15 @@ sealed class SelectedCustomerState {
 final class None extends SelectedCustomerState {}
 
 final class Selected extends SelectedCustomerState {
-  final CustomerWithCityDto dto;
+  final CustomerDto customer;
 
-  const Selected({required this.dto, super.status});
+  const Selected({required this.customer, super.status});
 
-  Selected copyWith({
-    CustomerWithCityDto? customer,
-    SelectedCustomerStatus? status,
-  }) {
-    return Selected(dto: customer ?? this.dto, status: status ?? this.status);
+  Selected copyWith({CustomerDto? customer, SelectedCustomerStatus? status}) {
+    return Selected(
+      customer: customer ?? this.customer,
+      status: status ?? this.status,
+    );
   }
 }
 
@@ -37,8 +37,8 @@ final class SelectedCustomerNotifier extends Notifier<SelectedCustomerState> {
     return None();
   }
 
-  void select(CustomerWithCityDto customer) {
-    state = Selected(dto: customer);
+  void select(CustomerDto customer) {
+    state = Selected(customer: customer);
   }
 
   Future<void> delete() async {
@@ -48,7 +48,7 @@ final class SelectedCustomerNotifier extends Notifier<SelectedCustomerState> {
 
     state = (selected).copyWith(status: SelectedCustomerStatus.LOADING);
 
-    await _deleteCustomerUseCase.exec(selected.dto.customer.id);
+    await _deleteCustomerUseCase.exec(selected.customer.id);
 
     state = (selected).copyWith(status: SelectedCustomerStatus.DELETED);
   }

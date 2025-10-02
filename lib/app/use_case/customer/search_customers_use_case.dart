@@ -1,5 +1,5 @@
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/dto/customer_with_city_response.dart';
+import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/main.dart';
@@ -11,7 +11,7 @@ class SearchCustomersUseCase {
 
   SearchCustomersUseCase();
 
-  Stream<List<CustomerWithCityResponse>> exec(String query) {
+  Stream<Iterable<CustomerResponse>> exec(String query) {
     if (query.isEmpty) return Stream.value([]);
 
     _logger.d("Searching customers with: $query");

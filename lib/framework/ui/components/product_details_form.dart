@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
@@ -64,11 +65,10 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return Padding(
-      // https://m3.material.io/components/dialogs/specs#2b93ced7-9b0d-4a59-9bc4-8ff59dcd24c1
-      padding: EdgeInsetsGeometry.all(24),
+    padding: MEDIUM_SPACING_ALL,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12,
+        spacing: COMPACT_SPACING.toDouble(),
         children: [
           CustomTextField(
             isRequired: true,

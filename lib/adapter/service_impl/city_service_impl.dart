@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:project_shelf_v3/app/dto/city_response.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
@@ -21,11 +22,11 @@ class CityServiceImpl implements CityService {
 
   /// READ related
   @override
-  Stream<List<City>> search(String value) {
+  Stream<Iterable<CityResponse>> search(String value) {
     _logger.d('Searching cities with: $value');
 
     return _repository.search(value).map((dtos) {
-      return dtos.map((dto) => dto.toEntity()).toList();
+      return dtos.map((dto) => dto.toResponse());
     });
   }
 

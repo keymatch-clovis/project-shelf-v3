@@ -1,4 +1,5 @@
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
 final class CreateArgs {
@@ -43,14 +44,12 @@ abstract interface class CustomerRepository {
   Future<CustomerDto> update(UpdateArgs args);
 
   /// READ related
-  Stream<List<CustomerDto>> watch();
-  Stream<List<CustomerWithCityDto>> watchPopulated();
+  Stream<Iterable<(CustomerDto, CityDto)>> watchPopulated();
 
-  Stream<List<CustomerDto>> search(String value);
-  Stream<List<CustomerWithCityDto>> searchPopulated(String value);
+  Stream<Iterable<(CustomerDto, CityDto)>> searchPopulated(String value);
 
-  Future<CustomerDto> findById(Id id);
-  Future<CustomerWithCityDto> findByIdPopulated(Id id);
+  Future<CustomerDto> findWithId(Id id);
+  Future<(CustomerDto, CityDto)> findWithIdPopulated(Id id);
 
   /// DELETE related
   Future<void> delete(Id id);

@@ -58,7 +58,7 @@ final class _AppBar extends ConsumerWidget {
       None() => throw AssertionError(),
       Selected() => SliverAppBar.medium(
         title: Text(
-          state.dto.customer.name,
+          state.customer.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -85,28 +85,29 @@ final class _CustomerDetails extends ConsumerWidget {
               CustomTextField(
                 isRequired: true,
                 readOnly: true,
-                value: state.dto.customer.name,
+                value: state.customer.name,
                 label: localizations.name,
               ),
               CustomTextField(
                 isRequired: true,
                 readOnly: true,
-                value: "${state.dto.city.name}, ${state.dto.city.department}",
+                value:
+                    "${state.customer.city.name}, ${state.customer.city.department}",
                 label: localizations.city,
               ),
               CustomTextField(
                 readOnly: true,
-                value: state.dto.customer.businessName,
+                value: state.customer.businessName,
                 label: localizations.business_name,
               ),
               CustomTextField(
                 readOnly: true,
-                value: state.dto.customer.address,
+                value: state.customer.address,
                 label: localizations.address,
               ),
               CustomTextField(
                 readOnly: true,
-                value: state.dto.customer.phoneNumber,
+                value: state.customer.phoneNumber,
                 label: localizations.phone_number,
               ),
             ],

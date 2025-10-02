@@ -99,7 +99,7 @@ final class CreateInvoiceAsyncNotifier
     if (invoiceDraft.customerId != null) {
       customer = await _findCustomerUseCase
           .exec(invoiceDraft.customerId!)
-          .then(CustomerDto.fromEntity);
+          .then(CustomerDto.fromResponse);
     } else {
       customer = null;
     }
@@ -195,17 +195,6 @@ final class CreateInvoiceAsyncNotifier
     // Update the state.
     final newMap = {...value.invoiceProducts};
     newMap[dto.tempId] = dto;
-
-    for (var i = 0; i < 50; i++) {
-      final test = InvoiceProductDto(
-        product: dto.product,
-        unitPrice: dto.unitPrice,
-        quantity: 1,
-        total: dto.unitPrice,
-      );
-
-      newMap[test.tempId] = test;
-    }
 
     state = AsyncData(value.copyWith(invoiceProducts: newMap));
 

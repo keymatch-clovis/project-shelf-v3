@@ -1,8 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
-import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
-import 'package:project_shelf_v3/app/dto/invoice_with_customer_response.dart';
-import 'package:project_shelf_v3/domain/entity/invoice.dart';
+import 'package:project_shelf_v3/app/dto/invoice_response.dart';
 
 part "invoice_dto.g.dart";
 
@@ -31,21 +29,11 @@ final class InvoiceDto {
     return _$InvoiceDtoFromJson(json);
   }
 
-  Invoice toEntity() {
-    return Invoice(number: number, date: date, customerId: customer);
-  }
-}
-
-final class InvoiceWithCustomerDto {
-  final InvoiceDto invoice;
-  final CustomerDto customer;
-
-  const InvoiceWithCustomerDto({required this.invoice, required this.customer});
-
-  InvoiceWithCustomerResponse toResponse() {
-    return InvoiceWithCustomerResponse(
-      invoice: invoice.toEntity(),
-      customer: customer.toEntity(),
-    );
-  }
+  InvoiceResponse toResponse() => InvoiceResponse(
+    id: id,
+    number: number,
+    date: date,
+    remainingUnpaidBalance: remainingUnpaidBalance,
+    customerId: customer,
+  );
 }

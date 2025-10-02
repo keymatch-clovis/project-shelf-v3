@@ -943,6 +943,7 @@ class $InvoiceTableTable extends InvoiceTable
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override

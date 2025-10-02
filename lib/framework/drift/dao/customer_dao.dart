@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
-import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
-import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
@@ -37,19 +36,8 @@ class CustomerDao implements CustomerRepository {
 
   /// READ related
   @override
-  Stream<List<CustomerDto>> watch() {
-    _logger.d("Watching customers");
-    // TODO: Maybe we can set the ordering later.
-    return (_database.select(
-      _database.customerTable,
-    )..orderBy([(e) => OrderingTerm(expression: e.name)])).watch();
-  }
-
-  @override
-  Stream<List<CustomerWithCityDto>> watchPopulated() {
+  Stream<Iterable<(CustomerDto, CityDto)>> watchPopulated() {
     _logger.d("Watching customers populated");
-
-    // TODO: Maybe we can set the ordering later.
     final query = (_database.select(_database.customerTable).join([
       leftOuterJoin(
         _database.cityTable,
@@ -59,40 +47,16 @@ class CustomerDao implements CustomerRepository {
 
     return query.watch().map((rows) {
       return rows.map((row) {
-        return CustomerWithCityDto(
-          customer: row.readTable(_database.customerTable),
-          city: row.readTable(_database.cityTable),
+        return (
+          row.readTable(_database.customerTable),
+          row.readTable(_database.cityTable),
         );
-      }).toList();
+      });
     });
   }
 
   @override
-  Stream<List<CustomerDto>> search(String value) {
-    _logger.d("Searching customers with: $value");
-    return _database
-        .customSelect(
-          '''
-            SELECT *, rank FROM customer_fts fts
-            JOIN customer ON customer.id = fts.customer_id
-            WHERE
-              customer.pending_delete_until IS NULL
-              AND customer_fts MATCH ?
-            ORDER BY rank;
-          ''',
-          // https://sqlite.org/fts5.html
-          // NOTE: Notice the escaped string here. This is important.
-          variables: [Variable.withString('"$value"*')],
-          readsFrom: {_database.customerTable},
-        )
-        .watch()
-        .map((rows) {
-          return rows.map((row) => CustomerDto.fromJson(row.data)).toList();
-        });
-  }
-
-  @override
-  Stream<List<CustomerWithCityDto>> searchPopulated(String value) {
+  Stream<Iterable<(CustomerDto, CityDto)>> searchPopulated(String value) {
     // NOTE: Here we have a problem. As Drift does not allow the creation of
     // fts5 tables, we have to make a custom select here. As the city and
     // customer tables have some columns that have the same name, we need to
@@ -144,17 +108,17 @@ class CustomerDao implements CustomerRepository {
 
           return query.get().then((rows) {
             return rows.map((row) {
-              return CustomerWithCityDto(
-                customer: row.readTable(_database.customerTable),
-                city: row.readTable(_database.cityTable),
+              return (
+                row.readTable(_database.customerTable),
+                row.readTable(_database.cityTable),
               );
-            }).toList();
+            });
           });
         });
   }
 
   @override
-  Future<CustomerDto> findById(Id id) {
+  Future<CustomerDto> findWithId(Id id) {
     _logger.d("Finding customer with ID: $id");
     return (_database.select(_database.customerTable)
           ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull()))
@@ -162,7 +126,7 @@ class CustomerDao implements CustomerRepository {
   }
 
   @override
-  Future<CustomerWithCityDto> findByIdPopulated(Id id) {
+  Future<(CustomerDto, CityDto)> findWithIdPopulated(Id id) {
     final query =
         (_database.select(_database.customerTable).join([
             leftOuterJoin(
@@ -175,9 +139,9 @@ class CustomerDao implements CustomerRepository {
           ..where(_database.customerTable.id.equals(id));
 
     return query.getSingle().then(
-      (row) => CustomerWithCityDto(
-        customer: row.readTable(_database.customerTable),
-        city: row.readTable(_database.cityTable),
+      (row) => (
+        row.readTable(_database.customerTable),
+        row.readTable(_database.cityTable),
       ),
     );
   }
@@ -200,16 +164,18 @@ class CustomerDao implements CustomerRepository {
       ),
     );
 
-    return await findById(args.id);
+    return findWithId(args.id);
   }
 
   /// DELETE related
   @override
   Future<void> delete(Id id) async {
+    final query = _database.delete(_database.customerTable)
+      ..where((e) => e.id.equals(id));
+
     _logger.d("Deleting customer with ID: $id");
-    final count = await (_database.delete(
-      _database.customerTable,
-    )..where((r) => r.id.equals(id))).go();
-    assert(count == 1);
+    return query.go().then((it) {
+      assert(it == 1);
+    });
   }
 }

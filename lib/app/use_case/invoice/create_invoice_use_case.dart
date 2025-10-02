@@ -13,8 +13,13 @@ final class CreateInvoiceUseCase {
   final _productService = getIt.get<ProductService>();
 
   Future<void> exec(CreateInvoiceRequest dto) async {
-    // If no consecutive is found, it means this is the first invoice.
-    final number = await _service.getConsecutive() ?? 1;
+    final number = await _service.getConsecutive().then((it) {
+      if (it != null) {
+        return it + 1;
+      }
+      // If no consecutive is found, it means this is the first invoice.
+      return 1;
+    });
 
     final invoice = Invoice(
       number: number,

@@ -125,20 +125,22 @@ class _DetailsForm extends ConsumerWidget {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return ProductDetailsForm(
-      currency: appPreferences.value!.defaultCurrency,
-      nameInput: state.value!.nameInput,
-      onNameChanged: ref.read(createProductProvider.notifier).updateName,
-      defaultPriceInput: state.value!.defaultPriceInput,
-      onDefaultPriceChanged: ref
-          .read(createProductProvider.notifier)
-          .updateDefaultPrice,
-      purchasePriceInput: state.value!.purchasePriceInput,
-      onPurchasePriceChanged: ref
-          .read(createProductProvider.notifier)
-          .updatePurchasePrice,
-      stockInput: state.value!.stockInput,
-      onStockChanged: ref.read(createProductProvider.notifier).updateStock,
+    return SingleChildScrollView(
+      child: ProductDetailsForm(
+        currency: appPreferences.value!.defaultCurrency,
+        nameInput: state.value!.nameInput,
+        onNameChanged: ref.read(createProductProvider.notifier).updateName,
+        defaultPriceInput: state.value!.defaultPriceInput,
+        onDefaultPriceChanged: ref
+            .read(createProductProvider.notifier)
+            .updateDefaultPrice,
+        purchasePriceInput: state.value!.purchasePriceInput,
+        onPurchasePriceChanged: ref
+            .read(createProductProvider.notifier)
+            .updatePurchasePrice,
+        stockInput: state.value!.stockInput,
+        onStockChanged: ref.read(createProductProvider.notifier).updateStock,
+      ),
     );
   }
 }

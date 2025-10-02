@@ -1,6 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/invoice_product_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
@@ -12,7 +15,7 @@ final class InvoiceDao implements InvoiceRepository {
   final _database = getIt.get<ShelfDatabase>();
 
   @override
-  Stream<List<InvoiceWithCustomerDto>> watch() {
+  Stream<Iterable<(InvoiceDto, CustomerDto, CityDto)>> watchPopulated() {
     _logger.d("Watching invoices");
 
     final query = _database.select(_database.invoiceTable).join([
@@ -20,15 +23,20 @@ final class InvoiceDao implements InvoiceRepository {
         _database.customerTable,
         _database.customerTable.id.equalsExp(_database.invoiceTable.customer),
       ),
+      leftOuterJoin(
+        _database.cityTable,
+        _database.cityTable.id.equalsExp(_database.customerTable.city),
+      ),
     ]);
 
     return query.watch().map((rows) {
       return rows.map((row) {
-        return InvoiceWithCustomerDto(
-          invoice: row.readTable(_database.invoiceTable),
-          customer: row.readTable(_database.customerTable),
+        return (
+          row.readTable(_database.invoiceTable),
+          row.readTable(_database.customerTable),
+          row.readTable(_database.cityTable),
         );
-      }).toList();
+      });
     });
   }
 
@@ -77,5 +85,32 @@ final class InvoiceDao implements InvoiceRepository {
       ..addColumns([maxNumber]);
 
     return query.map((it) => it.read(maxNumber)).getSingle();
+  }
+
+  @override
+  Future<InvoiceDto> findWithId(int id) {
+    final query = _database.select(_database.invoiceTable)
+      ..where((e) => e.id.equals(id));
+
+    _logger.d("Finding invoice with ID: $id");
+    return query.getSingle();
+  }
+
+  @override
+  Future<Iterable<InvoiceProductDto>> findInvoiceProducts(int invoiceId) {
+    final query = _database.select(_database.invoiceProductTable)
+      ..where((e) => e.invoice.equals(invoiceId));
+
+    _logger.d("Finding invoice products for invoice: $invoiceId");
+    return query.get();
+  }
+
+  @override
+  Stream<Iterable<InvoiceDto>> watch() {
+    final query = _database.select(_database.invoiceTable)
+      ..orderBy([(e) => OrderingTerm.desc(_database.invoiceTable.createdAt)]);
+
+    _logger.d("Watching invoices");
+    return query.watch();
   }
 }

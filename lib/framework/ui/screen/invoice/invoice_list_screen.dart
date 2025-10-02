@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_query_result_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_list_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
@@ -14,11 +14,24 @@ final class InvoiceListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Add any listeners here.
-
     return _Screen(
-      onSelected: (invoice) {
-        ref.read(selectedInvoiceProvider.notifier).select(invoice.invoice);
+      onInvoiceDraftsNavigated: () {
+        context.go(CustomRoute.INVOICE_DRAFTS.route);
+      },
+      onCreateNavigated: () {
+        //  > Modifying other providers during init is the wrong architecture.
+        //  > https://github.com/rrousselGit/riverpod/issues/1505#issuecomment-1191878788
+        //
+        // As such, we can't just change the selected draft invoice for
+        // creation (if there was one selected at this moment) when we are
+        // building the provider for invoice creation. We need to do that here
+        // first.
+        ref.read(selectedInvoiceDraftProvider.notifier).clear();
+
+        context.go(CustomRoute.INVOICE_CREATE.route);
+      },
+      onSelected: (queryResult) {
+        ref.read(selectedInvoiceProvider.notifier).select(queryResult);
         context.go(CustomRoute.INVOICE_DETAILS.route);
       },
     );
@@ -26,9 +39,15 @@ final class InvoiceListScreen extends ConsumerWidget {
 }
 
 final class _Screen extends ConsumerWidget {
-  final void Function(InvoiceWithCustomerDto) onSelected;
+  final void Function(InvoiceQueryResultDto) onSelected;
+  final void Function() onInvoiceDraftsNavigated;
+  final void Function() onCreateNavigated;
 
-  const _Screen({required this.onSelected});
+  const _Screen({
+    required this.onInvoiceDraftsNavigated,
+    required this.onCreateNavigated,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,35 +58,24 @@ final class _Screen extends ConsumerWidget {
         title: Text(localizations.invoices),
         actions: [
           IconButton(
-            onPressed: () => context.go(CustomRoute.INVOICE_DRAFTS.route),
+            onPressed: onInvoiceDraftsNavigated,
             icon: const Icon(Icons.history_outlined),
           ),
         ],
       ),
-      body: _Body(onSelected: onSelected),
+      body: _BodyPane(onSelected: onSelected),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //  > Modifying other providers during init is the wrong architecture.
-          //  > https://github.com/rrousselGit/riverpod/issues/1505#issuecomment-1191878788
-          //
-          // As such, we can't just change the selected draft invoice for
-          // creation (if there was one selected at this moment) when we are
-          // building the provider for invoice creation. We need to do that
-          // here first.
-          ref.read(selectedInvoiceDraftProvider.notifier).clear();
-
-          context.go(CustomRoute.INVOICE_CREATE.route);
-        },
+        onPressed: onCreateNavigated,
         child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-final class _Body extends ConsumerWidget {
-  final void Function(InvoiceWithCustomerDto) onSelected;
+final class _BodyPane extends ConsumerWidget {
+  final void Function(InvoiceQueryResultDto) onSelected;
 
-  const _Body({required this.onSelected});
+  const _BodyPane({required this.onSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,15 +92,15 @@ final class _Body extends ConsumerWidget {
   }
 }
 
-final class _List extends ConsumerWidget {
-  final List<InvoiceWithCustomerDto> items;
+final class _List extends StatelessWidget {
+  final List<InvoiceQueryResultDto> items;
 
-  final void Function(InvoiceWithCustomerDto) onSelected;
+  final void Function(InvoiceQueryResultDto) onSelected;
 
   const _List(this.items, {required this.onSelected});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -127,9 +135,9 @@ final class _List extends ConsumerWidget {
 }
 
 final class _ListTile extends StatelessWidget {
-  final InvoiceWithCustomerDto item;
+  final InvoiceQueryResultDto item;
 
-  final void Function(InvoiceWithCustomerDto) onSelected;
+  final void Function(InvoiceQueryResultDto) onSelected;
 
   const _ListTile(this.item, {required this.onSelected});
 
@@ -137,7 +145,7 @@ final class _ListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => onSelected(item),
-      title: Text("test: ${item.invoice.number}"),
+      title: Text("test: ${item.number}"),
     );
   }
 }

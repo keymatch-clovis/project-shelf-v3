@@ -1,15 +1,19 @@
+import 'package:project_shelf_v3/app/dto/city_response.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
-final class CreateCustomerRequest {
+final class CustomerResponse {
+  final Id id;
   final String name;
-  final Id cityId;
+  final CityResponse city;
+
   final String? businessName;
   final String? address;
   final String? phoneNumber;
 
-  const CreateCustomerRequest({
+  const CustomerResponse({
+    required this.id,
     required this.name,
-    required this.cityId,
+    required this.city,
     this.businessName,
     this.address,
     this.phoneNumber,
