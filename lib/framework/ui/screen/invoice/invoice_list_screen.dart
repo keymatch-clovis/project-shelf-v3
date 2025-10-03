@@ -7,6 +7,7 @@ import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_list_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_provider.dart';
+import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
 final class InvoiceListScreen extends ConsumerWidget {
@@ -108,6 +109,7 @@ final class _List extends StatelessWidget {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          spacing: COMPACT_SPACING.toDouble(),
           children: [
             Icon(
               Icons.receipt_long_rounded,

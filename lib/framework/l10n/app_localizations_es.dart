@@ -63,6 +63,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get address => 'Address';
 
   @override
+  String get company_name => 'Company name';
+
+  @override
+  String get company_document => 'Company document';
+
+  @override
+  String get company_email => 'Company email';
+
+  @override
+  String get company_phone => 'Company phone';
+
+  @override
+  String get edit_company_info => 'Edit company info';
+
+  @override
   String get phone_number => 'Phone number';
 
   @override
@@ -70,6 +85,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get add_product => 'Add product';
+
+  @override
+  String get company_info => 'Company info';
 
   @override
   String get number => 'Number';

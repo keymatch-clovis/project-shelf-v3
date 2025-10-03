@@ -12,6 +12,9 @@ import 'package:project_shelf_v3/framework/ui/screen/product/create_product_scre
 import 'package:project_shelf_v3/framework/ui/screen/product/edit_product_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_list_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/product/product_details_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/settings/company_info_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/settings/edit_company_info_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/settings/settings_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/splash_screen.dart';
 
 enum CustomRoute {
@@ -31,7 +34,14 @@ enum CustomRoute {
   INVOICE_DETAILS(route: "/invoice/details", part: "details"),
   INVOICE_EDIT(route: "/invoice/details/edit", part: "edit"),
   INVOICE_CREATE(route: "/invoice/create", part: "create"),
-  INVOICE_DRAFTS(route: "/invoice/draft", part: "draft");
+  INVOICE_DRAFTS(route: "/invoice/draft", part: "draft"),
+
+  SETTINGS(route: "/settings", part: "settings"),
+  SETTINGS_COMPANY_INFO(route: "/settings/company-info", part: "company-info"),
+  SETTINGS_COMPANY_INFO_EDIT(
+    route: "/settings/company-info/edit",
+    part: "edit",
+  );
 
   final String route;
   final String part;
@@ -158,13 +168,23 @@ final goRouter = GoRouter(
         StatefulShellBranch(
           navigatorKey: _shellNavigatorSettingsKey,
           routes: [
-            // TODO: Change these magic strings
             GoRoute(
-              path: '/settings',
+              path: CustomRoute.SETTINGS.route,
               pageBuilder: (context, state) {
-                return const NoTransitionPage(child: ProductListScreen());
+                return const NoTransitionPage(child: SettingsScreen());
               },
-              routes: [],
+              routes: [
+                GoRoute(
+                  path: CustomRoute.SETTINGS_COMPANY_INFO.part,
+                  builder: (_, _) => const CompanyInfoScreen(),
+                  routes: [
+                    GoRoute(
+                      path: CustomRoute.SETTINGS_COMPANY_INFO_EDIT.part,
+                      builder: (_, _) => const EditCompanyInfoScreen(),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

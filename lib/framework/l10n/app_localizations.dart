@@ -194,6 +194,36 @@ abstract class AppLocalizations {
   /// **'Address'**
   String get address;
 
+  /// No description provided for @company_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Company name'**
+  String get company_name;
+
+  /// No description provided for @company_document.
+  ///
+  /// In en, this message translates to:
+  /// **'Company document'**
+  String get company_document;
+
+  /// No description provided for @company_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Company email'**
+  String get company_email;
+
+  /// No description provided for @company_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Company phone'**
+  String get company_phone;
+
+  /// No description provided for @edit_company_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit company info'**
+  String get edit_company_info;
+
   /// No description provided for @phone_number.
   ///
   /// In en, this message translates to:
@@ -211,6 +241,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add product'**
   String get add_product;
+
+  /// No description provided for @company_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Company info'**
+  String get company_info;
 
   /// No description provided for @number.
   ///

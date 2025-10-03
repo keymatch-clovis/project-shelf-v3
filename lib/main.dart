@@ -6,6 +6,7 @@ import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.d
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
+import 'package:project_shelf_v3/adapter/repository/file_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
@@ -13,6 +14,7 @@ import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_im
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/city_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/customer_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/file_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/invoice_draft_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/invoice_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart';
@@ -20,6 +22,7 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
+import 'package:project_shelf_v3/app/service/file_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_draft_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
@@ -47,6 +50,8 @@ import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.da
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/get_logo_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/save_logo_use_case.dart';
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/invoice_dao.dart';
@@ -56,6 +61,7 @@ import 'package:project_shelf_v3/framework/flutter/root_bundle_wrapper.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/object_box/invoice_draft_box.dart';
 import 'package:project_shelf_v3/framework/object_box/object_box.dart';
+import 'package:project_shelf_v3/framework/path_provider/file_repository_impl.dart';
 import 'package:project_shelf_v3/framework/shared_preferences/shared_preferences_wrapper.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 import 'package:get_it/get_it.dart';
@@ -88,6 +94,7 @@ void main() async {
   getIt.registerSingleton<CustomerRepository>(CustomerDao());
   getIt.registerSingleton<InvoiceRepository>(InvoiceDao());
   getIt.registerSingleton<InvoiceDraftRepository>(InvoiceDraftBox());
+  getIt.registerSingleton<FileRepository>(FileRepositoryImpl());
 
   /// Services related
   getIt.registerSingleton<AssetService>(AssetServiceImpl());
@@ -97,6 +104,7 @@ void main() async {
   getIt.registerSingleton<CustomerService>(CustomerServiceImpl());
   getIt.registerSingleton<InvoiceService>(InvoiceServiceImpl());
   getIt.registerSingleton<InvoiceDraftService>(InvoiceDraftServiceImpl());
+  getIt.registerSingleton<FileService>(FileServiceImpl());
 
   /// Use case related.
   getIt.registerLazySingleton<GetAppPreferencesUseCase>(
@@ -190,6 +198,11 @@ void main() async {
   getIt.registerLazySingleton<FindInvoiceProductsUseCase>(
     () => FindInvoiceProductsUseCase(),
   );
+
+  // Settings related
+  getIt.registerLazySingleton<GetLogoUseCase>(() => GetLogoUseCase());
+
+  getIt.registerLazySingleton<SaveLogoUseCase>(() => SaveLogoUseCase());
 
   runApp(
     // For widgets to be able to read providers, we need to wrap the entire

@@ -1,4 +1,5 @@
 import 'package:csv/csv.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
@@ -45,6 +46,13 @@ final class AssetServiceImpl implements AssetService {
       }
 
       return currencies;
+    });
+  }
+
+  @override
+  Future<Uint8List> getDefaultLogo() {
+    return _repository.getDefaultLogo().then((it) {
+      return it.buffer.asUint8List();
     });
   }
 }
