@@ -7,14 +7,14 @@ import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/image_button.dart';
 
-final class EditCompanyInfoScreen extends StatelessWidget {
+final class EditCompanyInfoScreen extends ConsumerWidget {
   const EditCompanyInfoScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return _Screen(
       onSave: () {},
-      onAddImage: () {},
+      onAddImage: ref.read(editCompanyInfoProvider.notifier).setLogo,
       onCompanyNameChanged: (it) {},
       onCompanyDocumentChanged: (it) {},
       onCompanyEmailChanged: (it) {},
@@ -23,7 +23,7 @@ final class EditCompanyInfoScreen extends StatelessWidget {
   }
 }
 
-final class _Screen extends StatelessWidget {
+final class _Screen extends ConsumerWidget {
   final void Function() onSave;
   final void Function() onAddImage;
   final void Function(String) onCompanyNameChanged;
@@ -41,8 +41,11 @@ final class _Screen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
+    final status = ref.watch(
+      editCompanyInfoProvider.select((it) => it.value?.status),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -52,11 +55,17 @@ final class _Screen extends StatelessWidget {
         actions: [
           FilledButton(onPressed: onSave, child: Text(localizations.save)),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(2),
+          child: status == EditCompanyInfoStatus.LOADING
+              ? const LinearProgressIndicator(minHeight: 2)
+              : const SizedBox.shrink(),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: MEDIUM_SPACING_H,
+            padding: MEDIUM_SPACING_ALL,
             child: _FormPane(
               onAddImage: onAddImage,
               onCompanyNameChanged: onCompanyNameChanged,
@@ -101,12 +110,42 @@ final class _FormPane extends ConsumerWidget {
         return Column(
           spacing: COMPACT_SPACING.toDouble(),
           children: [
-            ImageButton(image: Image.memory(data.logoBytes, fit: BoxFit.cover)),
-            SizedBox(height: COMPACT_SPACING.toDouble()),
-            CustomTextField(label: localizations.company_name, readOnly: true),
-            CustomTextField(label: localizations.company_document),
-            CustomTextField(label: localizations.company_email),
-            CustomTextField(label: localizations.company_phone),
+            ImageButton(
+              onTap: onAddImage,
+              image: Image.memory(data.logoBytes.value!, fit: BoxFit.cover),
+            ),
+            SizedBox(height: S_SPACING),
+            CustomTextField(
+              label: localizations.company_name,
+              value: data.companyName.value,
+              onChanged: onCompanyNameChanged,
+              keyboardType: TextInputType.name,
+              textCapitalization: TextCapitalization.characters,
+              textInputAction: TextInputAction.next,
+            ),
+            CustomTextField(
+              label: localizations.company_document,
+              value: data.companyDocument.value,
+              onChanged: onCompanyDocumentChanged,
+              keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.characters,
+              textInputAction: TextInputAction.next,
+            ),
+            CustomTextField(
+              label: localizations.company_email,
+              value: data.companyEmail.value,
+              onChanged: onCompanyEmailChanged,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+            ),
+            CustomTextField(
+              label: localizations.company_phone,
+              value: data.companyPhone.value,
+              onChanged: onCompanyPhoneChanged,
+              keyboardType: TextInputType.phone,
+              textCapitalization: TextCapitalization.characters,
+              textInputAction: TextInputAction.done,
+            ),
           ],
         );
       },

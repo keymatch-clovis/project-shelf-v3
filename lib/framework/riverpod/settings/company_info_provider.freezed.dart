@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CompanyInfoState {
 
- Uint8List get logoBytes;
+ CompanyInfoDto get companyInfo;
 /// Create a copy of CompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CompanyInfoStateCopyWith<CompanyInfoState> get copyWith => _$CompanyInfoStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyInfoState&&const DeepCollectionEquality().equals(other.logoBytes, logoBytes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyInfoState&&(identical(other.companyInfo, companyInfo) || other.companyInfo == companyInfo));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(logoBytes));
+int get hashCode => Object.hash(runtimeType,companyInfo);
 
 @override
 String toString() {
-  return 'CompanyInfoState(logoBytes: $logoBytes)';
+  return 'CompanyInfoState(companyInfo: $companyInfo)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CompanyInfoStateCopyWith<$Res>  {
   factory $CompanyInfoStateCopyWith(CompanyInfoState value, $Res Function(CompanyInfoState) _then) = _$CompanyInfoStateCopyWithImpl;
 @useResult
 $Res call({
- Uint8List logoBytes
+ CompanyInfoDto companyInfo
 });
 
 
@@ -62,10 +62,10 @@ class _$CompanyInfoStateCopyWithImpl<$Res>
 
 /// Create a copy of CompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? logoBytes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? companyInfo = null,}) {
   return _then(_self.copyWith(
-logoBytes: null == logoBytes ? _self.logoBytes : logoBytes // ignore: cast_nullable_to_non_nullable
-as Uint8List,
+companyInfo: null == companyInfo ? _self.companyInfo : companyInfo // ignore: cast_nullable_to_non_nullable
+as CompanyInfoDto,
   ));
 }
 
@@ -150,10 +150,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Uint8List logoBytes)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CompanyInfoDto companyInfo)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CompanyInfoState() when $default != null:
-return $default(_that.logoBytes);case _:
+return $default(_that.companyInfo);case _:
   return orElse();
 
 }
@@ -171,10 +171,10 @@ return $default(_that.logoBytes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Uint8List logoBytes)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CompanyInfoDto companyInfo)  $default,) {final _that = this;
 switch (_that) {
 case _CompanyInfoState():
-return $default(_that.logoBytes);case _:
+return $default(_that.companyInfo);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -191,10 +191,10 @@ return $default(_that.logoBytes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Uint8List logoBytes)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CompanyInfoDto companyInfo)?  $default,) {final _that = this;
 switch (_that) {
 case _CompanyInfoState() when $default != null:
-return $default(_that.logoBytes);case _:
+return $default(_that.companyInfo);case _:
   return null;
 
 }
@@ -206,10 +206,10 @@ return $default(_that.logoBytes);case _:
 
 
 class _CompanyInfoState implements CompanyInfoState {
-  const _CompanyInfoState({required this.logoBytes});
+  const _CompanyInfoState({required this.companyInfo});
   
 
-@override final  Uint8List logoBytes;
+@override final  CompanyInfoDto companyInfo;
 
 /// Create a copy of CompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
@@ -221,16 +221,16 @@ _$CompanyInfoStateCopyWith<_CompanyInfoState> get copyWith => __$CompanyInfoStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyInfoState&&const DeepCollectionEquality().equals(other.logoBytes, logoBytes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyInfoState&&(identical(other.companyInfo, companyInfo) || other.companyInfo == companyInfo));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(logoBytes));
+int get hashCode => Object.hash(runtimeType,companyInfo);
 
 @override
 String toString() {
-  return 'CompanyInfoState(logoBytes: $logoBytes)';
+  return 'CompanyInfoState(companyInfo: $companyInfo)';
 }
 
 
@@ -241,7 +241,7 @@ abstract mixin class _$CompanyInfoStateCopyWith<$Res> implements $CompanyInfoSta
   factory _$CompanyInfoStateCopyWith(_CompanyInfoState value, $Res Function(_CompanyInfoState) _then) = __$CompanyInfoStateCopyWithImpl;
 @override @useResult
 $Res call({
- Uint8List logoBytes
+ CompanyInfoDto companyInfo
 });
 
 
@@ -258,10 +258,10 @@ class __$CompanyInfoStateCopyWithImpl<$Res>
 
 /// Create a copy of CompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? logoBytes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? companyInfo = null,}) {
   return _then(_CompanyInfoState(
-logoBytes: null == logoBytes ? _self.logoBytes : logoBytes // ignore: cast_nullable_to_non_nullable
-as Uint8List,
+companyInfo: null == companyInfo ? _self.companyInfo : companyInfo // ignore: cast_nullable_to_non_nullable
+as CompanyInfoDto,
   ));
 }
 

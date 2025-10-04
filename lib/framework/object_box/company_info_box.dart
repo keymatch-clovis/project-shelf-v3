@@ -15,4 +15,20 @@ final class CompanyInfoBox implements CompanyInfoRepository {
     _logger.d('Getting company info');
     return _objectBox.store.box<CompanyInfoDto>().getAllAsync();
   }
+
+  @override
+  Future<void> create(CreateArgs args) async {
+    final companyInfo = CompanyInfoDto(
+      id: args.id,
+      logoFileName: args.logoFileName,
+      name: args.name,
+      document: args.document,
+      email: args.email,
+      phone: args.phone,
+      updatedAt: DateTime.now(),
+    );
+
+    _logger.d('Setting company info ');
+    await _objectBox.store.box<CompanyInfoDto>().putAsync(companyInfo);
+  }
 }

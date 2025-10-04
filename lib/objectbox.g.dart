@@ -112,7 +112,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(5, 5078741930378715441),
     name: 'CompanyInfoDto',
-    lastPropertyId: const obx_int.IdUid(7, 6531293236406510964),
+    lastPropertyId: const obx_int.IdUid(8, 5245574466110020816),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -152,8 +152,8 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 6531293236406510964),
-        name: 'logoUri',
+        id: const obx_int.IdUid(8, 5245574466110020816),
+        name: 'logoFileName',
         type: 9,
         flags: 0,
       ),
@@ -219,6 +219,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       1154369001365028129,
       5155951367029643794,
       1134292592962932140,
+      6531293236406510964,
     ],
     retiredRelationUids: const [7112647908102025118],
     modelVersion: 5,
@@ -365,17 +366,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final phoneOffset = object.phone == null
             ? null
             : fbb.writeString(object.phone!);
-        final logoUriOffset = object.logoUri == null
+        final logoFileNameOffset = object.logoFileName == null
             ? null
-            : fbb.writeString(object.logoUri!);
-        fbb.startTable(8);
+            : fbb.writeString(object.logoFileName!);
+        fbb.startTable(9);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
         fbb.addOffset(2, documentOffset);
         fbb.addOffset(3, emailOffset);
         fbb.addOffset(4, phoneOffset);
         fbb.addInt64(5, object.updatedAt.millisecondsSinceEpoch);
-        fbb.addOffset(6, logoUriOffset);
+        fbb.addOffset(7, logoFileNameOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -391,9 +392,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
           const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
         );
-        final logoUriParam = const fb.StringReader(
+        final logoFileNameParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 16);
+        ).vTableGetNullable(buffer, rootOffset, 18);
         final nameParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 6);
@@ -409,7 +410,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final object = CompanyInfoDto(
           id: idParam,
           updatedAt: updatedAtParam,
-          logoUri: logoUriParam,
+          logoFileName: logoFileNameParam,
           name: nameParam,
           document: documentParam,
           email: emailParam,
@@ -518,8 +519,8 @@ class CompanyInfoDto_ {
     _entities[2].properties[5],
   );
 
-  /// See [CompanyInfoDto.logoUri].
-  static final logoUri = obx.QueryStringProperty<CompanyInfoDto>(
+  /// See [CompanyInfoDto.logoFileName].
+  static final logoFileName = obx.QueryStringProperty<CompanyInfoDto>(
     _entities[2].properties[6],
   );
 }

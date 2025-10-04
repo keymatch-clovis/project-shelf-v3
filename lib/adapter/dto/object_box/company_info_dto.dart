@@ -5,11 +5,11 @@ class CompanyInfoDto {
   @Id(assignable: true)
   int id;
 
-  String? logoUri;
-  String? name;
-  String? document;
-  String? email;
-  String? phone;
+  final String? logoFileName;
+  final String? name;
+  final String? document;
+  final String? email;
+  final String? phone;
 
   @Property(type: PropertyType.date)
   DateTime updatedAt;
@@ -17,11 +17,10 @@ class CompanyInfoDto {
   CompanyInfoDto({
     required this.id,
     required this.updatedAt,
-    this.logoUri,
+    this.logoFileName,
     this.name,
     this.document,
     this.email,
     this.phone,
   });
 }
-

@@ -36,6 +36,7 @@ import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.
 import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/watch_customers_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/find_file_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/delete_invoice_draft_use_case.dart';
@@ -53,6 +54,7 @@ import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.da
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/adjust_logo_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/set_company_info_use_case.dart';
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart';
@@ -213,6 +215,10 @@ void main() async {
   getIt.registerLazySingleton<GetCompanyInfoUseCase>(
     () => GetCompanyInfoUseCase(),
   );
+
+  getIt.registerLazySingleton<AdjustLogoUseCase>(() => AdjustLogoUseCase());
+
+  getIt.registerLazySingleton<FindFileUseCase>(() => FindFileUseCase());
 
   runApp(
     // For widgets to be able to read providers, we need to wrap the entire

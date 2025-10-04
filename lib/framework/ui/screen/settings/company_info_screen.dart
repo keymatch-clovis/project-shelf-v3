@@ -16,16 +16,14 @@ final class CompanyInfoScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _Screen(
       onEdit: () => context.go(CustomRoute.SETTINGS_COMPANY_INFO_EDIT.route),
-      onAddImage: () => ref.read(companyInfoProvider.notifier).addImage(),
     );
   }
 }
 
 final class _Screen extends StatelessWidget {
-  final void Function() onAddImage;
   final void Function() onEdit;
 
-  const _Screen({required this.onAddImage, required this.onEdit});
+  const _Screen({required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -42,36 +40,15 @@ final class _Screen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: MEDIUM_SPACING_ALL,
-            child: _FormPane(
-              onAddImage: onAddImage,
-              onCompanyNameChanged: (_) {},
-              onCompanyDocumentChanged: (_) {},
-              onCompanyEmailChanged: (_) {},
-              onCompanyPhoneChanged: (_) {},
-            ),
-          ),
+          child: Padding(padding: MEDIUM_SPACING_ALL, child: _DetailsPane()),
         ),
       ),
     );
   }
 }
 
-final class _FormPane extends ConsumerWidget {
-  final void Function() onAddImage;
-  final void Function(String) onCompanyNameChanged;
-  final void Function(String) onCompanyDocumentChanged;
-  final void Function(String) onCompanyEmailChanged;
-  final void Function(String) onCompanyPhoneChanged;
-
-  const _FormPane({
-    required this.onAddImage,
-    required this.onCompanyNameChanged,
-    required this.onCompanyDocumentChanged,
-    required this.onCompanyEmailChanged,
-    required this.onCompanyPhoneChanged,
-  });
+final class _DetailsPane extends ConsumerWidget {
+  const _DetailsPane();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,12 +65,37 @@ final class _FormPane extends ConsumerWidget {
         return Column(
           spacing: COMPACT_SPACING.toDouble(),
           children: [
-            ImageButton(image: Image.memory(data.logoBytes, fit: BoxFit.cover)),
-            SizedBox(height: COMPACT_SPACING.toDouble()),
-            CustomTextField(label: localizations.company_name, readOnly: true),
-            CustomTextField(label: localizations.company_document),
-            CustomTextField(label: localizations.company_email),
-            CustomTextField(label: localizations.company_phone),
+            ImageButton(
+              image: Image.memory(
+                data.companyInfo.logoBytes!,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: S_SPACING),
+            CustomTextField(
+              label: localizations.company_name,
+              readOnly: true,
+              value: data.companyInfo.name,
+              enabled: data.companyInfo.name != null,
+            ),
+            CustomTextField(
+              label: localizations.company_document,
+              readOnly: true,
+              value: data.companyInfo.document,
+              enabled: data.companyInfo.document != null,
+            ),
+            CustomTextField(
+              label: localizations.company_email,
+              readOnly: true,
+              value: data.companyInfo.email,
+              enabled: data.companyInfo.email != null,
+            ),
+            CustomTextField(
+              label: localizations.company_phone,
+              readOnly: true,
+              value: data.companyInfo.phone,
+              enabled: data.companyInfo.phone != null,
+            ),
           ],
         );
       },

@@ -2,15 +2,20 @@
 // always the same.
 import 'package:flutter/services.dart';
 import 'package:image/image.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 
 const COMPANY_INFO_ID = 1;
 
 final class CompanyInfo {
+  final Id id = COMPANY_INFO_ID;
+
   final Uint8List? logoBytes;
   final String? name;
   final String? document;
   final String? email;
   final String? phone;
+
+  String? logoFileName;
 
   CompanyInfo._({
     this.logoBytes,

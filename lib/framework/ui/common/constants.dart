@@ -4,6 +4,7 @@ const XS_SPACING = 4;
 const XS_SPACING_H = EdgeInsets.symmetric(horizontal: 4);
 const XS_SPACING_ALL = EdgeInsets.all(4);
 
+const S_SPACING = 8.0;
 const S_SPACING_H = EdgeInsets.symmetric(horizontal: 8);
 const S_SPACING_ALL = EdgeInsets.all(8);
 
