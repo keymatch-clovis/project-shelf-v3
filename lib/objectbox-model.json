@@ -73,9 +73,53 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "5:5078741930378715441",
+      "lastPropertyId": "7:6531293236406510964",
+      "name": "CompanyInfoDto",
+      "properties": [
+        {
+          "id": "1:2265623869672100412",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:397989745994516482",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:745117656448758424",
+          "name": "document",
+          "type": 9
+        },
+        {
+          "id": "4:216745155755810432",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "5:5640262568742950930",
+          "name": "phone",
+          "type": 9
+        },
+        {
+          "id": "6:1258919193332431342",
+          "name": "updatedAt",
+          "type": 10
+        },
+        {
+          "id": "7:6531293236406510964",
+          "name": "logoUri",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "4:3763435238713960993",
+  "lastEntityId": "5:5078741930378715441",
   "lastIndexId": "1:408517580857610983",
   "lastRelationId": "1:7112647908102025118",
   "lastSequenceId": "0:0",

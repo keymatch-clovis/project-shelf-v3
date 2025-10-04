@@ -40,4 +40,15 @@ final class FileRepositoryImpl implements FileRepository {
     }
     return null;
   }
+
+  @override
+  Future<File> findFile(String name) async {
+    final path = await _localPath;
+
+    final file = File('$path/$name');
+
+    _logger.d('Finding file with name: $name');
+    assert(await file.exists());
+    return file;
+  }
 }

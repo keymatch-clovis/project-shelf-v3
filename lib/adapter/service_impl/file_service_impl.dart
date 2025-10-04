@@ -20,6 +20,13 @@ final class FileServiceImpl implements FileService {
 
   @override
   Future<File?> searchFile(String name) {
+    _logger.d('Searching file with name: $name');
     return _repository.searchFile(name);
+  }
+
+  @override
+  Future<File> findFile(String name) {
+    _logger.d('Finding file with name: $name');
+    return _repository.findFile(name);
   }
 }

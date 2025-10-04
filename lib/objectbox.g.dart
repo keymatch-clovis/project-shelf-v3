@@ -14,6 +14,7 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'adapter/dto/object_box/company_info_dto.dart';
 import 'adapter/dto/object_box/invoice_draft_dto.dart';
 import 'adapter/dto/object_box/invoice_draft_product_dto.dart';
 
@@ -108,6 +109,58 @@ final _entities = <obx_int.ModelEntity>[
       ),
     ],
   ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(5, 5078741930378715441),
+    name: 'CompanyInfoDto',
+    lastPropertyId: const obx_int.IdUid(7, 6531293236406510964),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 2265623869672100412),
+        name: 'id',
+        type: 6,
+        flags: 129,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 397989745994516482),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 745117656448758424),
+        name: 'document',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 216745155755810432),
+        name: 'email',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 5640262568742950930),
+        name: 'phone',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 1258919193332431342),
+        name: 'updatedAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 6531293236406510964),
+        name: 'logoUri',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -148,7 +201,7 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(4, 3763435238713960993),
+    lastEntityId: const obx_int.IdUid(5, 5078741930378715441),
     lastIndexId: const obx_int.IdUid(1, 408517580857610983),
     lastRelationId: const obx_int.IdUid(1, 7112647908102025118),
     lastSequenceId: const obx_int.IdUid(0, 0),
@@ -291,6 +344,81 @@ obx_int.ModelDefinition getObjectBoxModel() {
         return object;
       },
     ),
+    CompanyInfoDto: obx_int.EntityDefinition<CompanyInfoDto>(
+      model: _entities[2],
+      toOneRelations: (CompanyInfoDto object) => [],
+      toManyRelations: (CompanyInfoDto object) => {},
+      getId: (CompanyInfoDto object) => object.id,
+      setId: (CompanyInfoDto object, int id) {
+        object.id = id;
+      },
+      objectToFB: (CompanyInfoDto object, fb.Builder fbb) {
+        final nameOffset = object.name == null
+            ? null
+            : fbb.writeString(object.name!);
+        final documentOffset = object.document == null
+            ? null
+            : fbb.writeString(object.document!);
+        final emailOffset = object.email == null
+            ? null
+            : fbb.writeString(object.email!);
+        final phoneOffset = object.phone == null
+            ? null
+            : fbb.writeString(object.phone!);
+        final logoUriOffset = object.logoUri == null
+            ? null
+            : fbb.writeString(object.logoUri!);
+        fbb.startTable(8);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addOffset(2, documentOffset);
+        fbb.addOffset(3, emailOffset);
+        fbb.addOffset(4, phoneOffset);
+        fbb.addInt64(5, object.updatedAt.millisecondsSinceEpoch);
+        fbb.addOffset(6, logoUriOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
+        );
+        final logoUriParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final documentParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final emailParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final phoneParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final object = CompanyInfoDto(
+          id: idParam,
+          updatedAt: updatedAtParam,
+          logoUri: logoUriParam,
+          name: nameParam,
+          document: documentParam,
+          email: emailParam,
+          phone: phoneParam,
+        );
+
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -356,4 +484,42 @@ class InvoiceDraftDto_ {
       obx.QueryBacklinkToMany<InvoiceDraftProductDto, InvoiceDraftDto>(
         InvoiceDraftProductDto_.invoice,
       );
+}
+
+/// [CompanyInfoDto] entity fields to define ObjectBox queries.
+class CompanyInfoDto_ {
+  /// See [CompanyInfoDto.id].
+  static final id = obx.QueryIntegerProperty<CompanyInfoDto>(
+    _entities[2].properties[0],
+  );
+
+  /// See [CompanyInfoDto.name].
+  static final name = obx.QueryStringProperty<CompanyInfoDto>(
+    _entities[2].properties[1],
+  );
+
+  /// See [CompanyInfoDto.document].
+  static final document = obx.QueryStringProperty<CompanyInfoDto>(
+    _entities[2].properties[2],
+  );
+
+  /// See [CompanyInfoDto.email].
+  static final email = obx.QueryStringProperty<CompanyInfoDto>(
+    _entities[2].properties[3],
+  );
+
+  /// See [CompanyInfoDto.phone].
+  static final phone = obx.QueryStringProperty<CompanyInfoDto>(
+    _entities[2].properties[4],
+  );
+
+  /// See [CompanyInfoDto.updatedAt].
+  static final updatedAt = obx.QueryDateProperty<CompanyInfoDto>(
+    _entities[2].properties[5],
+  );
+
+  /// See [CompanyInfoDto.logoUri].
+  static final logoUri = obx.QueryStringProperty<CompanyInfoDto>(
+    _entities[2].properties[6],
+  );
 }
