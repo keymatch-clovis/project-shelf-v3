@@ -1,16 +1,26 @@
-import 'package:project_shelf_v3/app/dto/customer_response.dart';
-import 'package:project_shelf_v3/app/dto/invoice_product_response.dart';
-import 'package:project_shelf_v3/app/dto/invoice_response.dart';
+import 'package:image/image.dart';
+import 'package:project_shelf_v3/adapter/dto/repository/printer_info_dto.dart';
 
 final class PrintArgs {
-  final InvoiceResponse invoice;
-  final CustomerResponse customer;
-  final Iterable<InvoiceProductResponse> invoiceProducts;
+  final PrinterInfoDto printerInfo;
+  final Image invoiceLogo;
+  final String invoiceDocument;
+  final String invoicePhone;
+  final String invoiceEmail;
+  final String invoiceCustomer;
+  final String invoiceCity;
+  final String invoiceDate;
+  final String totalValue;
 
   const PrintArgs({
-    required this.invoice,
-    required this.customer,
-    required this.invoiceProducts,
+    required this.invoiceLogo,
+    required this.invoiceDocument,
+    required this.invoicePhone,
+    required this.invoiceEmail,
+    required this.invoiceCustomer,
+    required this.invoiceCity,
+    required this.invoiceDate,
+    required this.printerInfo,
   });
 }
 

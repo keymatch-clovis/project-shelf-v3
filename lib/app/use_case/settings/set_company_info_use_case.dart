@@ -21,6 +21,11 @@ final class SetCompanyInfoUseCase {
     String? email,
     String? phone,
   }) async {
+    // TODO: We are doing the logo adjusting step twice! This is because I'm a
+    //  dumbass and I forget how Clean Architecture works---the adjusting step
+    //  is on the framework layer, not the entity or app layer. We need to fix
+    //  that.
+
     final companyInfo = await CompanyInfo.create(
       logoBytes: logoBytes,
       name: name,

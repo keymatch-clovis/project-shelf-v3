@@ -46,16 +46,22 @@ final class EditCompanyInfoNotifier
           .exec(it.logoFileName!)
           .then((it) => it.readAsBytes());
 
-      return CompanyInfoDto(logoBytes: logoBytes);
+      return CompanyInfoDto(
+        logoBytes: logoBytes,
+        name: it.name,
+        document: it.document,
+        email: it.email,
+        phone: it.phone,
+      );
     });
 
     return EditCompanyInfoState(
       companyInfo: companyInfo,
       logoBytes: Input(value: companyInfo.logoBytes),
-      companyName: Input(),
-      companyDocument: Input(),
-      companyEmail: Input(),
-      companyPhone: Input(),
+      companyName: Input(value: companyInfo.name),
+      companyDocument: Input(value: companyInfo.document),
+      companyEmail: Input(value: companyInfo.email),
+      companyPhone: Input(value: companyInfo.phone),
     );
   }
 
@@ -83,15 +89,57 @@ final class EditCompanyInfoNotifier
     }
   }
 
+  Future<void> setName(String name) async {
+    final value = await future;
+
+    state = AsyncData(
+      value.copyWith(companyName: value.companyName.copyWith(value: name)),
+    );
+  }
+
+  Future<void> setDocument(String document) async {
+    final value = await future;
+
+    state = AsyncData(
+      value.copyWith(
+        companyDocument: value.companyDocument.copyWith(value: document),
+      ),
+    );
+  }
+
+  Future<void> setEmail(String email) async {
+    final value = await future;
+
+    state = AsyncData(
+      value.copyWith(companyEmail: value.companyEmail.copyWith(value: email)),
+    );
+  }
+
+  Future<void> setPhone(String phone) async {
+    final value = await future;
+
+    state = AsyncData(
+      value.copyWith(companyPhone: value.companyPhone.copyWith(value: phone)),
+    );
+  }
+
   Future<void> save() async {
     final value = await future;
 
     state = AsyncData(value.copyWith(status: EditCompanyInfoStatus.LOADING));
 
-    await _setCompanyInfoUseCase.exec(logoBytes: );
+    await _setCompanyInfoUseCase.exec(
+      logoBytes: value.logoBytes.value,
+      name: value.companyName.value,
+      document: value.companyDocument.value,
+      email: value.companyEmail.value,
+      phone: value.companyPhone.value,
+    );
+
+    state = AsyncData(value.copyWith(status: EditCompanyInfoStatus.SUCCESS));
   }
 }
 
-final editCompanyInfoProvider = AsyncNotifierProvider(
+final editCompanyInfoProvider = AsyncNotifierProvider.autoDispose(
   EditCompanyInfoNotifier.new,
 );

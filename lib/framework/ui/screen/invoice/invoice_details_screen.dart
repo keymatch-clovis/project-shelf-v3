@@ -8,6 +8,7 @@ import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_pro
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/dialog/print_invoice_dialog.dart';
 
 final class InvoiceDetailsScreen extends ConsumerWidget {
   const InvoiceDetailsScreen({super.key});
@@ -25,7 +26,15 @@ final class InvoiceDetailsScreen extends ConsumerWidget {
     // doing this.
     ref.listen(invoiceDetailsProvider(state.queryResult.id), (_, _) {});
 
-    return _Screen(state.queryResult.id, onPrint: () {});
+    return _Screen(
+      state.queryResult.id,
+      onPrint: () {
+        showDialog(
+          context: context,
+          builder: (_) => PrintInvoiceDialog(state.queryResult.id),
+        );
+      },
+    );
   }
 }
 

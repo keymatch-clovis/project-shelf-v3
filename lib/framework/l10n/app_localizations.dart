@@ -128,6 +128,24 @@ abstract class AppLocalizations {
   /// **'Remaining unpaid balance'**
   String get remaining_unpaid_balance;
 
+  /// No description provided for @print_invoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Print invoice'**
+  String get print_invoice;
+
+  /// No description provided for @print.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get print;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
   /// No description provided for @unit_price.
   ///
   /// In en, this message translates to:
@@ -164,11 +182,29 @@ abstract class AppLocalizations {
   /// **'Photos'**
   String get photos;
 
+  /// No description provided for @err_bluetooth_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth disabled.'**
+  String get err_bluetooth_disabled;
+
+  /// No description provided for @printer.
+  ///
+  /// In en, this message translates to:
+  /// **'Printer'**
+  String get printer;
+
   /// No description provided for @business_name.
   ///
   /// In en, this message translates to:
   /// **'Business name'**
   String get business_name;
+
+  /// No description provided for @unknown_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error!\nCall the police'**
+  String get unknown_error;
 
   /// No description provided for @city.
   ///

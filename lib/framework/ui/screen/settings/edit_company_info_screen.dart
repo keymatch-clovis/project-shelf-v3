@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/riverpod/settings/company_info_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/settings/edit_company_info_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
@@ -12,13 +14,32 @@ final class EditCompanyInfoScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(
+      editCompanyInfoProvider.select(
+        (it) => it.value?.status == EditCompanyInfoStatus.SUCCESS,
+      ),
+      (_, it) {
+        // Before popping after a successful edit, we need to invalidate the
+        // details screen view model.
+        ref.invalidate(companyInfoProvider);
+
+        if (it) context.pop();
+      },
+    );
+
     return _Screen(
-      onSave: () {},
+      onSave: ref.read(editCompanyInfoProvider.notifier).save,
       onAddImage: ref.read(editCompanyInfoProvider.notifier).setLogo,
-      onCompanyNameChanged: (it) {},
-      onCompanyDocumentChanged: (it) {},
-      onCompanyEmailChanged: (it) {},
-      onCompanyPhoneChanged: (it) {},
+      onCompanyNameChanged: ref.read(editCompanyInfoProvider.notifier).setName,
+      onCompanyDocumentChanged: ref
+          .read(editCompanyInfoProvider.notifier)
+          .setDocument,
+      onCompanyEmailChanged: ref
+          .read(editCompanyInfoProvider.notifier)
+          .setEmail,
+      onCompanyPhoneChanged: ref
+          .read(editCompanyInfoProvider.notifier)
+          .setPhone,
     );
   }
 }
@@ -53,7 +74,10 @@ final class _Screen extends ConsumerWidget {
         title: Text(localizations.edit_company_info),
         actionsPadding: XS_SPACING_ALL,
         actions: [
-          FilledButton(onPressed: onSave, child: Text(localizations.save)),
+          FilledButton(
+            onPressed: status == EditCompanyInfoStatus.INITIAL ? onSave : null,
+            child: Text(localizations.save),
+          ),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(2),

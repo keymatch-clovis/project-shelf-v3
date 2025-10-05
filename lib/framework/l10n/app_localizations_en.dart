@@ -24,6 +24,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remaining_unpaid_balance => 'Remaining unpaid balance';
 
   @override
+  String get print_invoice => 'Print invoice';
+
+  @override
+  String get print => 'Print';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
   String get unit_price => 'Unit price';
 
   @override
@@ -48,7 +57,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photos => 'Photos';
 
   @override
+  String get err_bluetooth_disabled => 'Bluetooth disabled.';
+
+  @override
+  String get printer => 'Printer';
+
+  @override
   String get business_name => 'Business name';
+
+  @override
+  String get unknown_error => 'Unknown error!\nCall the police';
 
   @override
   String get city => 'City';
