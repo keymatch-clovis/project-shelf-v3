@@ -8,7 +8,6 @@ import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/company_info_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
-import 'package:project_shelf_v3/adapter/repository/file_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/adapter/repository/printer_repository.dart';
@@ -19,20 +18,24 @@ import 'package:project_shelf_v3/adapter/service_impl/city_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/company_info_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/customer_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/file_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/image_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/invoice_draft_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/invoice_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/printer_service_impl.dart';
 import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart';
+import 'package:project_shelf_v3/adapter/service_impl/string_service_impl.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
-import 'package:project_shelf_v3/app/service/file_service.dart';
+import 'package:project_shelf_v3/app/use_case/get_default_company_logo_use_case.dart';
+import 'package:project_shelf_v3/domain/service/file_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_draft_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/printer_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
+import 'package:project_shelf_v3/app/service/string_service.dart';
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
@@ -49,6 +52,7 @@ import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_draft_use_cas
 import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/get_invoice_drafts_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/print_invoice_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/watch_invoices_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
@@ -59,9 +63,10 @@ import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.da
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
-import 'package:project_shelf_v3/app/use_case/settings/adjust_logo_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/create_company_logo_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/set_company_info_use_case.dart';
+import 'package:project_shelf_v3/domain/service/image_service.dart';
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart';
 import 'package:project_shelf_v3/framework/drift/dao/invoice_dao.dart';
@@ -72,7 +77,6 @@ import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/object_box/company_info_box.dart';
 import 'package:project_shelf_v3/framework/object_box/invoice_draft_box.dart';
 import 'package:project_shelf_v3/framework/object_box/object_box.dart';
-import 'package:project_shelf_v3/framework/path_provider/file_repository_impl.dart';
 import 'package:project_shelf_v3/framework/print_bluetooth_thermal/invoice_printer_impl.dart';
 import 'package:project_shelf_v3/framework/print_bluetooth_thermal/printer_repository_impl.dart';
 import 'package:project_shelf_v3/framework/shared_preferences/shared_preferences_wrapper.dart';
@@ -107,14 +111,13 @@ void main() async {
   getIt.registerSingleton<CustomerRepository>(CustomerDao());
   getIt.registerSingleton<InvoiceRepository>(InvoiceDao());
   getIt.registerSingleton<InvoiceDraftRepository>(InvoiceDraftBox());
-  getIt.registerSingleton<FileRepository>(FileRepositoryImpl());
   getIt.registerSingleton<CompanyInfoRepository>(CompanyInfoBox());
   getIt.registerSingleton<PrinterRepository>(PrinterRepositoryImpl());
 
   // Printer related
   getIt.registerSingleton<InvoicePrinter>(InvoicePrinterImpl());
 
-  /// Services related
+  // Services related
   getIt.registerSingleton<AssetService>(AssetServiceImpl());
   getIt.registerSingleton<AppPreferencesService>(AppPreferencesServiceImpl());
   getIt.registerSingleton<CityService>(CityServiceImpl());
@@ -125,6 +128,8 @@ void main() async {
   getIt.registerSingleton<FileService>(FileServiceImpl());
   getIt.registerSingleton<CompanyInfoService>(CompanyInfoServiceImpl());
   getIt.registerSingleton<PrinterService>(PrinterServiceImpl());
+  getIt.registerSingleton<ImageService>(ImageServiceImpl());
+  getIt.registerSingleton<StringService>(StringServiceImpl());
 
   /// Use case related.
   getIt.registerLazySingleton<GetAppPreferencesUseCase>(
@@ -228,11 +233,19 @@ void main() async {
     () => GetCompanyInfoUseCase(),
   );
 
-  getIt.registerLazySingleton<AdjustLogoUseCase>(() => AdjustLogoUseCase());
+  getIt.registerLazySingleton<CreateCompanyLogoUseCase>(
+    () => CreateCompanyLogoUseCase(),
+  );
 
   getIt.registerLazySingleton<FindFileUseCase>(() => FindFileUseCase());
 
   getIt.registerLazySingleton<GetPrintersUseCase>(() => GetPrintersUseCase());
+
+  getIt.registerLazySingleton<PrintInvoiceUseCase>(() => PrintInvoiceUseCase());
+
+  getIt.registerLazySingleton<GetDefaultCompanyLogoUseCase>(
+    () => GetDefaultCompanyLogoUseCase(),
+  );
 
   runApp(
     // For widgets to be able to read providers, we need to wrap the entire

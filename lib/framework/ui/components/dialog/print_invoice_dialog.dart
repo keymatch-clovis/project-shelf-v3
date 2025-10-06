@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/web.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/printer_data_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_printer_provider.dart';
@@ -16,7 +17,14 @@ final class PrintInvoiceDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _Dialog(
       invoiceId,
-      onAccept: ref.read(invoicePrinterProvider(invoiceId).notifier).print,
+      onPrinterSelected: ref
+          .read(invoicePrinterProvider(invoiceId).notifier)
+          .setPrinter,
+      onAccept: () {
+        ref
+            .read(invoicePrinterProvider(invoiceId).notifier)
+            .print(AppLocalizations.of(context)!.localeName);
+      },
       onDismiss: () => Navigator.of(context).pop(),
     );
   }
@@ -25,10 +33,16 @@ final class PrintInvoiceDialog extends ConsumerWidget {
 final class _Dialog extends StatelessWidget {
   final Id invoiceId;
 
+  final void Function(PrinterDataDto?) onPrinterSelected;
   final void Function() onAccept;
   final void Function()? onDismiss;
 
-  const _Dialog(this.invoiceId, {required this.onAccept, this.onDismiss});
+  const _Dialog(
+    this.invoiceId, {
+    required this.onPrinterSelected,
+    required this.onAccept,
+    this.onDismiss,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +62,12 @@ final class _Dialog extends StatelessWidget {
               style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: COMPACT_SPACING),
-            _BodyPane(invoiceId, onAccept: onAccept, onDismiss: onDismiss),
+            _BodyPane(
+              invoiceId,
+              onPrinterSelected: onPrinterSelected,
+              onAccept: onAccept,
+              onDismiss: onDismiss,
+            ),
           ],
         ),
       ),
@@ -59,10 +78,16 @@ final class _Dialog extends StatelessWidget {
 final class _BodyPane extends ConsumerWidget {
   final Id invoiceId;
 
+  final void Function(PrinterDataDto?) onPrinterSelected;
   final void Function() onAccept;
   final void Function()? onDismiss;
 
-  const _BodyPane(this.invoiceId, {required this.onAccept, this.onDismiss});
+  const _BodyPane(
+    this.invoiceId, {
+    required this.onPrinterSelected,
+    required this.onAccept,
+    this.onDismiss,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -79,6 +104,7 @@ final class _BodyPane extends ConsumerWidget {
           Failure() => _ErrorPane(data.error, onDismiss: onDismiss),
           Initial() => _FormPane(
             invoiceId,
+            onPrinterSelected: onPrinterSelected,
             onAccept: onAccept,
             onDismiss: onDismiss,
           ),
@@ -137,10 +163,16 @@ final class _ErrorPane extends StatelessWidget {
 final class _FormPane extends ConsumerWidget {
   final Id invoiceId;
 
+  final void Function(PrinterDataDto?) onPrinterSelected;
   final void Function() onAccept;
   final void Function()? onDismiss;
 
-  const _FormPane(this.invoiceId, {required this.onAccept, this.onDismiss});
+  const _FormPane(
+    this.invoiceId, {
+    required this.onPrinterSelected,
+    required this.onAccept,
+    this.onDismiss,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -151,7 +183,7 @@ final class _FormPane extends ConsumerWidget {
     );
 
     final printers = state.printers.map((it) {
-      return DropdownMenuEntry(value: it.name, label: it.name);
+      return DropdownMenuEntry(value: it.macAddress, label: it.name);
     });
 
     return Column(
@@ -159,6 +191,11 @@ final class _FormPane extends ConsumerWidget {
         DropdownMenu(
           label: Text(localizations.printer),
           dropdownMenuEntries: printers.toList(),
+          onSelected: (value) {
+            onPrinterSelected(
+              state.printers.firstWhere((it) => it.macAddress == value),
+            );
+          },
         ),
         const SizedBox(height: MEDIUM_SPACING),
         Row(

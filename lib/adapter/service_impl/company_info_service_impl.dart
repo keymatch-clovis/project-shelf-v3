@@ -12,7 +12,7 @@ final class CompanyInfoServiceImpl implements CompanyInfoService {
   final _service = getIt.get<CompanyInfoRepository>();
 
   @override
-  Future<Iterable<CompanyInfoResponse>> getCompanyInfo() {
+  Future<Iterable<CompanyInfoResponse>> get() {
     _logger.d('Getting company info');
     return _service.get().then((it) {
       return it.map((it) {
@@ -28,12 +28,12 @@ final class CompanyInfoServiceImpl implements CompanyInfoService {
   }
 
   @override
-  Future<void> setCompanyInfo(CompanyInfo companyInfo) {
+  Future<void> set(CompanyInfo companyInfo) {
     _logger.d('Setting company info');
     return _service.create(
       CreateArgs(
         id: companyInfo.id,
-        logoFileName: companyInfo.logoFileName,
+        logoFileName: companyInfo.logo?.fileName,
         name: companyInfo.name,
         document: companyInfo.document,
         email: companyInfo.email,

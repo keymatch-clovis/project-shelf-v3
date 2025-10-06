@@ -28,7 +28,7 @@ final class CompanyInfoBox implements CompanyInfoRepository {
       updatedAt: DateTime.now(),
     );
 
-    _logger.d('Setting company info ');
+    _logger.d('Setting company info');
     await _objectBox.store.box<CompanyInfoDto>().putAsync(companyInfo);
   }
 }

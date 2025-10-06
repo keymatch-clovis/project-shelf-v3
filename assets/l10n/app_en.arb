@@ -21,6 +21,14 @@
             }
         }
     },
+    "nit_document": "NIT: {document}, simple regime",
+    "@nit_document": {
+        "placeholders": {
+            "document": {
+                "type": "String"
+            }
+        }
+    },
     "photos": "Photos",
     "err_bluetooth_disabled": "Bluetooth disabled.",
     "printer": "Printer",

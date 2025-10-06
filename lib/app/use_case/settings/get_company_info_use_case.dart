@@ -1,5 +1,4 @@
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/common/constants.dart';
 import 'package:project_shelf_v3/app/dto/company_info_response.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
@@ -13,7 +12,7 @@ final class GetCompanyInfoUseCase {
   Future<CompanyInfoResponse> exec() async {
     _logger.d('Getting company info');
     return _service
-        .getCompanyInfo()
+        .get()
         .then((it) {
           assert(it.length <= 1);
           return it.singleOrNull;
@@ -25,13 +24,7 @@ final class GetCompanyInfoUseCase {
           // we would need to create a new object, and then return that one.
           // Luckily, we do not need that yet.
           if (it == null) {
-            return CompanyInfoResponse(logoFileName: DEFAULT_LOGO_FILE_NAME);
-          }
-
-          // If no logo file name was defined, we have to always assign the
-          // default logo file name.
-          if (it.logoFileName == null) {
-            return it.copyWith(logoFileName: DEFAULT_LOGO_FILE_NAME);
+            return CompanyInfoResponse();
           }
           return it;
         });

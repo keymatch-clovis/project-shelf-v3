@@ -1,8 +1,10 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:image/image.dart';
 import 'package:logger/logger.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:project_shelf_v3/adapter/printer/invoice_printer.dart';
+import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
 import 'package:project_shelf_v3/common/error/printer_connection_error.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 
@@ -10,10 +12,10 @@ final class InvoicePrinterImpl implements InvoicePrinter {
   final _logger = Logger(printer: FrameworkPrinter());
 
   @override
-  Future<void> print(PrintArgs args) async {
+  Future<void> print(PrintInvoiceRequest request) async {
     _logger.d('Connecting to printer');
     await PrintBluetoothThermal.connect(
-      macPrinterAddress: args.printerInfo.macAddress,
+      macPrinterAddress: request.printerInfoRequest.macAddress,
     ).then((paired) {
       if (!paired) {
         throw PrinterConnectionError();
@@ -30,23 +32,27 @@ final class InvoicePrinterImpl implements InvoicePrinter {
 
       // Start the invoice by printing the logo of the company.
       // NOTE: This logo is different from the shown in the UI.
-      bytes += generator.image(args.invoiceLogo);
+      await (Command()..decodeJpg(request.invoiceLogoBytes))
+          .getImageThread()
+          .then((it) {
+            bytes += generator.image(it!);
+          });
 
       bytes += generator.text(
-        args.invoiceDocument,
+        request.companyDocument,
         styles: PosStyles(bold: true, align: PosAlign.center),
       );
 
-      bytes += generator.text(args.invoicePhone);
-      bytes += generator.text(args.invoiceEmail);
+      bytes += generator.text(request.companyPhone);
+      bytes += generator.text(request.companyEmail);
 
       bytes += generator.feed(1);
 
       // NOTE: As these values can come with accents, we need to remove them.
-      bytes += generator.text(removeDiacritics(args.invoiceCustomer));
-      bytes += generator.text(removeDiacritics(args.invoiceCity));
+      bytes += generator.text(removeDiacritics(request.invoiceCustomer));
+      bytes += generator.text(removeDiacritics(request.invoiceCity));
 
-      bytes += generator.text(args.invoiceDate);
+      bytes += generator.text(request.invoiceDate);
 
       // FIXME: Remove these constant values.
       bytes += generator.row([
@@ -71,7 +77,7 @@ final class InvoicePrinterImpl implements InvoicePrinter {
         styles: PosStyles(bold: true, align: PosAlign.right),
       );
       bytes += generator.text(
-        args.totalValue,
+        request.totalValue,
         styles: PosStyles(align: PosAlign.right),
       );
 

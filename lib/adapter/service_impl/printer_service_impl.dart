@@ -1,9 +1,7 @@
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/adapter/dto/repository/printer_info_dto.dart';
 import 'package:project_shelf_v3/adapter/printer/invoice_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/printer_repository.dart';
 import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
-import 'package:project_shelf_v3/app/dto/printer_data_request.dart';
 import 'package:project_shelf_v3/app/dto/printer_info_response.dart';
 import 'package:project_shelf_v3/app/service/printer_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
@@ -26,18 +24,8 @@ final class PrinterServiceImpl implements PrinterService {
   }
 
   @override
-  Future<void> printInvoice({
-    required PrintInvoiceRequest invoiceRequest,
-    required PrinterDataRequest printerRequest,
-  }) async {
+  Future<void> printInvoice(PrintInvoiceRequest invoiceRequest) async {
     _logger.d('Printing invoice');
-    await _printer.print(
-      PrintArgs(
-        printerInfo: PrinterInfoDto(
-          name: printerRequest.name,
-          macAddress: printerRequest.macAddress,
-        ),
-      ),
-    );
+    await _printer.print(invoiceRequest);
   }
 }

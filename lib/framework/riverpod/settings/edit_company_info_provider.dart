@@ -8,9 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/company_info_dto.dart';
 import 'package:project_shelf_v3/app/use_case/find_file_use_case.dart';
-import 'package:project_shelf_v3/app/use_case/settings/adjust_logo_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/create_company_logo_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/set_company_info_use_case.dart';
+import 'package:project_shelf_v3/domain/entity/company_logo.dart';
 import 'package:project_shelf_v3/main.dart';
 
 part 'edit_company_info_provider.freezed.dart';
@@ -23,7 +24,7 @@ abstract class EditCompanyInfoState with _$EditCompanyInfoState {
   const factory EditCompanyInfoState({
     @Default(EditCompanyInfoStatus.INITIAL) EditCompanyInfoStatus status,
     required CompanyInfoDto companyInfo,
-    required Input<Uint8List> logoBytes,
+    required Input<CompanyLogo> companyLogo,
     required Input<String> companyName,
     required Input<String> companyDocument,
     required Input<String> companyEmail,
@@ -36,15 +37,18 @@ final class EditCompanyInfoNotifier
     extends AsyncNotifier<EditCompanyInfoState> {
   final _getCompanyInfoUseCase = getIt.get<GetCompanyInfoUseCase>();
   final _setCompanyInfoUseCase = getIt.get<SetCompanyInfoUseCase>();
-  final _adjustLogoUseCase = getIt.get<AdjustLogoUseCase>();
+  final _createCompanyLogoUseCase = getIt.get<CreateCompanyLogoUseCase>();
   final _findFileUseCase = getIt.get<FindFileUseCase>();
 
   @override
   FutureOr<EditCompanyInfoState> build() async {
     final companyInfo = await _getCompanyInfoUseCase.exec().then((it) async {
-      final logoBytes = await _findFileUseCase
-          .exec(it.logoFileName!)
-          .then((it) => it.readAsBytes());
+      Uint8List? logoBytes;
+      if (it.logoFileName != null) {
+        logoBytes = await _findFileUseCase
+            .exec(it.logoFileName!)
+            .then((it) => it.readAsBytes());
+      }
 
       return CompanyInfoDto(
         logoBytes: logoBytes,
@@ -57,7 +61,7 @@ final class EditCompanyInfoNotifier
 
     return EditCompanyInfoState(
       companyInfo: companyInfo,
-      logoBytes: Input(value: companyInfo.logoBytes),
+      companyLogo: Input(),
       companyName: Input(value: companyInfo.name),
       companyDocument: Input(value: companyInfo.document),
       companyEmail: Input(value: companyInfo.email),
@@ -75,7 +79,7 @@ final class EditCompanyInfoNotifier
       state = AsyncData(value.copyWith(status: EditCompanyInfoStatus.LOADING));
 
       final bytes = await picked.readAsBytes();
-      final logoBytes = await _adjustLogoUseCase.exec(bytes);
+      final companyLogo = await _createCompanyLogoUseCase.exec(bytes);
 
       // TODO: move this from here.
       await File(picked.path).delete();
@@ -83,7 +87,7 @@ final class EditCompanyInfoNotifier
       state = AsyncData(
         value.copyWith(
           status: EditCompanyInfoStatus.INITIAL,
-          logoBytes: value.logoBytes.copyWith(value: logoBytes),
+          companyLogo: value.companyLogo.copyWith(value: companyLogo),
         ),
       );
     }
@@ -129,7 +133,7 @@ final class EditCompanyInfoNotifier
     state = AsyncData(value.copyWith(status: EditCompanyInfoStatus.LOADING));
 
     await _setCompanyInfoUseCase.exec(
-      logoBytes: value.logoBytes.value,
+      companyLogo: value.companyLogo.value,
       name: value.companyName.value,
       document: value.companyDocument.value,
       email: value.companyEmail.value,

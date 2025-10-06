@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EditCompanyInfoState {
 
- EditCompanyInfoStatus get status; CompanyInfoDto get companyInfo; Input<Uint8List> get logoBytes; Input<String> get companyName; Input<String> get companyDocument; Input<String> get companyEmail; Input<String> get companyPhone;
+ EditCompanyInfoStatus get status; CompanyInfoDto get companyInfo; Input<CompanyLogo> get companyLogo; Input<String> get companyName; Input<String> get companyDocument; Input<String> get companyEmail; Input<String> get companyPhone;
 /// Create a copy of EditCompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $EditCompanyInfoStateCopyWith<EditCompanyInfoState> get copyWith => _$EditCompan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditCompanyInfoState&&(identical(other.status, status) || other.status == status)&&(identical(other.companyInfo, companyInfo) || other.companyInfo == companyInfo)&&(identical(other.logoBytes, logoBytes) || other.logoBytes == logoBytes)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyDocument, companyDocument) || other.companyDocument == companyDocument)&&(identical(other.companyEmail, companyEmail) || other.companyEmail == companyEmail)&&(identical(other.companyPhone, companyPhone) || other.companyPhone == companyPhone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditCompanyInfoState&&(identical(other.status, status) || other.status == status)&&(identical(other.companyInfo, companyInfo) || other.companyInfo == companyInfo)&&(identical(other.companyLogo, companyLogo) || other.companyLogo == companyLogo)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyDocument, companyDocument) || other.companyDocument == companyDocument)&&(identical(other.companyEmail, companyEmail) || other.companyEmail == companyEmail)&&(identical(other.companyPhone, companyPhone) || other.companyPhone == companyPhone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,companyInfo,logoBytes,companyName,companyDocument,companyEmail,companyPhone);
+int get hashCode => Object.hash(runtimeType,status,companyInfo,companyLogo,companyName,companyDocument,companyEmail,companyPhone);
 
 @override
 String toString() {
-  return 'EditCompanyInfoState(status: $status, companyInfo: $companyInfo, logoBytes: $logoBytes, companyName: $companyName, companyDocument: $companyDocument, companyEmail: $companyEmail, companyPhone: $companyPhone)';
+  return 'EditCompanyInfoState(status: $status, companyInfo: $companyInfo, companyLogo: $companyLogo, companyName: $companyName, companyDocument: $companyDocument, companyEmail: $companyEmail, companyPhone: $companyPhone)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $EditCompanyInfoStateCopyWith<$Res>  {
   factory $EditCompanyInfoStateCopyWith(EditCompanyInfoState value, $Res Function(EditCompanyInfoState) _then) = _$EditCompanyInfoStateCopyWithImpl;
 @useResult
 $Res call({
- EditCompanyInfoStatus status, CompanyInfoDto companyInfo, Input<Uint8List> logoBytes, Input<String> companyName, Input<String> companyDocument, Input<String> companyEmail, Input<String> companyPhone
+ EditCompanyInfoStatus status, CompanyInfoDto companyInfo, Input<CompanyLogo> companyLogo, Input<String> companyName, Input<String> companyDocument, Input<String> companyEmail, Input<String> companyPhone
 });
 
 
@@ -62,12 +62,12 @@ class _$EditCompanyInfoStateCopyWithImpl<$Res>
 
 /// Create a copy of EditCompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? companyInfo = null,Object? logoBytes = null,Object? companyName = null,Object? companyDocument = null,Object? companyEmail = null,Object? companyPhone = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? companyInfo = null,Object? companyLogo = null,Object? companyName = null,Object? companyDocument = null,Object? companyEmail = null,Object? companyPhone = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as EditCompanyInfoStatus,companyInfo: null == companyInfo ? _self.companyInfo : companyInfo // ignore: cast_nullable_to_non_nullable
-as CompanyInfoDto,logoBytes: null == logoBytes ? _self.logoBytes : logoBytes // ignore: cast_nullable_to_non_nullable
-as Input<Uint8List>,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
+as CompanyInfoDto,companyLogo: null == companyLogo ? _self.companyLogo : companyLogo // ignore: cast_nullable_to_non_nullable
+as Input<CompanyLogo>,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as Input<String>,companyDocument: null == companyDocument ? _self.companyDocument : companyDocument // ignore: cast_nullable_to_non_nullable
 as Input<String>,companyEmail: null == companyEmail ? _self.companyEmail : companyEmail // ignore: cast_nullable_to_non_nullable
 as Input<String>,companyPhone: null == companyPhone ? _self.companyPhone : companyPhone // ignore: cast_nullable_to_non_nullable
@@ -156,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EditCompanyInfoStatus status,  CompanyInfoDto companyInfo,  Input<Uint8List> logoBytes,  Input<String> companyName,  Input<String> companyDocument,  Input<String> companyEmail,  Input<String> companyPhone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EditCompanyInfoStatus status,  CompanyInfoDto companyInfo,  Input<CompanyLogo> companyLogo,  Input<String> companyName,  Input<String> companyDocument,  Input<String> companyEmail,  Input<String> companyPhone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EditCompanyInfoState() when $default != null:
-return $default(_that.status,_that.companyInfo,_that.logoBytes,_that.companyName,_that.companyDocument,_that.companyEmail,_that.companyPhone);case _:
+return $default(_that.status,_that.companyInfo,_that.companyLogo,_that.companyName,_that.companyDocument,_that.companyEmail,_that.companyPhone);case _:
   return orElse();
 
 }
@@ -177,10 +177,10 @@ return $default(_that.status,_that.companyInfo,_that.logoBytes,_that.companyName
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EditCompanyInfoStatus status,  CompanyInfoDto companyInfo,  Input<Uint8List> logoBytes,  Input<String> companyName,  Input<String> companyDocument,  Input<String> companyEmail,  Input<String> companyPhone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EditCompanyInfoStatus status,  CompanyInfoDto companyInfo,  Input<CompanyLogo> companyLogo,  Input<String> companyName,  Input<String> companyDocument,  Input<String> companyEmail,  Input<String> companyPhone)  $default,) {final _that = this;
 switch (_that) {
 case _EditCompanyInfoState():
-return $default(_that.status,_that.companyInfo,_that.logoBytes,_that.companyName,_that.companyDocument,_that.companyEmail,_that.companyPhone);case _:
+return $default(_that.status,_that.companyInfo,_that.companyLogo,_that.companyName,_that.companyDocument,_that.companyEmail,_that.companyPhone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +197,10 @@ return $default(_that.status,_that.companyInfo,_that.logoBytes,_that.companyName
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EditCompanyInfoStatus status,  CompanyInfoDto companyInfo,  Input<Uint8List> logoBytes,  Input<String> companyName,  Input<String> companyDocument,  Input<String> companyEmail,  Input<String> companyPhone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EditCompanyInfoStatus status,  CompanyInfoDto companyInfo,  Input<CompanyLogo> companyLogo,  Input<String> companyName,  Input<String> companyDocument,  Input<String> companyEmail,  Input<String> companyPhone)?  $default,) {final _that = this;
 switch (_that) {
 case _EditCompanyInfoState() when $default != null:
-return $default(_that.status,_that.companyInfo,_that.logoBytes,_that.companyName,_that.companyDocument,_that.companyEmail,_that.companyPhone);case _:
+return $default(_that.status,_that.companyInfo,_that.companyLogo,_that.companyName,_that.companyDocument,_that.companyEmail,_that.companyPhone);case _:
   return null;
 
 }
@@ -212,12 +212,12 @@ return $default(_that.status,_that.companyInfo,_that.logoBytes,_that.companyName
 
 
 class _EditCompanyInfoState implements EditCompanyInfoState {
-  const _EditCompanyInfoState({this.status = EditCompanyInfoStatus.INITIAL, required this.companyInfo, required this.logoBytes, required this.companyName, required this.companyDocument, required this.companyEmail, required this.companyPhone});
+  const _EditCompanyInfoState({this.status = EditCompanyInfoStatus.INITIAL, required this.companyInfo, required this.companyLogo, required this.companyName, required this.companyDocument, required this.companyEmail, required this.companyPhone});
   
 
 @override@JsonKey() final  EditCompanyInfoStatus status;
 @override final  CompanyInfoDto companyInfo;
-@override final  Input<Uint8List> logoBytes;
+@override final  Input<CompanyLogo> companyLogo;
 @override final  Input<String> companyName;
 @override final  Input<String> companyDocument;
 @override final  Input<String> companyEmail;
@@ -233,16 +233,16 @@ _$EditCompanyInfoStateCopyWith<_EditCompanyInfoState> get copyWith => __$EditCom
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditCompanyInfoState&&(identical(other.status, status) || other.status == status)&&(identical(other.companyInfo, companyInfo) || other.companyInfo == companyInfo)&&(identical(other.logoBytes, logoBytes) || other.logoBytes == logoBytes)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyDocument, companyDocument) || other.companyDocument == companyDocument)&&(identical(other.companyEmail, companyEmail) || other.companyEmail == companyEmail)&&(identical(other.companyPhone, companyPhone) || other.companyPhone == companyPhone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditCompanyInfoState&&(identical(other.status, status) || other.status == status)&&(identical(other.companyInfo, companyInfo) || other.companyInfo == companyInfo)&&(identical(other.companyLogo, companyLogo) || other.companyLogo == companyLogo)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyDocument, companyDocument) || other.companyDocument == companyDocument)&&(identical(other.companyEmail, companyEmail) || other.companyEmail == companyEmail)&&(identical(other.companyPhone, companyPhone) || other.companyPhone == companyPhone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,companyInfo,logoBytes,companyName,companyDocument,companyEmail,companyPhone);
+int get hashCode => Object.hash(runtimeType,status,companyInfo,companyLogo,companyName,companyDocument,companyEmail,companyPhone);
 
 @override
 String toString() {
-  return 'EditCompanyInfoState(status: $status, companyInfo: $companyInfo, logoBytes: $logoBytes, companyName: $companyName, companyDocument: $companyDocument, companyEmail: $companyEmail, companyPhone: $companyPhone)';
+  return 'EditCompanyInfoState(status: $status, companyInfo: $companyInfo, companyLogo: $companyLogo, companyName: $companyName, companyDocument: $companyDocument, companyEmail: $companyEmail, companyPhone: $companyPhone)';
 }
 
 
@@ -253,7 +253,7 @@ abstract mixin class _$EditCompanyInfoStateCopyWith<$Res> implements $EditCompan
   factory _$EditCompanyInfoStateCopyWith(_EditCompanyInfoState value, $Res Function(_EditCompanyInfoState) _then) = __$EditCompanyInfoStateCopyWithImpl;
 @override @useResult
 $Res call({
- EditCompanyInfoStatus status, CompanyInfoDto companyInfo, Input<Uint8List> logoBytes, Input<String> companyName, Input<String> companyDocument, Input<String> companyEmail, Input<String> companyPhone
+ EditCompanyInfoStatus status, CompanyInfoDto companyInfo, Input<CompanyLogo> companyLogo, Input<String> companyName, Input<String> companyDocument, Input<String> companyEmail, Input<String> companyPhone
 });
 
 
@@ -270,12 +270,12 @@ class __$EditCompanyInfoStateCopyWithImpl<$Res>
 
 /// Create a copy of EditCompanyInfoState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? companyInfo = null,Object? logoBytes = null,Object? companyName = null,Object? companyDocument = null,Object? companyEmail = null,Object? companyPhone = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? companyInfo = null,Object? companyLogo = null,Object? companyName = null,Object? companyDocument = null,Object? companyEmail = null,Object? companyPhone = null,}) {
   return _then(_EditCompanyInfoState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as EditCompanyInfoStatus,companyInfo: null == companyInfo ? _self.companyInfo : companyInfo // ignore: cast_nullable_to_non_nullable
-as CompanyInfoDto,logoBytes: null == logoBytes ? _self.logoBytes : logoBytes // ignore: cast_nullable_to_non_nullable
-as Input<Uint8List>,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
+as CompanyInfoDto,companyLogo: null == companyLogo ? _self.companyLogo : companyLogo // ignore: cast_nullable_to_non_nullable
+as Input<CompanyLogo>,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as Input<String>,companyDocument: null == companyDocument ? _self.companyDocument : companyDocument // ignore: cast_nullable_to_non_nullable
 as Input<String>,companyEmail: null == companyEmail ? _self.companyEmail : companyEmail // ignore: cast_nullable_to_non_nullable
 as Input<String>,companyPhone: null == companyPhone ? _self.companyPhone : companyPhone // ignore: cast_nullable_to_non_nullable

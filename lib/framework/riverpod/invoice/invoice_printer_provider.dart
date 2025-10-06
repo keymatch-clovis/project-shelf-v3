@@ -1,23 +1,36 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:project_shelf_v3/adapter/common/input.dart';
+import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/printer_data_dto.dart';
+import 'package:project_shelf_v3/app/dto/printer_info_request.dart';
 import 'package:project_shelf_v3/app/use_case/get_printers_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/print_invoice_use_case.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/main.dart';
 
+part 'invoice_printer_provider.freezed.dart';
+
+// State related
 enum InvoicePrinterStatus { INITIAL, LOADING, SUCCESS }
 
 sealed class InvoicePrinterState {
   const InvoicePrinterState();
 }
 
-final class Initial extends InvoicePrinterState {
-  final InvoicePrinterStatus status = InvoicePrinterStatus.INITIAL;
+@freezed
+abstract class Initial extends InvoicePrinterState with _$Initial {
+  const factory Initial({
+    @Default(InvoicePrinterStatus.INITIAL) InvoicePrinterStatus status,
+    required Iterable<PrinterDataDto> printers,
+    required Input<PrinterDataDto> selectedPrinter,
+  }) = _Initial;
 
-  final Iterable<PrinterDataDto> printers;
+  const Initial._();
 
-  const Initial({required this.printers});
+  bool get isValid => [selectedPrinter.errors.isEmpty].every((it) => it);
 }
 
 final class Failure extends InvoicePrinterState {
@@ -44,13 +57,42 @@ final class InvoicePrinterNotifier extends AsyncNotifier<InvoicePrinterState> {
         );
       });
 
-      return Initial(printers: printers);
+      return Initial(
+        printers: printers,
+        selectedPrinter: Input(validationRules: {IsRequiredRule()}),
+      );
     } on Error catch (err) {
       return Failure(err);
     }
   }
 
-  Future<void> print() async {}
+  Future<void> setPrinter(PrinterDataDto? printerData) async {
+    final value = await future.then((it) => it as Initial);
+
+    state = AsyncData(
+      value.copyWith(
+        selectedPrinter: value.selectedPrinter.copyWith(value: printerData),
+      ),
+    );
+  }
+
+  Future<void> print(String locale) async {
+    final value = await future.then((it) => it as Initial);
+    assert(value.isValid);
+
+    state = AsyncData(value.copyWith(status: InvoicePrinterStatus.LOADING));
+
+    await _printInvoiceUseCase.exec(
+      invoiceId: invoiceId,
+      printerInfoRequest: PrinterInfoRequest(
+        name: value.selectedPrinter.value!.name,
+        macAddress: value.selectedPrinter.value!.macAddress,
+      ),
+      locale: locale,
+    );
+
+    state = AsyncData(value.copyWith(status: InvoicePrinterStatus.SUCCESS));
+  }
 }
 
 final invoicePrinterProvider = AsyncNotifierProvider.autoDispose.family(

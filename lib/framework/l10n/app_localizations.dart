@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Invoice # {number}'**
   String invoice(int number);
 
+  /// No description provided for @nit_document.
+  ///
+  /// In en, this message translates to:
+  /// **'NIT: {document}, simple regime'**
+  String nit_document(String document);
+
   /// No description provided for @photos.
   ///
   /// In en, this message translates to:

@@ -54,6 +54,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String nit_document(String document) {
+    return 'NIT: $document, simple regime';
+  }
+
+  @override
   String get photos => 'Photos';
 
   @override
