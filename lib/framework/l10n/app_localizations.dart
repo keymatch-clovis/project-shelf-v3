@@ -110,6 +110,12 @@ abstract class AppLocalizations {
   /// **'Total'**
   String get total;
 
+  /// No description provided for @no_invoices.
+  ///
+  /// In en, this message translates to:
+  /// **'No invoices'**
+  String get no_invoices;
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:
@@ -157,6 +163,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No products found'**
   String get no_products_found;
+
+  /// No description provided for @no_customer_set.
+  ///
+  /// In en, this message translates to:
+  /// **'No customer set'**
+  String get no_customer_set;
 
   /// No description provided for @create_customer.
   ///

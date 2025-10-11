@@ -8,8 +8,9 @@ import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_details_prov
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/dialog/print_invoice_dialog.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_card.dart';
 
 final class InvoiceDetailsScreen extends ConsumerWidget {
   const InvoiceDetailsScreen({super.key});
@@ -146,12 +147,12 @@ final class _DetailsPane extends ConsumerWidget {
               spacing: COMPACT_SPACING.toDouble(),
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomTextField(
+                ShelfTextField(
                   readOnly: true,
                   label: localizations.number,
                   value: data.invoice.number.toString(),
                 ),
-                CustomTextField(
+                ShelfTextField(
                   readOnly: true,
                   label: localizations.date,
                   value: data.invoice.date.toString(),
@@ -187,6 +188,8 @@ final class _InvoiceProductListPane extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final state = ref.watch(invoiceDetailsProvider(invoiceId));
 
     return state.when(
@@ -213,10 +216,31 @@ final class _InvoiceProductListPane extends ConsumerWidget {
                   },
                 ),
               ),
-              Divider(height: 0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [Text("TOTAL: ${data.total}")],
+              Padding(
+                padding: S_SPACING_V,
+                child: ShelfCard(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              localizations.total,
+                              style: theme.textTheme.labelLarge!.copyWith(
+                                color: theme.colorScheme.outline,
+                              ),
+                            ),
+                            Text(
+                              '${data.total}',
+                              style: theme.textTheme.displaySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

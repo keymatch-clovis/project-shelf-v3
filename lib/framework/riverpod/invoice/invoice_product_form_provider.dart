@@ -10,6 +10,7 @@ import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dar
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
+import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 
 part 'invoice_product_form_provider.freezed.dart';
@@ -21,6 +22,7 @@ abstract class InvoiceProductFormState with _$InvoiceProductFormState {
     required Input<ProductDto> productInput,
     required Input unitPriceInput,
     required Input quantityInput,
+    Money? totalValue,
     // We are using this to signal if we have already created the invoice
     // product before and we are editing it---If we have the [tempId], we are
     // editing. If we do not have it, we are creating.
@@ -34,21 +36,19 @@ abstract class InvoiceProductFormState with _$InvoiceProductFormState {
     productInput.errors.isEmpty,
     unitPriceInput.errors.isEmpty,
     quantityInput.errors.isEmpty,
+    totalValue != null,
   ].every((el) => el);
 
   InvoiceProductDto? get invoiceProduct {
-    if (!isValid) return null;
-
-    final unitPrice = currency.parse(unitPriceInput.value);
-    final quantity = int.parse(quantityInput.value);
-    final total = unitPrice * quantity;
+    if (!isValid) {
+      return null;
+    }
 
     return InvoiceProductDto(
-      tempId: tempId,
       product: productInput.value!,
-      unitPrice: unitPrice,
-      quantity: quantity,
-      total: total,
+      unitPrice: currency.parse(unitPriceInput.value),
+      quantity: int.parse(quantityInput.value),
+      total: totalValue!,
     );
   }
 }
@@ -116,6 +116,8 @@ final class InvoiceProductFormNotifier
         quantityInput: value.quantityInput.copyWith(value: quantity),
       ),
     );
+
+    await _setTotalPrice();
   }
 
   Future<void> setUnitPrice(String unitPrice) async {
@@ -126,6 +128,36 @@ final class InvoiceProductFormNotifier
         unitPriceInput: value.unitPriceInput.copyWith(value: unitPrice),
       ),
     );
+
+    await _setTotalPrice();
+  }
+
+  Future<InvoiceProductDto> getInvoiceProduct() async {
+    final value = await future;
+    assert(value.isValid);
+
+    return InvoiceProductDto(
+      product: value.productInput.value!,
+      unitPrice: value.currency.parse(value.unitPriceInput.value),
+      quantity: int.parse(value.quantityInput.value),
+      total: value.totalValue!,
+    );
+  }
+
+  Future<void> _setTotalPrice() async {
+    final value = await future;
+
+    final unitPrice = value.currency.tryParse(value.unitPriceInput.value);
+
+    // We have to set the value to an empty string, as the [tryParse] method
+    // does not allow for null values.
+    final quantity = int.tryParse(value.quantityInput.value ?? '');
+
+    if (unitPrice != null && quantity != null) {
+      state = AsyncData(value.copyWith(totalValue: unitPrice * quantity));
+    } else {
+      state = AsyncData(value.copyWith(totalValue: null));
+    }
   }
 }
 

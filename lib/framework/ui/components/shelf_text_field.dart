@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-final class CustomTextField extends StatefulWidget {
+final class ShelfTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
@@ -21,7 +21,7 @@ final class CustomTextField extends StatefulWidget {
   final bool isRequired;
   final String? value;
 
-  const CustomTextField({
+  const ShelfTextField({
     super.key,
     this.keyboardType,
     this.onChanged,
@@ -44,10 +44,10 @@ final class CustomTextField extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _CustomTextFieldState();
+  State<StatefulWidget> createState() => _ShelfTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class _ShelfTextFieldState extends State<ShelfTextField> {
   final TextEditingController _controller = TextEditingController();
 
   late FocusNode _focusNode;
@@ -55,7 +55,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   bool wasFocused = false;
   bool isDirty = false;
 
-  _CustomTextFieldState();
+  _ShelfTextFieldState();
 
   @override
   void initState() {

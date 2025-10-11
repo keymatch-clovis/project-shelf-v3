@@ -10,10 +10,13 @@ import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_search_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/create_invoice_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_product_form_provider.dart';
+import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_card.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/dialog/invoice_product_form_dialog.dart';
 import 'package:project_shelf_v3/framework/ui/components/product_search_anchor.dart';
 
@@ -169,7 +172,9 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
                           widget.onRemainingUnpaidBalanceChanged,
                     ),
                   ),
-                  _Products(onSelected: widget.onInvoiceProductSelected),
+                  _InvoiceProductListPane(
+                    onSelected: widget.onInvoiceProductSelected,
+                  ),
                 ],
               ),
             ),
@@ -338,7 +343,7 @@ final class _DetailsState extends ConsumerState<_Details> {
             },
           ),
           _CustomerSearchAnchor(),
-          CustomTextField(
+          ShelfTextField(
             value: state.remainingUnpaidBalanceInput.value,
             label: localizations.remaining_unpaid_balance,
             keyboardType: TextInputType.number,
@@ -358,10 +363,10 @@ final class _DetailsState extends ConsumerState<_Details> {
   }
 }
 
-final class _Products extends ConsumerWidget {
+final class _InvoiceProductListPane extends ConsumerWidget {
   final void Function(InvoiceProductDto) onSelected;
 
-  const _Products({required this.onSelected});
+  const _InvoiceProductListPane({required this.onSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -376,94 +381,79 @@ final class _Products extends ConsumerWidget {
     );
 
     if (products.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.category_rounded,
-              size: 96,
-              color: theme.colorScheme.outlineVariant,
-            ),
-            Text(
-              localizations.no_invoice_products,
-              style: TextStyle(color: theme.colorScheme.outline),
-            ),
-          ],
-        ),
+      return EmptyPlaceholder(
+        icon: Icons.category_outlined,
+        title: localizations.no_invoice_products,
       );
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ...products.values.map<Widget>((it) {
-                  return ListTile(
-                    onTap: () => onSelected(it),
-                    title: Text(it.product.name),
-                    subtitle: Text(it.unitPrice.toString()),
-                    leading: Text("${it.quantity} ×"),
-                    trailing: Text(it.total.toString()),
-                  );
-                }),
-              ],
+    return Padding(
+      padding: COMPACT_SPACING_H,
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              padding: S_SPACING_V,
+              separatorBuilder: (_, _) => const SizedBox(height: XS_SPACING),
+              itemCount: products.length,
+              itemBuilder: (_, index) {
+                final it = products.values.toList()[index];
+
+                return _InvoiceProductListTile(it, onSelected: onSelected);
+              },
             ),
           ),
-        ),
-        // https://m3.material.io/foundations/layout/applying-layout/compact#5a83ddd7-137f-4657-ba2d-eb08cac065e7
-        const Divider(height: 0, indent: 16, endIndent: 16),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [Text("TOTAL: $totalValue")],
+          Padding(
+            padding: S_SPACING_V,
+            child: ShelfCard(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          localizations.total,
+                          style: theme.textTheme.labelLarge!.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                        Text(
+                          '$totalValue',
+                          style: theme.textTheme.displaySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-final class _ProductListTile extends ConsumerWidget {
+final class _InvoiceProductListTile extends ConsumerWidget {
   final InvoiceProductDto item;
+  final void Function(InvoiceProductDto) onSelected;
 
-  const _ProductListTile(this.item);
+  const _InvoiceProductListTile(this.item, {required this.onSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final leadingTextStyle = const TextStyle();
 
-    return ListTile(
-      subtitle: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "${item.unitPrice} × ${item.quantity}",
-            style: leadingTextStyle
-                .merge(theme.textTheme.labelSmall)
-                .copyWith(color: theme.colorScheme.outline, height: 0),
-          ),
-          Text(
-            item.total.toString(),
-            style: leadingTextStyle
-                .merge(theme.textTheme.labelLarge)
-                .copyWith(height: 0),
-          ),
-        ],
-      ),
-      title: Text(
-        item.product.name,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.more_vert_rounded),
+    return ShelfCard(
+      padding: EdgeInsets.zero,
+      child: ListTile(
+        onTap: () => onSelected(item),
+        visualDensity: VisualDensity.compact,
+        title: Text(item.product.name),
+        subtitle: Text(item.unitPrice.toString()),
+        leading: Text("${item.quantity} ×", style: theme.textTheme.titleMedium),
+        trailing: Text(item.total.toString()),
       ),
     );
   }
@@ -509,7 +499,7 @@ final class _CustomerSearchAnchorState
       builder: (_, _) {
         return CustomObjectField<CustomerDto>(
           label: localizations.customer,
-          emptyLabel: localizations.no_cities_found,
+          emptyLabel: localizations.no_customer_set,
           isRequired: true,
           value: customerInput.value,
           body: customerInput.value != null

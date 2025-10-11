@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/product_search_provider.dart';
+import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
 
 final class ProductSearchAnchor extends ConsumerStatefulWidget {
   final void Function(ProductDto) onSelect;
@@ -19,6 +20,8 @@ final class _State extends ConsumerState<ProductSearchAnchor> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SearchAnchor(
       viewPadding: EdgeInsets.zero,
       isFullScreen: true,
@@ -29,6 +32,8 @@ final class _State extends ConsumerState<ProductSearchAnchor> {
       viewOnSubmitted: (_) {},
       builder: (_, controller) {
         return FloatingActionButton(
+          backgroundColor: theme.colorScheme.secondaryContainer,
+          foregroundColor: theme.colorScheme.onSecondaryContainer,
           elevation: 0,
           child: const Icon(Icons.add_rounded),
           onPressed: () {
@@ -58,7 +63,6 @@ final class _ListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     final items = ref.watch(productSearchProvider);
 
     return items.when(
@@ -69,21 +73,9 @@ final class _ListView extends ConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
       data: (it) {
         if (it.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.category_rounded,
-                  size: 96,
-                  color: theme.colorScheme.outline,
-                ),
-                Text(
-                  localizations.no_products_found,
-                  style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                ),
-              ],
-            ),
+          return EmptyPlaceholder(
+            icon: Icons.category_outlined,
+            title: localizations.no_products,
           );
         }
 

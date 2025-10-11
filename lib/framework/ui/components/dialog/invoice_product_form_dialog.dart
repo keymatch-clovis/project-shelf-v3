@@ -8,7 +8,7 @@ import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_product_form
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 
 final class InvoiceProductFormDialog extends ConsumerWidget {
   final InvoiceProductFormArgs args;
@@ -78,7 +78,7 @@ final class _Dialog extends StatelessWidget {
                     body: Text(state.productInput.value!.name),
                     label: localizations.product,
                   ),
-                  CustomTextField(
+                  ShelfTextField(
                     isRequired: true,
                     textInputAction: TextInputAction.next,
                     value: state.unitPriceInput.value,
@@ -91,7 +91,7 @@ final class _Dialog extends StatelessWidget {
                       CurrencyInputFormatter(currency: state.currency),
                     ],
                   ),
-                  CustomTextField(
+                  ShelfTextField(
                     isRequired: true,
                     value: state.quantityInput.value,
                     label: localizations.quantity,

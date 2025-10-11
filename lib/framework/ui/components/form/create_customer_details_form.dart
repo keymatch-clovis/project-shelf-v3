@@ -9,7 +9,7 @@ import 'package:project_shelf_v3/framework/riverpod/customer/create_customer_pro
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/city_list.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 
 final class CreateCustomerDetailsForm extends ConsumerStatefulWidget {
   const CreateCustomerDetailsForm({super.key});
@@ -58,7 +58,7 @@ final class _CreateCustomerDetailsFormState
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 12,
         children: [
-          CustomTextField(
+          ShelfTextField(
             isRequired: true,
             label: localizations.name,
             value: state.nameInput.value,
@@ -150,7 +150,7 @@ final class _CreateCustomerDetailsFormState
               return const [];
             },
           ),
-          CustomTextField(
+          ShelfTextField(
             label: localizations.business_name,
             value: state.businessNameInput.value,
             errors: state.businessNameInput.errors.parseErrors(context),
@@ -166,7 +166,7 @@ final class _CreateCustomerDetailsFormState
             textCapitalization: TextCapitalization.characters,
             textInputAction: TextInputAction.next,
           ),
-          CustomTextField(
+          ShelfTextField(
             label: localizations.address,
             value: state.addressInput.value,
             errors: state.addressInput.errors.parseErrors(context),
@@ -182,7 +182,7 @@ final class _CreateCustomerDetailsFormState
             textCapitalization: TextCapitalization.characters,
             textInputAction: TextInputAction.next,
           ),
-          CustomTextField(
+          ShelfTextField(
             label: localizations.phone_number,
             value: state.phoneNumberInput.value,
             errors: state.phoneNumberInput.errors.parseErrors(context),

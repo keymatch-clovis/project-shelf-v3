@@ -11,17 +11,16 @@ final class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Screen(
-      onCompanyInfoNavigated: () {
-        context.go(CustomRoute.SETTINGS_COMPANY_INFO.route);
-      },
+      onNavigateCompanyInfo: () =>
+          context.go(CustomRoute.SETTINGS_COMPANY_INFO.route),
     );
   }
 }
 
 final class _Screen extends StatelessWidget {
-  final void Function() onCompanyInfoNavigated;
+  final void Function() onNavigateCompanyInfo;
 
-  const _Screen({required this.onCompanyInfoNavigated});
+  const _Screen({required this.onNavigateCompanyInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -33,37 +32,12 @@ final class _Screen extends StatelessWidget {
             SliverFillRemaining(
               hasScrollBody: false,
               fillOverscroll: true,
-              child: _BodyPane(),
+              child: _BodyPane(onNavigateCompanyInfo: onNavigateCompanyInfo),
             ),
           ],
         ),
       ),
     );
-
-    // return Scaffold(
-    //   appBar: AppBar(title: Text(localizations.settings)),
-    //   body: SafeArea(
-    //     child: SingleChildScrollView(
-    //       child: Padding(
-    //         padding: COMPACT_SPACING_ALL,
-    //         child: Column(
-    //           spacing: COMPACT_SPACING.toDouble(),
-    //           children: [
-    //             Card(
-    //               clipBehavior: Clip.antiAlias,
-    //               child: ListTile(
-    //                 onTap: onCompanyInfoNavigated,
-    //                 leading: const Icon(Icons.business_rounded),
-    //                 title: Text(localizations.company_info),
-    //                 trailing: const Icon(Icons.chevron_right_rounded),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 
@@ -77,6 +51,10 @@ final class _AppBar extends ConsumerWidget {
 }
 
 final class _BodyPane extends StatelessWidget {
+  final void Function() onNavigateCompanyInfo;
+
+  const _BodyPane({required this.onNavigateCompanyInfo});
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -88,7 +66,7 @@ final class _BodyPane extends StatelessWidget {
           // Trying to follow:
           // https://m3.material.io/blog/building-with-m3-expressive
           ListTile(
-            onTap: () {},
+            onTap: onNavigateCompanyInfo,
             leading: const Icon(Icons.business_rounded),
             title: Text(localizations.company_info),
             trailing: const Icon(Icons.chevron_right_rounded),

@@ -5,7 +5,7 @@ import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/selected_product_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/dialog/accept_dialog.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
@@ -164,27 +164,27 @@ final class _ProductDetails extends ConsumerWidget {
           child: Column(
             spacing: 12,
             children: [
-              CustomTextField(
+              ShelfTextField(
                 isRequired: true,
                 readOnly: true,
                 value: state.product.name,
                 label: localizations.name,
               ),
-              CustomTextField(
+              ShelfTextField(
                 isRequired: true,
                 readOnly: true,
                 value: state.product.defaultPrice.toString(),
                 label: localizations.default_price,
                 inputFormatters: [currencyInputFormatter],
               ),
-              CustomTextField(
+              ShelfTextField(
                 isRequired: true,
                 readOnly: true,
                 value: state.product.purchasePrice.toString(),
                 label: localizations.purchase_price,
                 inputFormatters: [currencyInputFormatter],
               ),
-              CustomTextField(
+              ShelfTextField(
                 isRequired: true,
                 readOnly: true,
                 value: state.product.stock.toString(),

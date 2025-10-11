@@ -15,6 +15,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get total => 'Total';
 
   @override
+  String get no_invoices => 'No invoices';
+
+  @override
   String get details => 'Details';
 
   @override
@@ -37,6 +40,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get no_products_found => 'No products found';
+
+  @override
+  String get no_customer_set => 'No customer set';
 
   @override
   String get create_customer => 'Create customer';

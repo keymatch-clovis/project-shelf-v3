@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:logger/logger.dart';
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_details_invoice_dto.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_details_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/selected_customer_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_card.dart';
 
 final class CustomerDetailsScreen extends ConsumerWidget {
   const CustomerDetailsScreen({super.key});
@@ -134,31 +137,34 @@ final class _CustomerDetailsPane extends ConsumerWidget {
           child: Column(
             spacing: 12,
             children: [
-              CustomTextField(
+              ShelfTextField(
                 isRequired: true,
                 readOnly: true,
                 value: state.customer.name,
                 label: localizations.name,
               ),
-              CustomTextField(
+              ShelfTextField(
                 isRequired: true,
                 readOnly: true,
                 value:
                     "${state.customer.city.name}, ${state.customer.city.department}",
                 label: localizations.city,
               ),
-              CustomTextField(
+              ShelfTextField(
                 readOnly: true,
                 value: state.customer.businessName,
+                enabled: state.customer.businessName != null,
                 label: localizations.business_name,
               ),
-              CustomTextField(
+              ShelfTextField(
                 readOnly: true,
                 value: state.customer.address,
+                enabled: state.customer.address != null,
                 label: localizations.address,
               ),
-              CustomTextField(
+              ShelfTextField(
                 readOnly: true,
+                enabled: state.customer.phoneNumber != null,
                 value: state.customer.phoneNumber,
                 label: localizations.phone_number,
               ),
@@ -177,8 +183,6 @@ final class _InvoicesPane extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final localizations = AppLocalizations.of(context)!;
     final state = ref.watch(customerDetailsProvider(customerId));
 
     return state.when(
@@ -197,33 +201,7 @@ final class _InvoicesPane extends ConsumerWidget {
               ),
               Padding(
                 padding: S_SPACING_B,
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 0,
-                  child: Padding(
-                    padding: S_SPACING_ALL,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              localizations.remaining_unpaid_balance,
-                              style: theme.textTheme.labelLarge!.copyWith(
-                                color: theme.colorScheme.outline,
-                              ),
-                            ),
-                            Text(
-                              data.totalRemainingUnpaidBalance.toString(),
-                              style: theme.textTheme.displaySmall,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                child: _InvoicesTotalCard(data.totalRemainingUnpaidBalance),
               ),
             ],
           ),
@@ -241,8 +219,13 @@ final class _InvoiceList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     if (items.isEmpty) {
-      return Text("test");
+      return EmptyPlaceholder(
+        icon: Icons.receipt_long_outlined,
+        title: localizations.no_invoices,
+      );
     }
 
     // Trying to follow:
@@ -272,8 +255,52 @@ final class _InvoiceListTile extends StatelessWidget {
       child: ListTile(
         visualDensity: VisualDensity.compact,
         leading: Text(item.number.toString(), textAlign: TextAlign.center),
+        trailing: const Icon(Icons.chevron_right_rounded),
         title: Text(Jiffy.parseFromDateTime(item.date).yMMMMd),
-        subtitle: Text(item.remainingUnpaidBalance.toString()),
+        subtitle: item.remainingUnpaidBalance.isNonZero
+            ? Row(children: [Text(item.remainingUnpaidBalance.toString())])
+            : null,
+      ),
+    );
+  }
+}
+
+final class _InvoicesTotalCard extends StatelessWidget {
+  final Money totalRemainingUnpaidBalance;
+
+  const _InvoicesTotalCard(this.totalRemainingUnpaidBalance);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context)!;
+
+    if (totalRemainingUnpaidBalance.isZero) {
+      return const SizedBox.shrink();
+    }
+
+    return ShelfCard(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  localizations.remaining_unpaid_balance,
+                  style: theme.textTheme.labelLarge!.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                ),
+                Text(
+                  totalRemainingUnpaidBalance.toString(),
+                  style: theme.textTheme.displaySmall,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

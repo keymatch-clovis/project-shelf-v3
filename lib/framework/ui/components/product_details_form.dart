@@ -6,7 +6,7 @@ import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
-import 'package:project_shelf_v3/framework/ui/components/custom_text_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 
 class ProductDetailsForm extends StatefulWidget {
   final Currency currency;
@@ -70,7 +70,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: COMPACT_SPACING.toDouble(),
         children: [
-          CustomTextField(
+          ShelfTextField(
             isRequired: true,
             value: widget.nameInput.value,
             label: localizations.name,
@@ -83,7 +83,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
             textInputAction: TextInputAction.next,
             errors: widget.nameInput.errors.parseErrors(context),
           ),
-          CustomTextField(
+          ShelfTextField(
             label: localizations.default_price,
             focusNode: _defaultPriceFieldFocus,
             value: widget.defaultPriceInput.value,
@@ -98,7 +98,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
               CurrencyInputFormatter(currency: widget.currency),
             ],
           ),
-          CustomTextField(
+          ShelfTextField(
             label: localizations.purchase_price,
             value: widget.purchasePriceInput.value,
             focusNode: _purchasePriceFieldFocus,
@@ -113,7 +113,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
               CurrencyInputFormatter(currency: widget.currency),
             ],
           ),
-          CustomTextField(
+          ShelfTextField(
             label: localizations.stock,
             value: widget.stockInput.value,
             focusNode: _stockFieldFocus,
