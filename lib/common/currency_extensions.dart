@@ -13,3 +13,9 @@ extension TryParse on Currency {
     }
   }
 }
+
+extension Zero on Currency {
+  Money get zero {
+    return Money.fromIntWithCurrency(0, this);
+  }
+}

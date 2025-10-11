@@ -1,6 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
 import 'package:project_shelf_v3/app/dto/printer_info_request.dart';
+import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/domain/service/file_service.dart';
@@ -23,6 +24,7 @@ final class PrintInvoiceUseCase {
   final _customerService = getIt.get<CustomerService>();
   final _imageService = getIt.get<ImageService>();
   final _stringService = getIt.get<StringService>();
+  final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   /// If the [companyInfoRequest] parameter is set, it means the user wants to
   /// override the company info set by default.
@@ -31,6 +33,9 @@ final class PrintInvoiceUseCase {
     required PrinterInfoRequest printerInfoRequest,
     required String locale,
   }) async {
+    final defaultCurrency = await _appPreferencesService
+        .getAppPreferences()
+        .then((it) => it.defaultCurrency);
     final companyInfo = await _companyInfoService
         .get()
         .then((it) {
@@ -60,7 +65,10 @@ final class PrintInvoiceUseCase {
       bytes: logoBytes,
     );
 
-    final invoice = await _invoiceService.findWithId(invoiceId);
+    final invoice = await _invoiceService.findWithId(
+      invoiceId,
+      currency: defaultCurrency,
+    );
     final customer = await _customerService.findWithId(invoice.customerId);
 
     final companyDocument = await _stringService.getInvoiceDocument(
@@ -72,14 +80,34 @@ final class PrintInvoiceUseCase {
     _printerService.printInvoice(
       PrintInvoiceRequest(
         invoiceLogoBytes: invoiceLogo.bytes,
-        companyDocument: companyDocument,
-        companyPhone: '',
-        companyEmail: '',
+        companyDocument: '34.234.243.123',
+        companyPhone: 'phone',
+        companyEmail: 'email',
         invoiceCustomer: customer.name,
-        invoiceCity: '',
-        invoiceDate: '',
+        invoiceCity: 'city',
+        invoiceDate: 'date',
         printerInfoRequest: printerInfoRequest,
-        totalValue: '',
+        totalValue: 'total value',
+        invoiceProducts: [
+          InvoiceProductPrintRequest(
+            name: 'TEST',
+            unitPrice: '\$ 1.234',
+            quantity: '5',
+            total: '\$ 5.678',
+          ),
+          InvoiceProductPrintRequest(
+            name: 'TEST',
+            unitPrice: '\$ 1.234',
+            quantity: '5',
+            total: '\$ 5.678',
+          ),
+          InvoiceProductPrintRequest(
+            name: 'TEST',
+            unitPrice: '\$ 1.234',
+            quantity: '5',
+            total: '\$ 5.678',
+          ),
+        ],
       ),
     );
   }

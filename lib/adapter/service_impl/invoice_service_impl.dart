@@ -18,11 +18,11 @@ final class InvoiceServiceImpl implements InvoiceService {
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   @override
-  Stream<Iterable<InvoiceResponse>> watch() {
+  Stream<Iterable<InvoiceResponse>> watch(Currency currency) {
     _logger.d("Watching invoices");
     return _repository.watch().map((it) {
       return it.map((it) {
-        return it.toResponse();
+        return it.toResponse(currency);
       });
     });
   }
@@ -54,9 +54,9 @@ final class InvoiceServiceImpl implements InvoiceService {
   }
 
   @override
-  Future<InvoiceResponse> findWithId(Id id) {
+  Future<InvoiceResponse> findWithId(Id id, {required Currency currency}) {
     _logger.d("Finding invoice with ID: $id");
-    return _repository.findWithId(id).then((it) => it.toResponse());
+    return _repository.findWithId(id).then((it) => it.toResponse(currency));
   }
 
   @override
@@ -85,12 +85,14 @@ final class InvoiceServiceImpl implements InvoiceService {
   }
 
   @override
-  Stream<Iterable<(InvoiceResponse, CustomerResponse)>> watchPopulated() {
+  Stream<Iterable<(InvoiceResponse, CustomerResponse)>> watchPopulated(
+    Currency currency,
+  ) {
     _logger.d("Watching invoices");
     return _repository.watchPopulated().map((it) {
       return it.map((it) {
         return (
-          it.$1.toResponse(),
+          it.$1.toResponse(currency),
           CustomerResponse(
             id: it.$2.id,
             name: it.$2.name,
@@ -99,5 +101,20 @@ final class InvoiceServiceImpl implements InvoiceService {
         );
       });
     });
+  }
+
+  @override
+  Future<Iterable<InvoiceResponse>> searchWith({
+    required Currency currency,
+    Id? customerId,
+  }) {
+    if (customerId != null) {
+      _logger.d('Searching invoices with customer ID: $customerId');
+      return _repository.searchWithCustomerId(customerId).then((it) {
+        return it.map((it) => it.toResponse(currency));
+      });
+    }
+
+    throw AssertionError('Tried to search invoices without query.');
   }
 }

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
 import 'package:project_shelf_v3/app/dto/invoice_response.dart';
 
@@ -29,11 +30,14 @@ final class InvoiceDto {
     return _$InvoiceDtoFromJson(json);
   }
 
-  InvoiceResponse toResponse() => InvoiceResponse(
+  InvoiceResponse toResponse(Currency currency) => InvoiceResponse(
     id: id,
     number: number,
     date: date,
-    remainingUnpaidBalance: remainingUnpaidBalance,
+    remainingUnpaidBalance: Money.fromIntWithCurrency(
+      remainingUnpaidBalance,
+      currency,
+    ),
     customerId: customer,
   );
 }

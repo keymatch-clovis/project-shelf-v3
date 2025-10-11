@@ -65,7 +65,8 @@ final class _Screen extends ConsumerWidget {
         ],
       ),
       body: _BodyPane(onSelected: onSelected),
-      floatingActionButton: FloatingActionButton(
+      // https://m3.material.io/components/floating-action-button/specs
+      floatingActionButton: FloatingActionButton.large(
         onPressed: onCreateNavigated,
         child: const Icon(Icons.add),
       ),
@@ -125,10 +126,9 @@ final class _List extends StatelessWidget {
       );
     }
 
-    return ListView.separated(
+    return ListView.builder(
       padding: EdgeInsets.zero,
       itemCount: items.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (context, index) {
         return _ListTile(items[index], onSelected: onSelected);
       },

@@ -8,6 +8,9 @@ import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
 import 'package:project_shelf_v3/common/error/printer_connection_error.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 
+// TODO: If I understand correctly the Clean Architecture, this should be an
+//  Aggregate. As such, we need to move all this logic to an entity.
+
 final class InvoicePrinterImpl implements InvoicePrinter {
   final _logger = Logger(printer: FrameworkPrinter());
 
@@ -30,6 +33,8 @@ final class InvoicePrinterImpl implements InvoicePrinter {
       // other use cases, we need to supply this.
       final generator = Generator(PaperSize.mm58, profile);
 
+      // 32
+
       // Start the invoice by printing the logo of the company.
       // NOTE: This logo is different from the shown in the UI.
       await (Command()..decodeJpg(request.invoiceLogoBytes))
@@ -43,8 +48,14 @@ final class InvoicePrinterImpl implements InvoicePrinter {
         styles: PosStyles(bold: true, align: PosAlign.center),
       );
 
-      bytes += generator.text(request.companyPhone);
-      bytes += generator.text(request.companyEmail);
+      bytes += generator.text(
+        request.companyPhone,
+        styles: PosStyles(align: PosAlign.center),
+      );
+      bytes += generator.text(
+        request.companyEmail,
+        styles: PosStyles(align: PosAlign.center),
+      );
 
       bytes += generator.feed(1);
 
@@ -54,20 +65,53 @@ final class InvoicePrinterImpl implements InvoicePrinter {
 
       bytes += generator.text(request.invoiceDate);
 
+      bytes += generator.feed(1);
+
       // FIXME: Remove these constant values.
       bytes += generator.row([
-        PosColumn(text: "U.", width: 2),
         PosColumn(
           text: "PRODUCTO",
-          styles: PosStyles(align: PosAlign.center),
+          styles: PosStyles(align: PosAlign.left, underline: true),
           width: 5,
+        ),
+        PosColumn(
+          text: "U.",
+          width: 2,
+          styles: PosStyles(align: PosAlign.right, underline: true),
         ),
         PosColumn(
           text: "VALOR",
-          styles: PosStyles(align: PosAlign.center),
+          styles: PosStyles(align: PosAlign.right, underline: true),
           width: 5,
         ),
       ]);
+
+      for (final product in request.invoiceProducts) {
+        bytes += generator.row([
+          PosColumn(
+            text: product.name,
+            styles: PosStyles(align: PosAlign.left),
+            width: 5,
+          ),
+          PosColumn(
+            text: product.quantity,
+            width: 2,
+            styles: PosStyles(align: PosAlign.right),
+          ),
+          PosColumn(
+            text: product.unitPrice,
+            styles: PosStyles(align: PosAlign.right),
+            width: 5,
+          ),
+        ]);
+        bytes += generator.row([
+          PosColumn(
+            text: product.total,
+            styles: PosStyles(align: PosAlign.right),
+            width: 12,
+          ),
+        ]);
+      }
 
       bytes += generator.feed(1);
 
@@ -81,7 +125,6 @@ final class InvoicePrinterImpl implements InvoicePrinter {
         styles: PosStyles(align: PosAlign.right),
       );
 
-      bytes += generator.feed(4);
       // This one might not work in all printers, but still add the command.
       bytes += generator.cut();
 

@@ -30,6 +30,7 @@ import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/app/use_case/get_default_company_logo_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/search_invoices_with_use_case.dart';
 import 'package:project_shelf_v3/domain/service/file_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_draft_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
@@ -222,6 +223,10 @@ void main() async {
 
   getIt.registerLazySingleton<FindInvoiceProductsUseCase>(
     () => FindInvoiceProductsUseCase(),
+  );
+
+  getIt.registerLazySingleton<SearchInvoicesWithUseCase>(
+    () => SearchInvoicesWithUseCase(),
   );
 
   // Settings related

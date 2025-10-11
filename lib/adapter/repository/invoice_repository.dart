@@ -41,6 +41,8 @@ abstract interface class InvoiceRepository {
   Future<InvoiceDto> findWithId(int id);
   Future<Iterable<InvoiceProductDto>> findInvoiceProducts(int invoiceId);
 
+  Future<Iterable<InvoiceDto>> searchWithCustomerId(int id);
+
   /// OTHER related
   Future<int?> getConsecutive();
 }

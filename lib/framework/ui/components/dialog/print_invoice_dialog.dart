@@ -204,7 +204,11 @@ final class _FormPane extends ConsumerWidget {
           spacing: XS_SPACING,
           children: [
             TextButton(onPressed: onDismiss, child: Text(localizations.cancel)),
-            FilledButton(onPressed: onAccept, child: Text(localizations.print)),
+            FilledButton(
+              style: ButtonStyle(),
+              onPressed: onAccept,
+              child: Text(localizations.print),
+            ),
           ],
         ),
       ],

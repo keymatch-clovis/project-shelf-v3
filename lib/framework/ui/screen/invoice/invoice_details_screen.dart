@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_details_provider.dart';
@@ -62,25 +63,27 @@ final class _ScreenState extends ConsumerState<_Screen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          _AppBar(_tabController),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            fillOverscroll: true,
-            // NOTE: I don't really know why this [SizedBox] here works. If we
-            // remove it, the widget fails to build.
-            child: SizedBox.shrink(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _DetailsPane(widget.invoiceId),
-                  _InvoiceProductListPane(widget.invoiceId),
-                ],
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            _AppBar(_tabController),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              fillOverscroll: true,
+              // NOTE: I don't really know why this [SizedBox] here works. If we
+              // remove it, the widget fails to build.
+              child: SizedBox.shrink(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _DetailsPane(widget.invoiceId),
+                    _InvoiceProductListPane(widget.invoiceId),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
       floatingActionButton: FloatingActionButton(
@@ -193,39 +196,57 @@ final class _InvoiceProductListPane extends ConsumerWidget {
         throw AssertionError(err);
       },
       data: (data) {
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: data.invoice.invoiceProducts.length,
-                itemBuilder: (_, index) {
-                  final it = data.invoice.invoiceProducts[index];
+        return Padding(
+          padding: COMPACT_SPACING_H,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  padding: S_SPACING_V,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(height: XS_SPACING),
+                  itemCount: data.invoice.invoiceProducts.length,
+                  itemBuilder: (_, index) {
+                    final it = data.invoice.invoiceProducts[index];
 
-                  return ListTile(
-                    title: Text(it.product.name),
-                    subtitle: Text(it.unitPrice.toString()),
-                    leading: Text("${it.quantity} ×"),
-                    trailing: Text(it.total.toString()),
-                  );
-                },
+                    return _InvoiceProductListTile(it, onTap: (_) {});
+                  },
+                ),
               ),
-            ),
-            Divider(
-              height: 0,
-              indent: COMPACT_SPACING.toDouble(),
-              endIndent: COMPACT_SPACING.toDouble(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
+              Divider(height: 0),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [Text("TOTAL: ${data.total}")],
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
+    );
+  }
+}
+
+final class _InvoiceProductListTile extends StatelessWidget {
+  final InvoiceProductDto item;
+
+  final void Function(InvoiceProductDto) onTap;
+
+  const _InvoiceProductListTile(this.item, {required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    // Trying to follow:
+    // https://m3.material.io/blog/building-with-m3-expressive
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      elevation: 0,
+      child: ListTile(
+        title: Text(item.product.name),
+        subtitle: Text(item.unitPrice.toString()),
+        leading: Text("${item.quantity} ×"),
+        trailing: Text(item.total.toString()),
+      ),
     );
   }
 }

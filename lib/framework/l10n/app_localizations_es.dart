@@ -21,7 +21,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quantity => 'Quantity';
 
   @override
-  String get remaining_unpaid_balance => 'Remaining unpaid balance';
+  String get remaining_unpaid_balance => 'Valor por pagar';
 
   @override
   String get print_invoice => 'Print invoice';

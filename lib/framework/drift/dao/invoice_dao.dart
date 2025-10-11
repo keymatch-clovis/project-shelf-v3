@@ -113,4 +113,13 @@ final class InvoiceDao implements InvoiceRepository {
     _logger.d("Watching invoices");
     return query.watch();
   }
+
+  @override
+  Future<Iterable<InvoiceDto>> searchWithCustomerId(int id) {
+    final query = _database.select(_database.invoiceTable)
+      ..where((e) => e.customer.equals(id));
+
+    _logger.d('Searching invoices with customer ID: $id');
+    return query.get();
+  }
 }
