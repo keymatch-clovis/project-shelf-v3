@@ -22,12 +22,12 @@ import 'package:project_shelf_v3/main.dart';
 part 'edit_product_provider.freezed.dart';
 
 /// State related
-enum EditProductStatus { initial, loading, success }
+enum EditProductStatus { INITIAL, LOADING, SUCCESS }
 
 @freezed
 abstract class EditProductState with _$EditProductState {
   const factory EditProductState({
-    @Default(EditProductStatus.initial) EditProductStatus status,
+    @Default(EditProductStatus.INITIAL) EditProductStatus status,
     required Currency currency,
     required ProductDto product,
     required Input nameInput,
@@ -44,7 +44,7 @@ abstract class EditProductState with _$EditProductState {
     nameInput.errors.isEmpty,
     defaultPriceInput.errors.isEmpty,
     stockInput.errors.isEmpty,
-    status == EditProductStatus.initial,
+    status == EditProductStatus.INITIAL,
   ].every((el) => el);
 }
 
@@ -95,7 +95,7 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
 
     state = AsyncData(
       value.copyWith(
-        status: EditProductStatus.loading,
+        status: EditProductStatus.LOADING,
         nameInput: value.nameInput.copyWith(value: name),
       ),
     );
@@ -114,7 +114,7 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
       }
     });
 
-    state = AsyncData(value.copyWith(status: EditProductStatus.initial));
+    state = AsyncData(value.copyWith(status: EditProductStatus.INITIAL));
   }
 
   Future<void> updateDefaultPrice(String value) async {
@@ -155,7 +155,7 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
     final value = await future;
     assert(value.isValid);
 
-    state = AsyncData(value.copyWith(status: EditProductStatus.loading));
+    state = AsyncData(value.copyWith(status: EditProductStatus.LOADING));
 
     await _updateProductUseCase
         .exec(
@@ -177,7 +177,7 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
               .select(ProductDto.fromEntity(it));
         });
 
-    state = AsyncData(state.value!.copyWith(status: EditProductStatus.success));
+    state = AsyncData(state.value!.copyWith(status: EditProductStatus.SUCCESS));
   }
 }
 

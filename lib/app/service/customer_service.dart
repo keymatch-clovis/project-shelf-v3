@@ -1,3 +1,4 @@
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
@@ -16,4 +17,5 @@ abstract interface class CustomerService {
 
   /// DELETE related
   Future<void> delete(Id id);
+  Future<Result> deleteAll();
 }

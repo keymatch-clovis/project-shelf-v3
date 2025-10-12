@@ -33,6 +33,9 @@ class InvoiceDraftDto {
       id: id,
       date: date,
       products: products.map((it) => it.toEntity(currency)).toList(),
+      remainingUnpaidBalance: remainingUnpaidBalance != null
+          ? Money.fromIntWithCurrency(remainingUnpaidBalance!, currency)
+          : null,
       customerId: customerId,
       createdAt: createdAt,
     );

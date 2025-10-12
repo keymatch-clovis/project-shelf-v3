@@ -20,7 +20,7 @@ final class Invoice {
   final int? id;
   final int number;
   final DateTime date;
-  final int remainingUnpaidBalance;
+  final Money remainingUnpaidBalance;
 
   final Id customerId;
   final List<InvoiceProduct> invoiceProducts = [];
@@ -29,13 +29,13 @@ final class Invoice {
     required this.number,
     required this.date,
     required this.customerId,
+    required this.remainingUnpaidBalance,
 
     this.id,
-    int? remainingUnpaidBalance,
-  }) : remainingUnpaidBalance = remainingUnpaidBalance ?? 0 {
+  }) {
     assert(number > 0);
     assert(customerId > 0);
-    assert(this.remainingUnpaidBalance >= 0);
+    assert(!remainingUnpaidBalance.isNegative);
   }
 
   void addProduct({

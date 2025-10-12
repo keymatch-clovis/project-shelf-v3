@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
@@ -115,5 +116,13 @@ class ProductDao implements ProductRepository {
       _database.productTable,
     )..where((r) => r.id.equals(id))).go();
     assert(count == 1);
+  }
+
+  @override
+  Future<Result> deleteAll() async {
+    _logger.d('Deleting all products');
+    return Result.asyncOf(_database.delete(_database.productTable).go)
+    // Discard the result, we only need to know everything went fine.
+    .map((_) => unit);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/dto/invoice_product_response.dart';
 import 'package:project_shelf_v3/app/dto/invoice_response.dart';
@@ -22,6 +23,9 @@ abstract interface class InvoiceService {
     required Currency currency,
     Id? customerId,
   });
+
+  // DELETE related
+  Future<Result> deleteAll();
 
   /// Other
   Future<int?> getConsecutive();

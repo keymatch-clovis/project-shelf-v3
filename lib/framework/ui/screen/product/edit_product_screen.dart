@@ -36,7 +36,7 @@ final class _EditProductScreenState extends ConsumerState<EditProductScreen>
 
     ref.listen(editProductProvider.selectAsync((it) => it.status), (_, state) {
       state.then((it) {
-        if (it == EditProductStatus.success) {
+        if (it == EditProductStatus.SUCCESS) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

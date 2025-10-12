@@ -576,7 +576,7 @@ class $CustomerTableTable extends CustomerTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES product (id)',
+      'REFERENCES city (id)',
     ),
   );
   static const VerificationMeta _addressMeta = const VerificationMeta(
@@ -1580,24 +1580,6 @@ final class $$ProductTableTableReferences
     extends BaseReferences<_$ShelfDatabase, $ProductTableTable, ProductDto> {
   $$ProductTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$CustomerTableTable, List<CustomerDto>>
-  _customerTableRefsTable(_$ShelfDatabase db) => MultiTypedResultKey.fromTable(
-    db.customerTable,
-    aliasName: $_aliasNameGenerator(db.productTable.id, db.customerTable.city),
-  );
-
-  $$CustomerTableTableProcessedTableManager get customerTableRefs {
-    final manager = $$CustomerTableTableTableManager(
-      $_db,
-      $_db.customerTable,
-    ).filter((f) => f.city.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_customerTableRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
   static MultiTypedResultKey<$InvoiceProductTableTable, List<InvoiceProductDto>>
   _invoiceProductTableRefsTable(_$ShelfDatabase db) =>
       MultiTypedResultKey.fromTable(
@@ -1671,31 +1653,6 @@ class $$ProductTableTableFilterComposer
     column: $table.pendingDeleteUntil,
     builder: (column) => ColumnFilters(column),
   );
-
-  Expression<bool> customerTableRefs(
-    Expression<bool> Function($$CustomerTableTableFilterComposer f) f,
-  ) {
-    final $$CustomerTableTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.customerTable,
-      getReferencedColumn: (t) => t.city,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CustomerTableTableFilterComposer(
-            $db: $db,
-            $table: $db.customerTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 
   Expression<bool> invoiceProductTableRefs(
     Expression<bool> Function($$InvoiceProductTableTableFilterComposer f) f,
@@ -1812,31 +1769,6 @@ class $$ProductTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  Expression<T> customerTableRefs<T extends Object>(
-    Expression<T> Function($$CustomerTableTableAnnotationComposer a) f,
-  ) {
-    final $$CustomerTableTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.customerTable,
-      getReferencedColumn: (t) => t.city,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CustomerTableTableAnnotationComposer(
-            $db: $db,
-            $table: $db.customerTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<T> invoiceProductTableRefs<T extends Object>(
     Expression<T> Function($$InvoiceProductTableTableAnnotationComposer a) f,
   ) {
@@ -1877,10 +1809,7 @@ class $$ProductTableTableTableManager
           $$ProductTableTableUpdateCompanionBuilder,
           (ProductDto, $$ProductTableTableReferences),
           ProductDto,
-          PrefetchHooks Function({
-            bool customerTableRefs,
-            bool invoiceProductTableRefs,
-          })
+          PrefetchHooks Function({bool invoiceProductTableRefs})
         > {
   $$ProductTableTableTableManager(_$ShelfDatabase db, $ProductTableTable table)
     : super(
@@ -1941,63 +1870,38 @@ class $$ProductTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback:
-              ({customerTableRefs = false, invoiceProductTableRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (customerTableRefs) db.customerTable,
-                    if (invoiceProductTableRefs) db.invoiceProductTable,
-                  ],
-                  addJoins: null,
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (customerTableRefs)
-                        await $_getPrefetchedData<
-                          ProductDto,
-                          $ProductTableTable,
-                          CustomerDto
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ProductTableTableReferences
-                              ._customerTableRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ProductTableTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).customerTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.city == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (invoiceProductTableRefs)
-                        await $_getPrefetchedData<
-                          ProductDto,
-                          $ProductTableTable,
-                          InvoiceProductDto
-                        >(
-                          currentTable: table,
-                          referencedTable: $$ProductTableTableReferences
-                              ._invoiceProductTableRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$ProductTableTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).invoiceProductTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.product == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
+          prefetchHooksCallback: ({invoiceProductTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (invoiceProductTableRefs) db.invoiceProductTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (invoiceProductTableRefs)
+                    await $_getPrefetchedData<
+                      ProductDto,
+                      $ProductTableTable,
+                      InvoiceProductDto
+                    >(
+                      currentTable: table,
+                      referencedTable: $$ProductTableTableReferences
+                          ._invoiceProductTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$ProductTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).invoiceProductTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.product == item.id),
+                      typedResults: items,
+                    ),
+                ];
               },
+            );
+          },
         ),
       );
 }
@@ -2014,10 +1918,7 @@ typedef $$ProductTableTableProcessedTableManager =
       $$ProductTableTableUpdateCompanionBuilder,
       (ProductDto, $$ProductTableTableReferences),
       ProductDto,
-      PrefetchHooks Function({
-        bool customerTableRefs,
-        bool invoiceProductTableRefs,
-      })
+      PrefetchHooks Function({bool invoiceProductTableRefs})
     >;
 typedef $$CityTableTableCreateCompanionBuilder =
     CityTableCompanion Function({
@@ -2031,6 +1932,29 @@ typedef $$CityTableTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String> department,
     });
+
+final class $$CityTableTableReferences
+    extends BaseReferences<_$ShelfDatabase, $CityTableTable, CityDto> {
+  $$CityTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$CustomerTableTable, List<CustomerDto>>
+  _customerTableRefsTable(_$ShelfDatabase db) => MultiTypedResultKey.fromTable(
+    db.customerTable,
+    aliasName: $_aliasNameGenerator(db.cityTable.id, db.customerTable.city),
+  );
+
+  $$CustomerTableTableProcessedTableManager get customerTableRefs {
+    final manager = $$CustomerTableTableTableManager(
+      $_db,
+      $_db.customerTable,
+    ).filter((f) => f.city.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_customerTableRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
 
 class $$CityTableTableFilterComposer
     extends Composer<_$ShelfDatabase, $CityTableTable> {
@@ -2055,6 +1979,31 @@ class $$CityTableTableFilterComposer
     column: $table.department,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> customerTableRefs(
+    Expression<bool> Function($$CustomerTableTableFilterComposer f) f,
+  ) {
+    final $$CustomerTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.customerTable,
+      getReferencedColumn: (t) => t.city,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomerTableTableFilterComposer(
+            $db: $db,
+            $table: $db.customerTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$CityTableTableOrderingComposer
@@ -2101,6 +2050,31 @@ class $$CityTableTableAnnotationComposer
     column: $table.department,
     builder: (column) => column,
   );
+
+  Expression<T> customerTableRefs<T extends Object>(
+    Expression<T> Function($$CustomerTableTableAnnotationComposer a) f,
+  ) {
+    final $$CustomerTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.customerTable,
+      getReferencedColumn: (t) => t.city,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomerTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.customerTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$CityTableTableTableManager
@@ -2114,9 +2088,9 @@ class $$CityTableTableTableManager
           $$CityTableTableAnnotationComposer,
           $$CityTableTableCreateCompanionBuilder,
           $$CityTableTableUpdateCompanionBuilder,
-          (CityDto, BaseReferences<_$ShelfDatabase, $CityTableTable, CityDto>),
+          (CityDto, $$CityTableTableReferences),
           CityDto,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool customerTableRefs})
         > {
   $$CityTableTableTableManager(_$ShelfDatabase db, $CityTableTable table)
     : super(
@@ -2150,9 +2124,45 @@ class $$CityTableTableTableManager
                 department: department,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$CityTableTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({customerTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (customerTableRefs) db.customerTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (customerTableRefs)
+                    await $_getPrefetchedData<
+                      CityDto,
+                      $CityTableTable,
+                      CustomerDto
+                    >(
+                      currentTable: table,
+                      referencedTable: $$CityTableTableReferences
+                          ._customerTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$CityTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).customerTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.city == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -2167,9 +2177,9 @@ typedef $$CityTableTableProcessedTableManager =
       $$CityTableTableAnnotationComposer,
       $$CityTableTableCreateCompanionBuilder,
       $$CityTableTableUpdateCompanionBuilder,
-      (CityDto, BaseReferences<_$ShelfDatabase, $CityTableTable, CityDto>),
+      (CityDto, $$CityTableTableReferences),
       CityDto,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool customerTableRefs})
     >;
 typedef $$CustomerTableTableCreateCompanionBuilder =
     CustomerTableCompanion Function({
@@ -2204,17 +2214,17 @@ final class $$CustomerTableTableReferences
     super.$_typedResult,
   );
 
-  static $ProductTableTable _cityTable(_$ShelfDatabase db) =>
-      db.productTable.createAlias(
-        $_aliasNameGenerator(db.customerTable.city, db.productTable.id),
+  static $CityTableTable _cityTable(_$ShelfDatabase db) =>
+      db.cityTable.createAlias(
+        $_aliasNameGenerator(db.customerTable.city, db.cityTable.id),
       );
 
-  $$ProductTableTableProcessedTableManager get city {
+  $$CityTableTableProcessedTableManager get city {
     final $_column = $_itemColumn<int>('city')!;
 
-    final manager = $$ProductTableTableTableManager(
+    final manager = $$CityTableTableTableManager(
       $_db,
-      $_db.productTable,
+      $_db.cityTable,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_cityTable($_db));
     if (item == null) return manager;
@@ -2294,20 +2304,20 @@ class $$CustomerTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  $$ProductTableTableFilterComposer get city {
-    final $$ProductTableTableFilterComposer composer = $composerBuilder(
+  $$CityTableTableFilterComposer get city {
+    final $$CityTableTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.city,
-      referencedTable: $db.productTable,
+      referencedTable: $db.cityTable,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ProductTableTableFilterComposer(
+          }) => $$CityTableTableFilterComposer(
             $db: $db,
-            $table: $db.productTable,
+            $table: $db.cityTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2392,20 +2402,20 @@ class $$CustomerTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  $$ProductTableTableOrderingComposer get city {
-    final $$ProductTableTableOrderingComposer composer = $composerBuilder(
+  $$CityTableTableOrderingComposer get city {
+    final $$CityTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.city,
-      referencedTable: $db.productTable,
+      referencedTable: $db.cityTable,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ProductTableTableOrderingComposer(
+          }) => $$CityTableTableOrderingComposer(
             $db: $db,
-            $table: $db.productTable,
+            $table: $db.cityTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2455,20 +2465,20 @@ class $$CustomerTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  $$ProductTableTableAnnotationComposer get city {
-    final $$ProductTableTableAnnotationComposer composer = $composerBuilder(
+  $$CityTableTableAnnotationComposer get city {
+    final $$CityTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.city,
-      referencedTable: $db.productTable,
+      referencedTable: $db.cityTable,
       getReferencedColumn: (t) => t.id,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$ProductTableTableAnnotationComposer(
+          }) => $$CityTableTableAnnotationComposer(
             $db: $db,
-            $table: $db.productTable,
+            $table: $db.cityTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:

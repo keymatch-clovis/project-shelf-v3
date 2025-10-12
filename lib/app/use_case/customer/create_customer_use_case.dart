@@ -16,10 +16,10 @@ class CreateCustomerUseCase {
 
     return await _service.create(
       Customer(
-        name: request.name.trim(),
+        name: request.name,
         cityId: request.cityId,
-        address: request.address?.trim(),
-        phoneNumber: request.phoneNumber?.trim(),
+        address: request.address,
+        phoneNumber: request.phoneNumber,
       ),
     );
   }

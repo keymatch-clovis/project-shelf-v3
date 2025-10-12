@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Print'**
   String get print;
 
+  /// No description provided for @upload_v2_database.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload V2 database'**
+  String get upload_v2_database;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -157,6 +163,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unit price'**
   String get unit_price;
+
+  /// No description provided for @v2_database_loaded.
+  ///
+  /// In en, this message translates to:
+  /// **'V2 database loaded'**
+  String get v2_database_loaded;
 
   /// No description provided for @no_products_found.
   ///

@@ -17,8 +17,8 @@ class Customer {
     String? businessName,
     String? address,
     String? phoneNumber,
-  }) : name = name.trim(),
-       businessName = businessName?.trim(),
-       address = address?.trim(),
+  }) : name = name.trim().toUpperCase(),
+       businessName = businessName?.trim().toUpperCase(),
+       address = address?.trim().toUpperCase(),
        phoneNumber = phoneNumber?.trim();
 }

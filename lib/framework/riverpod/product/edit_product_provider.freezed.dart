@@ -213,7 +213,7 @@ return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.
 
 
 class _EditProductState extends EditProductState {
-  const _EditProductState({this.status = EditProductStatus.initial, required this.currency, required this.product, required this.nameInput, required this.defaultPriceInput, required this.purchasePriceInput, required this.stockInput, final  List<File> photoFiles = const []}): _photoFiles = photoFiles,super._();
+  const _EditProductState({this.status = EditProductStatus.INITIAL, required this.currency, required this.product, required this.nameInput, required this.defaultPriceInput, required this.purchasePriceInput, required this.stockInput, final  List<File> photoFiles = const []}): _photoFiles = photoFiles,super._();
   
 
 @override@JsonKey() final  EditProductStatus status;

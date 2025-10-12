@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
@@ -120,5 +121,11 @@ class ProductServiceImpl implements ProductService {
   Future<void> delete(Id id) async {
     _logger.d('Deleting product with ID: $id');
     await _repository.delete(id);
+  }
+
+  @override
+  Future<Result> deleteAll() {
+    _logger.d('Deleting all products');
+    return _repository.deleteAll();
   }
 }

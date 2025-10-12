@@ -148,7 +148,7 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
       state.value!.copyWith(status: CreateProductStatus.success),
     );
   }
-
+ 
   Future<void> openCamera() async {
     final imagePicker = ImagePicker();
     final picked = await imagePicker.pickImage(source: ImageSource.camera);

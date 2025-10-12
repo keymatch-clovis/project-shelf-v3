@@ -1,3 +1,4 @@
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
@@ -47,4 +48,5 @@ abstract interface class ProductRepository {
 
   /// DELETE related
   Future<void> delete(Id id);
+  Future<Result> deleteAll();
 }

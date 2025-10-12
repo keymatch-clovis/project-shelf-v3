@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
@@ -177,5 +178,13 @@ class CustomerDao implements CustomerRepository {
     return query.go().then((it) {
       assert(it == 1);
     });
+  }
+
+  @override
+  Future<Result> deleteAll() async {
+    _logger.d('Deleting all customers');
+    return Result.asyncOf(_database.delete(_database.customerTable).go)
+    // Discard the result, we only need to know everything went fine.
+    .map((_) => unit);
   }
 }

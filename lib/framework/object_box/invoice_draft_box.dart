@@ -104,6 +104,7 @@ final class InvoiceDraftBox implements InvoiceDraftRepository {
       // Update other simple properties
       draft.date = args.date;
       draft.customerId = args.customerId;
+      draft.remainingUnpaidBalance = args.remainingUnpaidBalance;
 
       draftBox.put(draft);
     }, args);

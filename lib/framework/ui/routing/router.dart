@@ -15,6 +15,7 @@ import 'package:project_shelf_v3/framework/ui/screen/product/product_details_scr
 import 'package:project_shelf_v3/framework/ui/screen/settings/company_info_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/settings/edit_company_info_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/settings/settings_screen.dart';
+import 'package:project_shelf_v3/framework/ui/screen/settings/load_v2_database_screen.dart';
 import 'package:project_shelf_v3/framework/ui/screen/splash_screen.dart';
 
 enum CustomRoute {
@@ -41,6 +42,10 @@ enum CustomRoute {
   SETTINGS_COMPANY_INFO_EDIT(
     route: "/settings/company-info/edit",
     part: "edit",
+  ),
+  SETTINGS_UPLOAD_V2_DATABASE(
+    route: "/settings/upload-v2-database",
+    part: "upload-v2-database",
   );
 
   final String route;
@@ -183,6 +188,10 @@ final goRouter = GoRouter(
                       builder: (_, _) => const EditCompanyInfoScreen(),
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: CustomRoute.SETTINGS_UPLOAD_V2_DATABASE.part,
+                  builder: (_, _) => const LoadV2DatabaseScreen(),
                 ),
               ],
             ),

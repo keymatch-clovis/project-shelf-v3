@@ -25,8 +25,8 @@ final class UpdateInvoiceDraftUseCase {
     );
 
     invoiceDraft.date = request.date;
-
     invoiceDraft.customerId = request.customerId;
+    invoiceDraft.remainingUnpaidBalance = request.remainingUnpaidBalance;
 
     // When updating the invoice products, we are removing all the old ones
     // and replacing them with the new ones. This is not as performant, but it

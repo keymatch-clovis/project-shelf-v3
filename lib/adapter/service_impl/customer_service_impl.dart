@@ -1,4 +1,5 @@
 import 'package:logger/web.dart';
+import 'package:oxidized/src/result.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
@@ -89,5 +90,11 @@ class CustomerServiceImpl implements CustomerService {
   Future<void> delete(Id id) {
     _logger.d("Deleting customer with ID: $id");
     return _repository.delete(id);
+  }
+
+  @override
+  Future<Result> deleteAll() {
+    _logger.d('Deleting all customers');
+    return _repository.deleteAll();
   }
 }

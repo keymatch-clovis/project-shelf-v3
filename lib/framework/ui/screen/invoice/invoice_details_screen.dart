@@ -172,6 +172,11 @@ final class _DetailsPane extends ConsumerWidget {
                     ),
                   ),
                 ),
+                ShelfTextField(
+                  readOnly: true,
+                  label: localizations.remaining_unpaid_balance,
+                  value: data.invoice.remainingUnpaidBalance.toString(),
+                ),
               ],
             ),
           ),

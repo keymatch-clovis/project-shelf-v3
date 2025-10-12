@@ -46,6 +46,8 @@ final class InvoiceDraftServiceImpl implements InvoiceDraftService {
         id: invoiceDraft.id!,
         date: invoiceDraft.date,
         customerId: invoiceDraft.customerId,
+        remainingUnpaidBalance: invoiceDraft.remainingUnpaidBalance?.minorUnits
+            .toInt(),
         products: invoiceDraft.products.map(
           (it) => CreateProductDto(
             productId: it.productId,

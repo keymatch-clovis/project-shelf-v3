@@ -1,3 +1,4 @@
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 
@@ -17,4 +18,5 @@ abstract interface class ProductService {
 
   /// DELETE related
   Future<void> delete(Id id);
+  Future<Result> deleteAll();
 }

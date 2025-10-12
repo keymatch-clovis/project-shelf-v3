@@ -43,7 +43,7 @@ final class InvoiceDraft {
   DateTime? date;
 
   Id? customerId;
-  int? remainingUnpaidBalance;
+  Money? remainingUnpaidBalance;
 
   void clearProducts() {
     products.clear();

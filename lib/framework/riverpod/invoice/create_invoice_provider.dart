@@ -104,6 +104,9 @@ final class CreateInvoiceAsyncNotifier
       customer = null;
     }
 
+    String? remainingUnpaidBalance = invoiceDraft.remainingUnpaidBalance
+        .toString();
+
     Map<String, InvoiceProductDto> invoiceProducts = {};
     for (final draftProduct in invoiceDraft.products) {
       final product = await _findProductUseCase.exec(
@@ -129,6 +132,7 @@ final class CreateInvoiceAsyncNotifier
         validationRules: {IsRequiredRule()},
       ),
       remainingUnpaidBalanceInput: Input(
+        value: remainingUnpaidBalance,
         validationRules: {IsMoneyRule(appPreferences.defaultCurrency)},
       ),
       invoiceProducts: invoiceProducts,
@@ -241,6 +245,9 @@ final class CreateInvoiceAsyncNotifier
       CreateInvoiceRequest(
         date: value.dateInput.value!,
         customerId: value.customerInput.value!.id,
+        remainingUnpaidBalance: value.currency.parse(
+          value.remainingUnpaidBalanceInput.value!,
+        ),
         invoiceProducts: value.invoiceProducts.values.map((it) {
           return CreateInvoiceProductRequest(
             productId: it.product.id,

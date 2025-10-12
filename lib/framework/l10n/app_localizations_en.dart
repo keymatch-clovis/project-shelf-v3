@@ -33,10 +33,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get print => 'Print';
 
   @override
+  String get upload_v2_database => 'Upload V2 database';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
   String get unit_price => 'Unit price';
+
+  @override
+  String get v2_database_loaded => 'V2 database loaded';
 
   @override
   String get no_products_found => 'No products found';

@@ -13,14 +13,20 @@ final class SettingsScreen extends StatelessWidget {
     return _Screen(
       onNavigateCompanyInfo: () =>
           context.go(CustomRoute.SETTINGS_COMPANY_INFO.route),
+      onUploadV2Database: () =>
+          context.go(CustomRoute.SETTINGS_UPLOAD_V2_DATABASE.route),
     );
   }
 }
 
 final class _Screen extends StatelessWidget {
   final void Function() onNavigateCompanyInfo;
+  final void Function() onUploadV2Database;
 
-  const _Screen({required this.onNavigateCompanyInfo});
+  const _Screen({
+    required this.onNavigateCompanyInfo,
+    required this.onUploadV2Database,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +38,10 @@ final class _Screen extends StatelessWidget {
             SliverFillRemaining(
               hasScrollBody: false,
               fillOverscroll: true,
-              child: _BodyPane(onNavigateCompanyInfo: onNavigateCompanyInfo),
+              child: _BodyPane(
+                onNavigateCompanyInfo: onNavigateCompanyInfo,
+                onUploadV2Database: onUploadV2Database,
+              ),
             ),
           ],
         ),
@@ -52,8 +61,12 @@ final class _AppBar extends ConsumerWidget {
 
 final class _BodyPane extends StatelessWidget {
   final void Function() onNavigateCompanyInfo;
+  final void Function() onUploadV2Database;
 
-  const _BodyPane({required this.onNavigateCompanyInfo});
+  const _BodyPane({
+    required this.onNavigateCompanyInfo,
+    required this.onUploadV2Database,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +76,16 @@ final class _BodyPane extends StatelessWidget {
       child: Column(
         spacing: XS_SPACING,
         children: [
-          // Trying to follow:
-          // https://m3.material.io/blog/building-with-m3-expressive
           ListTile(
             onTap: onNavigateCompanyInfo,
-            leading: const Icon(Icons.business_rounded),
+            leading: const Icon(Icons.business_outlined),
             title: Text(localizations.company_info),
+            trailing: const Icon(Icons.chevron_right_rounded),
+          ),
+          ListTile(
+            onTap: onUploadV2Database,
+            leading: const Icon(Icons.upload_file_outlined),
+            title: Text(localizations.upload_v2_database),
             trailing: const Icon(Icons.chevron_right_rounded),
           ),
         ],

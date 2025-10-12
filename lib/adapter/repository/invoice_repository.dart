@@ -1,3 +1,4 @@
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
@@ -42,6 +43,9 @@ abstract interface class InvoiceRepository {
   Future<Iterable<InvoiceProductDto>> findInvoiceProducts(int invoiceId);
 
   Future<Iterable<InvoiceDto>> searchWithCustomerId(int id);
+
+  // DELETE related
+  Future<Result> deleteAll();
 
   /// OTHER related
   Future<int?> getConsecutive();

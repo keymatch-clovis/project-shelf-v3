@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_product_dto.dart';
@@ -117,9 +118,21 @@ final class InvoiceDao implements InvoiceRepository {
   @override
   Future<Iterable<InvoiceDto>> searchWithCustomerId(int id) {
     final query = _database.select(_database.invoiceTable)
-      ..where((e) => e.customer.equals(id));
+      ..where((e) => e.customer.equals(id))
+      ..orderBy([(e) => OrderingTerm.desc(_database.invoiceTable.createdAt)]);
 
     _logger.d('Searching invoices with customer ID: $id');
     return query.get();
+  }
+
+  @override
+  Future<Result> deleteAll() {
+    // Delete first all the products associated to the invoices, and then
+    // delete the invoices.
+    _logger.d('Deleting all invoices');
+    return Result.of(_database.delete(_database.invoiceProductTable).go)
+        .mapAsync((_) => _database.delete(_database.invoiceTable).go())
+        // Discard the result, we only need to know everything went fine.
+        .map((_) => unit);
   }
 }

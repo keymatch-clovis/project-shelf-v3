@@ -1,5 +1,6 @@
 import 'package:logger/web.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/dto/invoice_product_response.dart';
@@ -35,11 +36,12 @@ final class InvoiceServiceImpl implements InvoiceService {
         number: invoice.number,
         date: invoice.date,
         customerId: invoice.customerId,
-        remainingUnpaidBalance: invoice.remainingUnpaidBalance,
+        remainingUnpaidBalance: invoice.remainingUnpaidBalance.minorUnits
+            .toInt(),
         invoiceProducts: invoice.invoiceProducts.map((it) {
           return CreateProductArgs(
             productId: it.productId,
-            unitPrice: it.productId,
+            unitPrice: it.unitPrice.minorUnits.toInt(),
             quantity: it.quantity,
           );
         }).toList(),
@@ -116,5 +118,11 @@ final class InvoiceServiceImpl implements InvoiceService {
     }
 
     throw AssertionError('Tried to search invoices without query.');
+  }
+
+  @override
+  Future<Result> deleteAll() {
+    _logger.d('Deleting all invoices');
+    return _repository.deleteAll();
   }
 }

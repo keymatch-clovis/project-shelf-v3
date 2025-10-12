@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_details_invoice_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_details_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/selected_customer_provider.dart';

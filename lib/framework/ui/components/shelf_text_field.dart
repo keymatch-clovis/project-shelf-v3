@@ -78,6 +78,19 @@ class _ShelfTextFieldState extends State<ShelfTextField> {
         });
       }
     });
+
+    if (widget.value != null) {
+      _controller.text = widget.value!;
+
+      final oldValue = _controller.value;
+      TextEditingValue newValue = oldValue;
+
+      widget.inputFormatters?.forEach((it) {
+        newValue = it.formatEditUpdate(oldValue, newValue);
+      });
+
+      _controller.value = newValue;
+    }
   }
 
   @override
@@ -95,19 +108,6 @@ class _ShelfTextFieldState extends State<ShelfTextField> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.value != null) {
-      _controller.text = widget.value!;
-
-      final oldValue = _controller.value;
-      TextEditingValue newValue = oldValue;
-
-      widget.inputFormatters?.forEach((it) {
-        newValue = it.formatEditUpdate(oldValue, newValue);
-      });
-
-      _controller.value = newValue;
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
