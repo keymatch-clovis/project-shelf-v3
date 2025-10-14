@@ -4,6 +4,7 @@
     "total": "Total",
     "value": "Value",
     "unit_abbreviated": "U.",
+    "no_city_set": "No city set",
     "no_invoices": "No invoices",
     "details": "Details",
     "quantity": "Quantity",

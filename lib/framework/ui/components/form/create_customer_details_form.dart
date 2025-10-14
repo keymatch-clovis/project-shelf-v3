@@ -94,9 +94,10 @@ final class _CreateCustomerDetailsFormState
                 label: localizations.city,
                 isRequired: true,
                 value: state.cityInput.value,
+                emptyLabel: localizations.no_city_set,
                 body: state.cityInput.value != null
-                    ? Text("test")
-                    : Text("tester"),
+                    ? Text(state.cityInput.value!.fullName)
+                    : null,
                 onTap: () {
                   _businessNameFieldFocus.requestFocus();
                   _citySearchController.openView();

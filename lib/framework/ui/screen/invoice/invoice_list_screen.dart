@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_query_result_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_list_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
@@ -32,8 +32,8 @@ final class InvoiceListScreen extends ConsumerWidget {
 
         context.go(CustomRoute.INVOICE_CREATE.route);
       },
-      onSelected: (queryResult) {
-        ref.read(selectedInvoiceProvider.notifier).select(queryResult);
+      onSelect: (invoice) {
+        ref.read(selectedInvoiceProvider.notifier).select(invoice);
         context.go(CustomRoute.INVOICE_DETAILS.route);
       },
     );
@@ -41,14 +41,14 @@ final class InvoiceListScreen extends ConsumerWidget {
 }
 
 final class _Screen extends ConsumerWidget {
-  final void Function(InvoiceQueryResultDto) onSelected;
+  final void Function(InvoiceDto) onSelect;
   final void Function() onInvoiceDraftsNavigated;
   final void Function() onCreateNavigated;
 
   const _Screen({
     required this.onInvoiceDraftsNavigated,
     required this.onCreateNavigated,
-    required this.onSelected,
+    required this.onSelect,
   });
 
   @override
@@ -65,7 +65,7 @@ final class _Screen extends ConsumerWidget {
           ),
         ],
       ),
-      body: _BodyPane(onSelected: onSelected),
+      body: _BodyPane(onSelect: onSelect),
       // https://m3.material.io/components/floating-action-button/specs
       floatingActionButton: FloatingActionButton.large(
         onPressed: onCreateNavigated,
@@ -76,16 +76,16 @@ final class _Screen extends ConsumerWidget {
 }
 
 final class _BodyPane extends ConsumerWidget {
-  final void Function(InvoiceQueryResultDto) onSelected;
+  final void Function(InvoiceDto) onSelect;
 
-  const _BodyPane({required this.onSelected});
+  const _BodyPane({required this.onSelect});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(invoiceListProvider);
 
     return state.when(
-      data: (items) => _List(items, onSelected: onSelected),
+      data: (items) => _List(items.toList(), onSelect: onSelect),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (err, _) {
         Logger().f(err);
@@ -96,11 +96,11 @@ final class _BodyPane extends ConsumerWidget {
 }
 
 final class _List extends StatelessWidget {
-  final List<InvoiceQueryResultDto> items;
+  final List<InvoiceDto> items;
 
-  final void Function(InvoiceQueryResultDto) onSelected;
+  final void Function(InvoiceDto) onSelect;
 
-  const _List(this.items, {required this.onSelected});
+  const _List(this.items, {required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -131,23 +131,23 @@ final class _List extends StatelessWidget {
       padding: EdgeInsets.zero,
       itemCount: items.length,
       itemBuilder: (context, index) {
-        return _ListTile(items[index], onSelected: onSelected);
+        return _ListTile(items[index], onSelect: onSelect);
       },
     );
   }
 }
 
 final class _ListTile extends StatelessWidget {
-  final InvoiceQueryResultDto item;
+  final InvoiceDto item;
 
-  final void Function(InvoiceQueryResultDto) onSelected;
+  final void Function(InvoiceDto) onSelect;
 
-  const _ListTile(this.item, {required this.onSelected});
+  const _ListTile(this.item, {required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => onSelected(item),
+      onTap: () => onSelect(item),
       leading: Text(item.number.toString()),
       title: Text(Jiffy.parseFromDateTime(item.date).yMMMMd),
       subtitle: Text(item.customer.getFullName()),

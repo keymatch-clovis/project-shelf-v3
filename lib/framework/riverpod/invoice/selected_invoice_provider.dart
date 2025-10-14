@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_query_result_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 
 // State related
 enum SelectedInvoiceStatus { INITIAL, LOADING, DELETED }
@@ -13,18 +13,12 @@ sealed class SelectedInvoiceState {
 final class None extends SelectedInvoiceState {}
 
 final class Selected extends SelectedInvoiceState {
-  final InvoiceQueryResultDto queryResult;
+  final InvoiceDto invoice;
 
-  const Selected(this.queryResult, {super.status});
+  const Selected(this.invoice, {super.status});
 
-  Selected copyWith({
-    InvoiceQueryResultDto? queryResult,
-    SelectedInvoiceStatus? status,
-  }) {
-    return Selected(
-      queryResult ?? this.queryResult,
-      status: status ?? this.status,
-    );
+  Selected copyWith({InvoiceDto? invoice, SelectedInvoiceStatus? status}) {
+    return Selected(invoice ?? this.invoice, status: status ?? this.status);
   }
 }
 
@@ -35,8 +29,8 @@ final class SelectedInvoiceNotifier extends Notifier<SelectedInvoiceState> {
     return None();
   }
 
-  void select(InvoiceQueryResultDto queryResult) {
-    state = Selected(queryResult);
+  void select(InvoiceDto invoice) {
+    state = Selected(invoice);
   }
 }
 

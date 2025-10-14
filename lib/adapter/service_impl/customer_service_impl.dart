@@ -1,5 +1,5 @@
 import 'package:logger/web.dart';
-import 'package:oxidized/src/result.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
@@ -23,6 +23,7 @@ class CustomerServiceImpl implements CustomerService {
         cityId: customer.cityId,
         address: customer.address,
         phoneNumber: customer.phoneNumber,
+        businessName: customer.businessName,
       ),
     );
   }
@@ -35,10 +36,10 @@ class CustomerServiceImpl implements CustomerService {
       UpdateArgs(
         id: customer.id!,
         name: customer.name,
-        businessName: customer.businessName,
         cityId: customer.cityId,
         address: customer.address,
         phoneNumber: customer.phoneNumber,
+        businessName: customer.businessName,
       ),
     );
   }
@@ -50,11 +51,7 @@ class CustomerServiceImpl implements CustomerService {
 
     return _repository.watchPopulated().map((items) {
       return items.map((it) {
-        return CustomerResponse(
-          id: it.$1.id,
-          name: it.$1.name,
-          city: it.$2.toResponse(),
-        );
+        return it.$1.toResponse(city: it.$2.toResponse());
       });
     });
   }
@@ -64,11 +61,7 @@ class CustomerServiceImpl implements CustomerService {
     _logger.d("Searching customer with: $query");
     return _repository.searchPopulated(query).map((items) {
       return items.map((it) {
-        return CustomerResponse(
-          id: it.$1.id,
-          name: it.$1.name,
-          city: it.$2.toResponse(),
-        );
+        return it.$1.toResponse(city: it.$2.toResponse());
       });
     });
   }
@@ -77,11 +70,7 @@ class CustomerServiceImpl implements CustomerService {
   Future<CustomerResponse> findWithId(Id id) {
     _logger.d("Finding customer with ID: $id");
     return _repository.findWithIdPopulated(id).then((it) {
-      return CustomerResponse(
-        id: it.$1.id,
-        name: it.$1.name,
-        city: it.$2.toResponse(),
-      );
+      return it.$1.toResponse(city: it.$2.toResponse());
     });
   }
 

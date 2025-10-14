@@ -5,6 +5,7 @@ import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/product_search_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
+import 'package:project_shelf_v3/framework/ui/components/product_list_tile.dart';
 
 final class ProductSearchAnchor extends ConsumerStatefulWidget {
   final void Function(ProductDto) onSelect;
@@ -98,6 +99,14 @@ final class _ListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(onTap: () => onSelect(item), title: Text(item.name));
+    return ListTile(
+      visualDensity: VisualDensity.compact,
+      title: Text(item.name),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [Text(item.defaultPrice.toString()), Text('× ${item.stock}')],
+      ),
+      onTap: () => onSelect(item),
+    );
   }
 }

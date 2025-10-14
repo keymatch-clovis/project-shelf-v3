@@ -20,6 +20,7 @@ class CreateCustomerUseCase {
         cityId: request.cityId,
         address: request.address,
         phoneNumber: request.phoneNumber,
+        businessName: request.businessName,
       ),
     );
   }

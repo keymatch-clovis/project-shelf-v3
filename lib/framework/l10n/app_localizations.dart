@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'U.'**
   String get unit_abbreviated;
 
+  /// No description provided for @no_city_set.
+  ///
+  /// In en, this message translates to:
+  /// **'No city set'**
+  String get no_city_set;
+
   /// No description provided for @no_invoices.
   ///
   /// In en, this message translates to:

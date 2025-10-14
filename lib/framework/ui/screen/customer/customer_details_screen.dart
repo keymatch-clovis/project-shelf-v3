@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_details_invoice_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_details_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/selected_customer_provider.dart';
+import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_provider.dart'
+    as selected_invoice;
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
 import 'package:project_shelf_v3/framework/ui/components/shelf_card.dart';
+import 'package:project_shelf_v3/framework/ui/routing/router.dart';
 
 final class CustomerDetailsScreen extends ConsumerWidget {
   const CustomerDetailsScreen({super.key});
@@ -25,6 +30,15 @@ final class CustomerDetailsScreen extends ConsumerWidget {
     final status = ref.watch(
       selectedCustomerProvider.select((it) => it as Selected),
     );
+
+    // This provider by itself is useless, as it is marked as autodispose. This
+    // means this widget is dependent on a parent widget listening to the
+    // provider.
+    // This is created this way to make the provider constrained to the views
+    // using it.
+    //
+    // NOTE: I don't know another way of doing this.
+    ref.listen(customerDetailsProvider(status.customer.id), (_, _) {});
 
     ref.listen(selectedCustomerProvider.select((it) => it.status), (_, state) {
       switch (state) {
@@ -40,7 +54,28 @@ final class CustomerDetailsScreen extends ConsumerWidget {
       }
     });
 
-    return _Screen(status.customer.id, onInvoiceSelected: (_) {});
+    return _Screen(
+      status.customer.id,
+      onInvoiceSelected: (invoice) {
+        // TODO: FIX THIS
+        final state = ref.read(
+          selectedCustomerProvider.select((it) => it as Selected),
+        );
+
+        ref
+            .read(selected_invoice.selectedInvoiceProvider.notifier)
+            .select(
+              InvoiceDto(
+                id: invoice.id,
+                number: invoice.number,
+                date: invoice.date,
+                remainingUnpaidBalance: invoice.remainingUnpaidBalance,
+                customer: state.customer,
+              ),
+            );
+        context.go(CustomRoute.INVOICE_DETAILS.route);
+      },
+    );
   }
 }
 
@@ -81,7 +116,7 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    _CustomerDetailsPane(),
+                    _CustomerDetailsPane(widget.customerId),
                     _InvoicesPane(
                       widget.customerId,
                       onInvoiceSelected: widget.onInvoiceSelected,
@@ -127,56 +162,66 @@ final class _AppBar extends ConsumerWidget {
 }
 
 final class _CustomerDetailsPane extends ConsumerWidget {
+  final Id customerId;
+
+  const _CustomerDetailsPane(this.customerId);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
-    final state = ref.watch(selectedCustomerProvider);
+    final state = ref.watch(customerDetailsProvider(customerId));
 
-    return switch (state) {
-      None() => throw AssertionError(),
-      Selected() => SingleChildScrollView(
-        child: Padding(
-          // https://m3.material.io/components/dialogs/specs#2b93ced7-9b0d-4a59-9bc4-8ff59dcd24c1
-          padding: EdgeInsetsGeometry.all(24),
-          child: Column(
-            spacing: 12,
-            children: [
-              ShelfTextField(
-                isRequired: true,
-                readOnly: true,
-                value: state.customer.name,
-                label: localizations.name,
-              ),
-              ShelfTextField(
-                isRequired: true,
-                readOnly: true,
-                value:
-                    "${state.customer.city.name}, ${state.customer.city.department}",
-                label: localizations.city,
-              ),
-              ShelfTextField(
-                readOnly: true,
-                value: state.customer.businessName,
-                enabled: state.customer.businessName != null,
-                label: localizations.business_name,
-              ),
-              ShelfTextField(
-                readOnly: true,
-                value: state.customer.address,
-                enabled: state.customer.address != null,
-                label: localizations.address,
-              ),
-              ShelfTextField(
-                readOnly: true,
-                enabled: state.customer.phoneNumber != null,
-                value: state.customer.phoneNumber,
-                label: localizations.phone_number,
-              ),
-            ],
+    return state.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) {
+        Logger().d(err);
+        throw AssertionError(err);
+      },
+      data: (data) {
+        return SingleChildScrollView(
+          child: Padding(
+            // https://m3.material.io/components/dialogs/specs#2b93ced7-9b0d-4a59-9bc4-8ff59dcd24c1
+            padding: EdgeInsetsGeometry.all(24),
+            child: Column(
+              spacing: 12,
+              children: [
+                ShelfTextField(
+                  isRequired: true,
+                  readOnly: true,
+                  value: data.customer.name,
+                  label: localizations.name,
+                ),
+                ShelfTextField(
+                  isRequired: true,
+                  readOnly: true,
+                  value:
+                      "${data.customer.city.name}, ${data.customer.city.department}",
+                  label: localizations.city,
+                ),
+                ShelfTextField(
+                  readOnly: true,
+                  value: data.customer.businessName,
+                  enabled: data.customer.businessName != null,
+                  label: localizations.business_name,
+                ),
+                ShelfTextField(
+                  readOnly: true,
+                  value: data.customer.address,
+                  enabled: data.customer.address != null,
+                  label: localizations.address,
+                ),
+                ShelfTextField(
+                  readOnly: true,
+                  enabled: data.customer.phoneNumber != null,
+                  value: data.customer.phoneNumber,
+                  label: localizations.phone_number,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-    };
+        );
+      },
+    );
   }
 }
 

@@ -26,14 +26,14 @@ final class InvoiceDetailsScreen extends ConsumerWidget {
     //
     // NOTE: I feel this is a bit of a hack, but I don't know another way of
     // doing this.
-    ref.listen(invoiceDetailsProvider(state.queryResult.id), (_, _) {});
+    ref.listen(invoiceDetailsProvider(state.invoice.id), (_, _) {});
 
     return _Screen(
-      state.queryResult.id,
+      state.invoice.id,
       onPrint: () {
         showDialog(
           context: context,
-          builder: (_) => PrintInvoiceDialog(state.queryResult.id),
+          builder: (_) => PrintInvoiceDialog(state.invoice.id),
         );
       },
     );
@@ -110,7 +110,7 @@ final class _AppBar extends ConsumerWidget {
 
     final localizations = AppLocalizations.of(context)!;
     return SliverAppBar(
-      title: Text(localizations.invoice(selectedState.queryResult.number)),
+      title: Text(localizations.invoice(selectedState.invoice.number)),
       bottom: TabBar.secondary(
         controller: _tabController,
         tabs: [
@@ -213,9 +213,9 @@ final class _InvoiceProductListPane extends ConsumerWidget {
                   padding: S_SPACING_V,
                   separatorBuilder: (_, _) =>
                       const SizedBox(height: XS_SPACING),
-                  itemCount: data.invoice.invoiceProducts.length,
+                  itemCount: data.invoiceProducts.length,
                   itemBuilder: (_, index) {
-                    final it = data.invoice.invoiceProducts[index];
+                    final it = data.invoiceProducts.toList()[index];
 
                     return _InvoiceProductListTile(it, onTap: (_) {});
                   },

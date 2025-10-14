@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CustomerDetailsState {
 
- Iterable<CustomerDetailsInvoiceDto> get invoices; Money get totalRemainingUnpaidBalance;
+ Iterable<CustomerDetailsInvoiceDto> get invoices; CustomerDto get customer; Money get totalRemainingUnpaidBalance;
 /// Create a copy of CustomerDetailsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CustomerDetailsStateCopyWith<CustomerDetailsState> get copyWith => _$CustomerDe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerDetailsState&&const DeepCollectionEquality().equals(other.invoices, invoices)&&(identical(other.totalRemainingUnpaidBalance, totalRemainingUnpaidBalance) || other.totalRemainingUnpaidBalance == totalRemainingUnpaidBalance));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomerDetailsState&&const DeepCollectionEquality().equals(other.invoices, invoices)&&(identical(other.customer, customer) || other.customer == customer)&&(identical(other.totalRemainingUnpaidBalance, totalRemainingUnpaidBalance) || other.totalRemainingUnpaidBalance == totalRemainingUnpaidBalance));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invoices),totalRemainingUnpaidBalance);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invoices),customer,totalRemainingUnpaidBalance);
 
 @override
 String toString() {
-  return 'CustomerDetailsState(invoices: $invoices, totalRemainingUnpaidBalance: $totalRemainingUnpaidBalance)';
+  return 'CustomerDetailsState(invoices: $invoices, customer: $customer, totalRemainingUnpaidBalance: $totalRemainingUnpaidBalance)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CustomerDetailsStateCopyWith<$Res>  {
   factory $CustomerDetailsStateCopyWith(CustomerDetailsState value, $Res Function(CustomerDetailsState) _then) = _$CustomerDetailsStateCopyWithImpl;
 @useResult
 $Res call({
- Iterable<CustomerDetailsInvoiceDto> invoices, Money totalRemainingUnpaidBalance
+ Iterable<CustomerDetailsInvoiceDto> invoices, CustomerDto customer, Money totalRemainingUnpaidBalance
 });
 
 
@@ -62,10 +62,11 @@ class _$CustomerDetailsStateCopyWithImpl<$Res>
 
 /// Create a copy of CustomerDetailsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? invoices = null,Object? totalRemainingUnpaidBalance = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? invoices = null,Object? customer = null,Object? totalRemainingUnpaidBalance = null,}) {
   return _then(_self.copyWith(
 invoices: null == invoices ? _self.invoices : invoices // ignore: cast_nullable_to_non_nullable
-as Iterable<CustomerDetailsInvoiceDto>,totalRemainingUnpaidBalance: null == totalRemainingUnpaidBalance ? _self.totalRemainingUnpaidBalance : totalRemainingUnpaidBalance // ignore: cast_nullable_to_non_nullable
+as Iterable<CustomerDetailsInvoiceDto>,customer: null == customer ? _self.customer : customer // ignore: cast_nullable_to_non_nullable
+as CustomerDto,totalRemainingUnpaidBalance: null == totalRemainingUnpaidBalance ? _self.totalRemainingUnpaidBalance : totalRemainingUnpaidBalance // ignore: cast_nullable_to_non_nullable
 as Money,
   ));
 }
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Iterable<CustomerDetailsInvoiceDto> invoices,  Money totalRemainingUnpaidBalance)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Iterable<CustomerDetailsInvoiceDto> invoices,  CustomerDto customer,  Money totalRemainingUnpaidBalance)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CustomerDetailsState() when $default != null:
-return $default(_that.invoices,_that.totalRemainingUnpaidBalance);case _:
+return $default(_that.invoices,_that.customer,_that.totalRemainingUnpaidBalance);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.invoices,_that.totalRemainingUnpaidBalance);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Iterable<CustomerDetailsInvoiceDto> invoices,  Money totalRemainingUnpaidBalance)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Iterable<CustomerDetailsInvoiceDto> invoices,  CustomerDto customer,  Money totalRemainingUnpaidBalance)  $default,) {final _that = this;
 switch (_that) {
 case _CustomerDetailsState():
-return $default(_that.invoices,_that.totalRemainingUnpaidBalance);case _:
+return $default(_that.invoices,_that.customer,_that.totalRemainingUnpaidBalance);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -192,10 +193,10 @@ return $default(_that.invoices,_that.totalRemainingUnpaidBalance);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Iterable<CustomerDetailsInvoiceDto> invoices,  Money totalRemainingUnpaidBalance)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Iterable<CustomerDetailsInvoiceDto> invoices,  CustomerDto customer,  Money totalRemainingUnpaidBalance)?  $default,) {final _that = this;
 switch (_that) {
 case _CustomerDetailsState() when $default != null:
-return $default(_that.invoices,_that.totalRemainingUnpaidBalance);case _:
+return $default(_that.invoices,_that.customer,_that.totalRemainingUnpaidBalance);case _:
   return null;
 
 }
@@ -207,10 +208,11 @@ return $default(_that.invoices,_that.totalRemainingUnpaidBalance);case _:
 
 
 class _CustomerDetailsState implements CustomerDetailsState {
-  const _CustomerDetailsState({required this.invoices, required this.totalRemainingUnpaidBalance});
+  const _CustomerDetailsState({required this.invoices, required this.customer, required this.totalRemainingUnpaidBalance});
   
 
 @override final  Iterable<CustomerDetailsInvoiceDto> invoices;
+@override final  CustomerDto customer;
 @override final  Money totalRemainingUnpaidBalance;
 
 /// Create a copy of CustomerDetailsState
@@ -223,16 +225,16 @@ _$CustomerDetailsStateCopyWith<_CustomerDetailsState> get copyWith => __$Custome
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CustomerDetailsState&&const DeepCollectionEquality().equals(other.invoices, invoices)&&(identical(other.totalRemainingUnpaidBalance, totalRemainingUnpaidBalance) || other.totalRemainingUnpaidBalance == totalRemainingUnpaidBalance));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CustomerDetailsState&&const DeepCollectionEquality().equals(other.invoices, invoices)&&(identical(other.customer, customer) || other.customer == customer)&&(identical(other.totalRemainingUnpaidBalance, totalRemainingUnpaidBalance) || other.totalRemainingUnpaidBalance == totalRemainingUnpaidBalance));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invoices),totalRemainingUnpaidBalance);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(invoices),customer,totalRemainingUnpaidBalance);
 
 @override
 String toString() {
-  return 'CustomerDetailsState(invoices: $invoices, totalRemainingUnpaidBalance: $totalRemainingUnpaidBalance)';
+  return 'CustomerDetailsState(invoices: $invoices, customer: $customer, totalRemainingUnpaidBalance: $totalRemainingUnpaidBalance)';
 }
 
 
@@ -243,7 +245,7 @@ abstract mixin class _$CustomerDetailsStateCopyWith<$Res> implements $CustomerDe
   factory _$CustomerDetailsStateCopyWith(_CustomerDetailsState value, $Res Function(_CustomerDetailsState) _then) = __$CustomerDetailsStateCopyWithImpl;
 @override @useResult
 $Res call({
- Iterable<CustomerDetailsInvoiceDto> invoices, Money totalRemainingUnpaidBalance
+ Iterable<CustomerDetailsInvoiceDto> invoices, CustomerDto customer, Money totalRemainingUnpaidBalance
 });
 
 
@@ -260,10 +262,11 @@ class __$CustomerDetailsStateCopyWithImpl<$Res>
 
 /// Create a copy of CustomerDetailsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? invoices = null,Object? totalRemainingUnpaidBalance = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? invoices = null,Object? customer = null,Object? totalRemainingUnpaidBalance = null,}) {
   return _then(_CustomerDetailsState(
 invoices: null == invoices ? _self.invoices : invoices // ignore: cast_nullable_to_non_nullable
-as Iterable<CustomerDetailsInvoiceDto>,totalRemainingUnpaidBalance: null == totalRemainingUnpaidBalance ? _self.totalRemainingUnpaidBalance : totalRemainingUnpaidBalance // ignore: cast_nullable_to_non_nullable
+as Iterable<CustomerDetailsInvoiceDto>,customer: null == customer ? _self.customer : customer // ignore: cast_nullable_to_non_nullable
+as CustomerDto,totalRemainingUnpaidBalance: null == totalRemainingUnpaidBalance ? _self.totalRemainingUnpaidBalance : totalRemainingUnpaidBalance // ignore: cast_nullable_to_non_nullable
 as Money,
   ));
 }

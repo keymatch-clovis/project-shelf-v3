@@ -18,4 +18,6 @@ final class CustomerResponse {
     this.address,
     this.phoneNumber,
   });
+
+
 }

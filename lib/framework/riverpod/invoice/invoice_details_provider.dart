@@ -22,6 +22,7 @@ part 'invoice_details_provider.freezed.dart';
 abstract class InvoiceDetailsState with _$InvoiceDetailsState {
   const factory InvoiceDetailsState({
     required InvoiceDto invoice,
+    required Iterable<InvoiceProductDto> invoiceProducts,
     required Money total,
   }) = _InvoiceDetailsState;
 }
@@ -85,8 +86,8 @@ final class InvoiceDetailsNotifier extends AsyncNotifier<InvoiceDetailsState> {
         date: invoice.date,
         remainingUnpaidBalance: invoice.remainingUnpaidBalance,
         customer: customer,
-        invoiceProducts: invoiceProducts,
       ),
+      invoiceProducts: invoiceProducts,
       total: total,
     );
   }

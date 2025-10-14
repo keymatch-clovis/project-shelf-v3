@@ -21,6 +21,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get unit_abbreviated => 'U.';
 
   @override
+  String get no_city_set => 'No city set';
+
+  @override
   String get no_invoices => 'No invoices';
 
   @override
