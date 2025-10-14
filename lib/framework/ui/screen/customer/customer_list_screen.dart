@@ -10,6 +10,7 @@ import 'package:project_shelf_v3/framework/riverpod/customer/selected_customer_p
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 import 'package:project_shelf_v3/framework/ui/components/customer_list_tile.dart';
 import 'package:project_shelf_v3/framework/ui/components/customer_search_list.dart';
+import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
 import 'package:project_shelf_v3/framework/ui/components/shelf_search_bar.dart';
 import 'package:project_shelf_v3/framework/ui/components/sliver_header_delegate.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
@@ -180,7 +181,14 @@ class _CustomerList extends ConsumerWidget {
     final localizations = AppLocalizations.of(context)!;
 
     if (items.isEmpty) {
-      return Center(child: Text(localizations.no_customers));
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        fillOverscroll: true,
+        child: EmptyPlaceholder(
+          title: localizations.no_customers,
+          icon: Icons.people_rounded,
+        ),
+      );
     }
 
     return SliverList.separated(

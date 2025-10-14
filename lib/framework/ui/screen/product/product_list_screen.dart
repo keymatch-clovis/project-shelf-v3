@@ -179,9 +179,13 @@ class _ProductList extends ConsumerWidget {
     final localizations = AppLocalizations.of(context)!;
 
     if (items.isEmpty) {
-      return EmptyPlaceholder(
-        title: localizations.no_products,
-        icon: Icons.inventory_2_rounded,
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        fillOverscroll: true,
+        child: EmptyPlaceholder(
+          title: localizations.no_products,
+          icon: Icons.inventory_2_rounded,
+        ),
       );
     }
 
