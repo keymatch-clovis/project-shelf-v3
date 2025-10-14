@@ -15,6 +15,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get total => 'Total';
 
   @override
+  String get value => 'Value';
+
+  @override
+  String get unit_abbreviated => 'U.';
+
+  @override
   String get no_invoices => 'No invoices';
 
   @override
@@ -25,6 +31,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remaining_unpaid_balance => 'Valor por pagar';
+
+  @override
+  String get search_customer => 'Search customer';
+
+  @override
+  String get search_product => 'Search product';
+
+  @override
+  String get invoice_created => 'Invoice created';
 
   @override
   String get print_invoice => 'Print invoice';
@@ -67,7 +82,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String nit_document(String document) {
-    return 'NIT: $document, simple regime';
+    return 'NIT: $document, régimen simple';
   }
 
   @override

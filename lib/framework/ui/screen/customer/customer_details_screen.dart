@@ -40,14 +40,16 @@ final class CustomerDetailsScreen extends ConsumerWidget {
       }
     });
 
-    return _Screen(status.customer.id);
+    return _Screen(status.customer.id, onInvoiceSelected: (_) {});
   }
 }
 
 final class _Screen extends StatefulWidget {
   final Id customerId;
 
-  const _Screen(this.customerId);
+  final void Function(CustomerDetailsInvoiceDto) onInvoiceSelected;
+
+  const _Screen(this.customerId, {required this.onInvoiceSelected});
 
   @override
   State<_Screen> createState() => _ScreenState();
@@ -80,7 +82,10 @@ final class _ScreenState extends State<_Screen> with TickerProviderStateMixin {
                   controller: _tabController,
                   children: [
                     _CustomerDetailsPane(),
-                    _InvoicesPane(widget.customerId),
+                    _InvoicesPane(
+                      widget.customerId,
+                      onInvoiceSelected: widget.onInvoiceSelected,
+                    ),
                   ],
                 ),
               ),
@@ -178,7 +183,9 @@ final class _CustomerDetailsPane extends ConsumerWidget {
 final class _InvoicesPane extends ConsumerWidget {
   final Id customerId;
 
-  const _InvoicesPane(this.customerId);
+  final void Function(CustomerDetailsInvoiceDto) onInvoiceSelected;
+
+  const _InvoicesPane(this.customerId, {required this.onInvoiceSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -196,7 +203,11 @@ final class _InvoicesPane extends ConsumerWidget {
           child: Column(
             children: [
               Expanded(
-                child: _InvoiceList(customerId, items: data.invoices.toList()),
+                child: _InvoiceList(
+                  customerId,
+                  items: data.invoices.toList(),
+                  onInvoiceSelected: onInvoiceSelected,
+                ),
               ),
               Padding(
                 padding: S_SPACING_B,
@@ -214,7 +225,13 @@ final class _InvoiceList extends StatelessWidget {
   final Id customerId;
   final List<CustomerDetailsInvoiceDto> items;
 
-  const _InvoiceList(this.customerId, {required this.items});
+  final void Function(CustomerDetailsInvoiceDto) onInvoiceSelected;
+
+  const _InvoiceList(
+    this.customerId, {
+    required this.items,
+    required this.onInvoiceSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +249,8 @@ final class _InvoiceList extends StatelessWidget {
     return ListView.separated(
       padding: S_SPACING_V,
       itemCount: items.length,
-      itemBuilder: (_, index) => _InvoiceListTile(items[index]),
+      itemBuilder: (_, index) =>
+          _InvoiceListTile(items[index], onSelected: onInvoiceSelected),
       separatorBuilder: (_, _) => const SizedBox(height: XS_SPACING),
     );
   }
@@ -241,7 +259,9 @@ final class _InvoiceList extends StatelessWidget {
 final class _InvoiceListTile extends StatelessWidget {
   final CustomerDetailsInvoiceDto item;
 
-  const _InvoiceListTile(this.item);
+  final void Function(CustomerDetailsInvoiceDto) onSelected;
+
+  const _InvoiceListTile(this.item, {required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -252,6 +272,7 @@ final class _InvoiceListTile extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       elevation: 0,
       child: ListTile(
+        onTap: () => onSelected(item),
         visualDensity: VisualDensity.compact,
         leading: Text(item.number.toString(), textAlign: TextAlign.center),
         trailing: const Icon(Icons.chevron_right_rounded),

@@ -13,6 +13,7 @@ final class InvoiceDto {
   final DateTime date;
   final int remainingUnpaidBalance;
   final int customer;
+  final int total;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -22,6 +23,7 @@ final class InvoiceDto {
     required this.date,
     required this.remainingUnpaidBalance,
     required this.customer,
+    required this.total,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -38,6 +40,7 @@ final class InvoiceDto {
       remainingUnpaidBalance,
       currency,
     ),
+    total: Money.fromIntWithCurrency(total, currency),
     customerId: customer,
   );
 }

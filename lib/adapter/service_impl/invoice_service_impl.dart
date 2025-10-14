@@ -3,13 +3,13 @@ import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
-import 'package:project_shelf_v3/app/dto/invoice_product_response.dart';
 import 'package:project_shelf_v3/app/dto/invoice_response.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 import 'package:project_shelf_v3/main.dart';
 
 final class InvoiceServiceImpl implements InvoiceService {
@@ -45,6 +45,7 @@ final class InvoiceServiceImpl implements InvoiceService {
             quantity: it.quantity,
           );
         }).toList(),
+        total: invoice.total.minorUnits.toInt(),
       ),
     );
   }
@@ -62,18 +63,18 @@ final class InvoiceServiceImpl implements InvoiceService {
   }
 
   @override
-  Future<Iterable<InvoiceProductResponse>> findInvoiceProducts(Id id) async {
-    _logger.d('Finding invoice products for invoice ID: $id');
+  Future<Iterable<InvoiceProduct>> findInvoiceProducts(Id invoiceId) async {
+    _logger.d('Finding invoice products for invoice ID: $invoiceId');
 
     final defaultCurrency = await _appPreferencesService
         .getAppPreferences()
         .then((it) => it.defaultCurrency);
 
     return _repository
-        .findInvoiceProducts(id)
+        .findInvoiceProducts(invoiceId)
         .then(
           (it) => it.map(
-            (it) => InvoiceProductResponse(
+            (it) => InvoiceProduct(
               invoiceId: it.invoice,
               productId: it.product,
               unitPrice: Money.fromIntWithCurrency(

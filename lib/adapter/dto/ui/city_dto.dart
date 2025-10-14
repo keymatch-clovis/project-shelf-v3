@@ -15,4 +15,6 @@ final class CityDto {
   factory CityDto.fromResponse(CityResponse city) {
     return CityDto(id: city.id, name: city.name, department: city.department);
   }
+
+  String get fullName => '$name, $department';
 }

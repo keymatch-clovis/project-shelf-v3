@@ -6,6 +6,7 @@ final class InvoiceResponse {
   final int number;
   final DateTime date;
   final Money remainingUnpaidBalance;
+  final Money total;
   final Id customerId;
 
   const InvoiceResponse({
@@ -13,6 +14,7 @@ final class InvoiceResponse {
     required this.number,
     required this.date,
     required this.remainingUnpaidBalance,
+    required this.total,
     required this.customerId,
   });
 }

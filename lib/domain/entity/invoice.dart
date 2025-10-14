@@ -1,20 +1,7 @@
 import 'package:money2/money2.dart';
+import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-
-final class InvoiceProduct {
-  final int productId;
-  final Money unitPrice;
-  final int quantity;
-
-  InvoiceProduct({
-    required this.productId,
-    required this.unitPrice,
-    required this.quantity,
-  }) {
-    assert(!unitPrice.isNegative);
-    assert(quantity > 0);
-  }
-}
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 
 final class Invoice {
   final int? id;
@@ -25,18 +12,21 @@ final class Invoice {
   final Id customerId;
   final List<InvoiceProduct> invoiceProducts = [];
 
-  Invoice({
+  Invoice(
+    Currency currency, {
     required this.number,
     required this.date,
     required this.customerId,
     required this.remainingUnpaidBalance,
 
     this.id,
-  }) {
+  }) : total = currency.zero {
     assert(number > 0);
     assert(customerId > 0);
     assert(!remainingUnpaidBalance.isNegative);
   }
+
+  Money total;
 
   void addProduct({
     required int productId,
@@ -63,5 +53,7 @@ final class Invoice {
         quantity: quantity,
       ),
     );
+
+    total += unitPrice * quantity;
   }
 }

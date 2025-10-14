@@ -28,7 +28,7 @@ final class InvoiceDao implements InvoiceRepository {
         _database.cityTable,
         _database.cityTable.id.equalsExp(_database.customerTable.city),
       ),
-    ]);
+    ])..orderBy([OrderingTerm.desc(_database.invoiceTable.number)]);
 
     return query.watch().map((rows) {
       return rows.map((row) {
@@ -56,6 +56,7 @@ final class InvoiceDao implements InvoiceRepository {
               date: args.date,
               remainingUnpaidBalance: args.remainingUnpaidBalance,
               customer: args.customerId,
+              total: args.total,
               createdAt: dateTime,
               updatedAt: dateTime,
             ),

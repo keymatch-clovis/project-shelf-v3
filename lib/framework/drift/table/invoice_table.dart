@@ -11,6 +11,7 @@ class InvoiceTable extends Table {
   IntColumn get number => integer().unique()();
   DateTimeColumn get date => dateTime()();
   IntColumn get remainingUnpaidBalance => integer()();
+  IntColumn get total => integer()();
 
   IntColumn get customer => integer().references(CustomerTable, #id)();
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:logger/web.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_query_result_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
@@ -147,7 +148,9 @@ final class _ListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => onSelected(item),
-      title: Text("test: ${item.number}"),
+      leading: Text(item.number.toString()),
+      title: Text(Jiffy.parseFromDateTime(item.date).yMMMMd),
+      subtitle: Text(item.customer.getFullName()),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
@@ -25,6 +26,27 @@ final class CreateInvoiceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(createInvoiceProvider.select((it) => it.value?.status), (
+      _,
+      state,
+    ) {
+      final localizations = AppLocalizations.of(context)!;
+
+      switch (state) {
+        case CreateInvoiceStatus.SUCCESS:
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              showCloseIcon: true,
+              content: Text(localizations.invoice_created),
+            ),
+          );
+
+          context.pop();
+        default:
+        // Do nothing :p
+      }
+    });
+
     return ref
         .watch(createInvoiceProvider)
         .when(

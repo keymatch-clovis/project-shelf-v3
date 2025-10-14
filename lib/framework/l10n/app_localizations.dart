@@ -110,6 +110,18 @@ abstract class AppLocalizations {
   /// **'Total'**
   String get total;
 
+  /// No description provided for @value.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get value;
+
+  /// No description provided for @unit_abbreviated.
+  ///
+  /// In en, this message translates to:
+  /// **'U.'**
+  String get unit_abbreviated;
+
   /// No description provided for @no_invoices.
   ///
   /// In en, this message translates to:
@@ -133,6 +145,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remaining unpaid balance'**
   String get remaining_unpaid_balance;
+
+  /// No description provided for @search_customer.
+  ///
+  /// In en, this message translates to:
+  /// **'Search customer'**
+  String get search_customer;
+
+  /// No description provided for @search_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Search product'**
+  String get search_product;
+
+  /// No description provided for @invoice_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice created'**
+  String get invoice_created;
 
   /// No description provided for @print_invoice.
   ///

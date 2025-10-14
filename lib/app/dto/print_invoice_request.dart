@@ -27,6 +27,13 @@ final class PrintInvoiceRequest {
   final String invoiceDate;
   final String totalValue;
   final Iterable<InvoiceProductPrintRequest> invoiceProducts;
+
+  final String productLiteral;
+  final String unitAbbreviatedLiteral;
+  final String valueLiteral;
+  final String totalLiteral;
+  final String remainingUnpaidBalanceLiteral;
+
   final String? remainingUnpaidBalance;
 
   const PrintInvoiceRequest({
@@ -40,6 +47,11 @@ final class PrintInvoiceRequest {
     required this.printerInfoRequest,
     required this.totalValue,
     required this.invoiceProducts,
+    required this.productLiteral,
+    required this.unitAbbreviatedLiteral,
+    required this.valueLiteral,
+    required this.totalLiteral,
+    required this.remainingUnpaidBalanceLiteral,
     this.remainingUnpaidBalance,
   });
 }

@@ -12,6 +12,7 @@ InvoiceDto _$InvoiceDtoFromJson(Map<String, dynamic> json) => InvoiceDto(
   date: const DateTimeEpochConverter().fromJson((json['date'] as num).toInt()),
   remainingUnpaidBalance: (json['remaining_unpaid_balance'] as num).toInt(),
   customer: (json['customer'] as num).toInt(),
+  total: (json['total'] as num).toInt(),
   createdAt: const DateTimeEpochConverter().fromJson(
     (json['created_at'] as num).toInt(),
   ),
@@ -27,6 +28,7 @@ Map<String, dynamic> _$InvoiceDtoToJson(InvoiceDto instance) =>
       'date': const DateTimeEpochConverter().toJson(instance.date),
       'remaining_unpaid_balance': instance.remainingUnpaidBalance,
       'customer': instance.customer,
+      'total': instance.total,
       'created_at': const DateTimeEpochConverter().toJson(instance.createdAt),
       'updated_at': const DateTimeEpochConverter().toJson(instance.updatedAt),
     };

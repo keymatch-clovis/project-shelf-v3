@@ -116,7 +116,9 @@ final class ServiceRegister {
   }
 
   void registerPrinterServices() {
-    getIt.registerSingleton<InvoicePrinter>(InvoicePrinterImpl());
+    getIt.registerFactoryParamAsync<InvoicePrinter, PaperSize, void>(
+      (paperSize, _) => InvoicePrinterImpl.create(paperSize: paperSize!),
+    );
   }
 
   void registerServices() {
@@ -131,7 +133,10 @@ final class ServiceRegister {
     getIt.registerSingleton<CompanyInfoService>(CompanyInfoServiceImpl());
     getIt.registerSingleton<PrinterService>(PrinterServiceImpl());
     getIt.registerSingleton<ImageService>(ImageServiceImpl());
-    getIt.registerSingleton<StringService>(StringServiceImpl());
+
+    getIt.registerFactoryParamAsync<StringService, String, void>(
+      (locale, _) => StringServiceImpl.create(locale!),
+    );
   }
 
   void registerUseCases() {

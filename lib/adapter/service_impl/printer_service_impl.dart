@@ -1,4 +1,6 @@
+import 'package:image/image.dart';
 import 'package:logger/web.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/printer/invoice_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/printer_repository.dart';
 import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
@@ -11,7 +13,6 @@ final class PrinterServiceImpl implements PrinterService {
   final _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<PrinterRepository>();
-  final _printer = getIt.get<InvoicePrinter>();
 
   @override
   Future<Iterable<PrinterDataResponse>> getPrinters() {
@@ -24,8 +25,108 @@ final class PrinterServiceImpl implements PrinterService {
   }
 
   @override
-  Future<void> printInvoice(PrintInvoiceRequest invoiceRequest) async {
-    _logger.d('Printing invoice');
-    await _printer.print(invoiceRequest);
+  Future<Result> printInvoice(PrintInvoiceRequest request) async {
+    _logger.d('Building invoice');
+
+    // NOTE: Maybe this paper size and other properties can be sent to an
+    // entity? We need to check that later.
+    final printer = await getIt.getAsync<InvoicePrinter>(
+      param1: PaperSize.MM58,
+    );
+
+    await (Command()..decodeJpg(request.invoiceLogoBytes))
+        .getImageThread()
+        .then((it) => printer.addImage(it!));
+
+    printer.addText(
+      InvoiceText(
+        request.companyDocument,
+        bold: true,
+        alignment: TextAlignment.CENTER,
+      ),
+    );
+
+    printer.addText(
+      InvoiceText(request.companyPhone, alignment: TextAlignment.CENTER),
+    );
+
+    printer.addText(
+      InvoiceText(request.companyEmail, alignment: TextAlignment.CENTER),
+    );
+
+    printer.addSpace(1);
+
+    printer.addText(InvoiceText(request.invoiceCustomer));
+    printer.addText(InvoiceText(request.invoiceCity));
+    printer.addText(InvoiceText(request.invoiceDate));
+
+    printer.addSpace(1);
+
+    printer.addRow([
+      InvoiceColumn(text: InvoiceText(request.productLiteral), width: 5),
+      InvoiceColumn(
+        text: InvoiceText(
+          request.unitAbbreviatedLiteral,
+          alignment: TextAlignment.RIGHT,
+        ),
+        width: 2,
+      ),
+      InvoiceColumn(
+        text: InvoiceText(request.valueLiteral, alignment: TextAlignment.RIGHT),
+        width: 5,
+      ),
+    ]);
+
+    for (final product in request.invoiceProducts) {
+      printer.addRow([
+        InvoiceColumn(text: InvoiceText(product.name), width: 5),
+        InvoiceColumn(
+          text: InvoiceText(product.quantity, alignment: TextAlignment.RIGHT),
+          width: 2,
+        ),
+        InvoiceColumn(
+          text: InvoiceText(product.unitPrice, alignment: TextAlignment.RIGHT),
+          width: 5,
+        ),
+      ]);
+      printer.addRow([
+        InvoiceColumn(
+          text: InvoiceText(
+            '= ${product.total}',
+            alignment: TextAlignment.RIGHT,
+          ),
+        ),
+      ]);
+    }
+
+    printer.addSpace(1);
+
+    printer.addText(
+      InvoiceText(
+        request.totalLiteral,
+        bold: true,
+        alignment: TextAlignment.RIGHT,
+      ),
+    );
+    printer.addText(
+      InvoiceText(request.totalValue, alignment: TextAlignment.RIGHT),
+    );
+
+    printer.addSpace(1);
+    printer.addText(
+      InvoiceText(request.remainingUnpaidBalanceLiteral, bold: true),
+    );
+
+    if (request.remainingUnpaidBalance != null) {
+      printer.addText(InvoiceText(request.remainingUnpaidBalance!));
+    } else {
+      printer.addRow([
+        InvoiceColumn(text: InvoiceText("        "), underline: true),
+      ]);
+    }
+
+    printer.addCut();
+
+    return await printer.print(request.printerInfoRequest.macAddress);
   }
 }

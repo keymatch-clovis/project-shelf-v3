@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/company_info_dto.dart';
 import 'package:project_shelf_v3/app/use_case/find_file_use_case.dart';
@@ -42,7 +43,9 @@ final class EditCompanyInfoNotifier
 
   @override
   FutureOr<EditCompanyInfoState> build() async {
-    final companyInfo = await _getCompanyInfoUseCase.exec().then((it) async {
+    final companyInfo = await _getCompanyInfoUseCase.exec(unit).then((
+      it,
+    ) async {
       Uint8List? logoBytes;
       if (it.logoFileName != null) {
         logoBytes = await _findFileUseCase

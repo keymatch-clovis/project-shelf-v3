@@ -964,6 +964,15 @@ class $InvoiceTableTable extends InvoiceTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  @override
+  late final GeneratedColumn<int> total = GeneratedColumn<int>(
+    'total',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _customerMeta = const VerificationMeta(
     'customer',
   );
@@ -1006,6 +1015,7 @@ class $InvoiceTableTable extends InvoiceTable
     number,
     date,
     remainingUnpaidBalance,
+    total,
     customer,
     createdAt,
     updatedAt,
@@ -1051,6 +1061,14 @@ class $InvoiceTableTable extends InvoiceTable
       );
     } else if (isInserting) {
       context.missing(_remainingUnpaidBalanceMeta);
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_totalMeta);
     }
     if (data.containsKey('customer')) {
       context.handle(
@@ -1105,6 +1123,10 @@ class $InvoiceTableTable extends InvoiceTable
         DriftSqlType.int,
         data['${effectivePrefix}customer'],
       )!,
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1127,6 +1149,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
   final Value<int> number;
   final Value<DateTime> date;
   final Value<int> remainingUnpaidBalance;
+  final Value<int> total;
   final Value<int> customer;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1135,6 +1158,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
     this.number = const Value.absent(),
     this.date = const Value.absent(),
     this.remainingUnpaidBalance = const Value.absent(),
+    this.total = const Value.absent(),
     this.customer = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1144,12 +1168,14 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
     required int number,
     required DateTime date,
     required int remainingUnpaidBalance,
+    required int total,
     required int customer,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : number = Value(number),
        date = Value(date),
        remainingUnpaidBalance = Value(remainingUnpaidBalance),
+       total = Value(total),
        customer = Value(customer),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -1158,6 +1184,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
     Expression<int>? number,
     Expression<DateTime>? date,
     Expression<int>? remainingUnpaidBalance,
+    Expression<int>? total,
     Expression<int>? customer,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1168,6 +1195,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
       if (date != null) 'date': date,
       if (remainingUnpaidBalance != null)
         'remaining_unpaid_balance': remainingUnpaidBalance,
+      if (total != null) 'total': total,
       if (customer != null) 'customer': customer,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1179,6 +1207,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
     Value<int>? number,
     Value<DateTime>? date,
     Value<int>? remainingUnpaidBalance,
+    Value<int>? total,
     Value<int>? customer,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -1189,6 +1218,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
       date: date ?? this.date,
       remainingUnpaidBalance:
           remainingUnpaidBalance ?? this.remainingUnpaidBalance,
+      total: total ?? this.total,
       customer: customer ?? this.customer,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1212,6 +1242,9 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
         remainingUnpaidBalance.value,
       );
     }
+    if (total.present) {
+      map['total'] = Variable<int>(total.value);
+    }
     if (customer.present) {
       map['customer'] = Variable<int>(customer.value);
     }
@@ -1231,6 +1264,7 @@ class InvoiceTableCompanion extends UpdateCompanion<InvoiceDto> {
           ..write('number: $number, ')
           ..write('date: $date, ')
           ..write('remainingUnpaidBalance: $remainingUnpaidBalance, ')
+          ..write('total: $total, ')
           ..write('customer: $customer, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -2679,6 +2713,7 @@ typedef $$InvoiceTableTableCreateCompanionBuilder =
       required int number,
       required DateTime date,
       required int remainingUnpaidBalance,
+      required int total,
       required int customer,
       required DateTime createdAt,
       required DateTime updatedAt,
@@ -2689,6 +2724,7 @@ typedef $$InvoiceTableTableUpdateCompanionBuilder =
       Value<int> number,
       Value<DateTime> date,
       Value<int> remainingUnpaidBalance,
+      Value<int> total,
       Value<int> customer,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -2768,6 +2804,11 @@ class $$InvoiceTableTableFilterComposer
 
   ColumnFilters<int> get remainingUnpaidBalance => $composableBuilder(
     column: $table.remainingUnpaidBalance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get total => $composableBuilder(
+    column: $table.total,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2859,6 +2900,11 @@ class $$InvoiceTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2915,6 +2961,9 @@ class $$InvoiceTableTableAnnotationComposer
     column: $table.remainingUnpaidBalance,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3004,6 +3053,7 @@ class $$InvoiceTableTableTableManager
                 Value<int> number = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<int> remainingUnpaidBalance = const Value.absent(),
+                Value<int> total = const Value.absent(),
                 Value<int> customer = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -3012,6 +3062,7 @@ class $$InvoiceTableTableTableManager
                 number: number,
                 date: date,
                 remainingUnpaidBalance: remainingUnpaidBalance,
+                total: total,
                 customer: customer,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
@@ -3022,6 +3073,7 @@ class $$InvoiceTableTableTableManager
                 required int number,
                 required DateTime date,
                 required int remainingUnpaidBalance,
+                required int total,
                 required int customer,
                 required DateTime createdAt,
                 required DateTime updatedAt,
@@ -3030,6 +3082,7 @@ class $$InvoiceTableTableTableManager
                 number: number,
                 date: date,
                 remainingUnpaidBalance: remainingUnpaidBalance,
+                total: total,
                 customer: customer,
                 createdAt: createdAt,
                 updatedAt: updatedAt,

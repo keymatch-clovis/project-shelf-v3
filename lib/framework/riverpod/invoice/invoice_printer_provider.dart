@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/printer_data_dto.dart';
 import 'package:project_shelf_v3/app/dto/printer_info_request.dart';
 import 'package:project_shelf_v3/app/use_case/get_printers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/print_invoice_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/main.dart';
 
@@ -43,6 +45,7 @@ final class Failure extends InvoicePrinterState {
 final class InvoicePrinterNotifier extends AsyncNotifier<InvoicePrinterState> {
   final _getPrintersUseCase = getIt.get<GetPrintersUseCase>();
   final _printInvoiceUseCase = getIt.get<PrintInvoiceUseCase>();
+  final _getCompanyInfoUseCase = getIt.get<GetCompanyInfoUseCase>();
 
   final Id invoiceId;
 
@@ -51,11 +54,15 @@ final class InvoicePrinterNotifier extends AsyncNotifier<InvoicePrinterState> {
   @override
   FutureOr<InvoicePrinterState> build() async {
     try {
+      // TODO: use oxidized
       final printers = await _getPrintersUseCase.exec().then((it) {
         return it.map(
           (it) => PrinterDataDto(name: it.name, macAddress: it.macAddress),
         );
       });
+
+      final companyInfo = await _getCompanyInfoUseCase.exec(unit);
+      assert(companyInfo.isFilled);
 
       return Initial(
         printers: printers,

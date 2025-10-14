@@ -1,6 +1,6 @@
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-import 'package:project_shelf_v3/domain/entity/invoice.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 
 final class UpdateInvoiceDraftRequest {
   final Id id;

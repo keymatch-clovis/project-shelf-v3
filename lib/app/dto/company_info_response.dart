@@ -13,6 +13,16 @@ final class CompanyInfoResponse {
     this.phone,
   });
 
+  bool get isFilled => <bool>[
+    // We don't need to check the [logoFileName], as we are using default
+    // images for that.
+    // logoFileName != null,
+    name != null,
+    document != null,
+    email != null,
+    phone != null,
+  ].every((it) => it);
+
   CompanyInfoResponse copyWith({
     String? logoFileName,
     String? name,

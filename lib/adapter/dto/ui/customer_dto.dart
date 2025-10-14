@@ -30,4 +30,17 @@ final class CustomerDto {
       city: CityDto.fromResponse(customer.city),
     );
   }
+
+  String getFullName() {
+    StringBuffer buffer = StringBuffer();
+
+    buffer.write(name);
+
+    if (businessName != null) {
+      buffer.write(', ');
+      buffer.write(businessName);
+    }
+
+    return buffer.toString();
+  }
 }

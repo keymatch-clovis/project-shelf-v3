@@ -131,6 +131,7 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       final uuid = invoice['uuid'];
 
       final entity = Invoice(
+        defaultCurrency,
         number: number,
         date: date,
         customerId: customerMap[invoice['customer_uuid'] as String]!,
@@ -138,14 +139,14 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       );
 
       for (final invoiceProduct in invoiceProducts) {
-        final productId = productMap[invoiceProduct['product_uuid'] as String]!;
-        final unitPrice = Money.fromIntWithCurrency(
-          invoiceProduct['price'] as int,
-          defaultCurrency,
-        );
-        final quantity = invoiceProduct['count'] as int;
-
         if (uuid == invoiceProduct['invoice_uuid'] as String) {
+          final productId =
+              productMap[invoiceProduct['product_uuid'] as String]!;
+          final unitPrice = Money.fromIntWithCurrency(
+            invoiceProduct['price'] as int,
+            defaultCurrency,
+          );
+          final quantity = invoiceProduct['count'] as int;
           entity.addProduct(
             productId: productId,
             unitPrice: unitPrice,

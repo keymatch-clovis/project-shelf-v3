@@ -9,8 +9,6 @@ class SearchCustomersUseCase {
 
   final _service = getIt.get<CustomerService>();
 
-  SearchCustomersUseCase();
-
   Stream<Iterable<CustomerResponse>> exec(String query) {
     if (query.isEmpty) return Stream.value([]);
 

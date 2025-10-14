@@ -20,3 +20,6 @@ const COMPACT_SPACING_ALL = EdgeInsets.all(16);
 const MEDIUM_SPACING = 24.0;
 const MEDIUM_SPACING_H = EdgeInsets.symmetric(horizontal: 24);
 const MEDIUM_SPACING_ALL = EdgeInsets.all(24);
+
+// https://m3.material.io/components/app-bars/specs#14978a2b-e102-46df-8103-c0365076be82
+const SEARCH_APP_BAR_HEIGHT = 64.0;

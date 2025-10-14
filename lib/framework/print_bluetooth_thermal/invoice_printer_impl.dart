@@ -1,138 +1,138 @@
+import 'dart:math';
+
 import 'package:diacritic/diacritic.dart';
-import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart' as pos_utils;
 import 'package:image/image.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:project_shelf_v3/adapter/printer/invoice_printer.dart';
-import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
-import 'package:project_shelf_v3/common/error/printer_connection_error.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
-
-// TODO: If I understand correctly the Clean Architecture, this should be an
-//  Aggregate. As such, we need to move all this logic to an entity.
 
 final class InvoicePrinterImpl implements InvoicePrinter {
   final _logger = Logger(printer: FrameworkPrinter());
 
   @override
-  Future<void> print(PrintInvoiceRequest request) async {
-    _logger.d('Connecting to printer');
-    await PrintBluetoothThermal.connect(
-      macPrinterAddress: request.printerInfoRequest.macAddress,
-    ).then((paired) {
-      if (!paired) {
-        throw PrinterConnectionError();
-      }
-    });
+  PaperSize paperSize;
 
-    try {
-      List<int> bytes = [];
-      final profile = await CapabilityProfile.load();
+  @override
+  List<int> bytes;
 
-      // NOTE: Here we will set the paper size directly. In the future, and for
-      // other use cases, we need to supply this.
-      final generator = Generator(PaperSize.mm58, profile);
+  final pos_utils.Generator _generator;
 
-      // 32
+  InvoicePrinterImpl._({
+    required this.paperSize,
+    required pos_utils.Generator generator,
+  }) : bytes = [],
+       _generator = generator;
 
-      // Start the invoice by printing the logo of the company.
-      // NOTE: This logo is different from the shown in the UI.
-      await (Command()..decodeJpg(request.invoiceLogoBytes))
-          .getImageThread()
-          .then((it) {
-            bytes += generator.image(it!);
-          });
+  static Future<InvoicePrinterImpl> create({
+    required PaperSize paperSize,
+  }) async {
+    final size = switch (paperSize) {
+      PaperSize.MM58 => pos_utils.PaperSize.mm58,
+    };
 
-      bytes += generator.text(
-        request.companyDocument,
-        styles: PosStyles(bold: true, align: PosAlign.center),
-      );
+    final profile = await pos_utils.CapabilityProfile.load();
 
-      bytes += generator.text(
-        request.companyPhone,
-        styles: PosStyles(align: PosAlign.center),
-      );
-      bytes += generator.text(
-        request.companyEmail,
-        styles: PosStyles(align: PosAlign.center),
-      );
+    final generator = pos_utils.Generator(size, profile);
 
-      bytes += generator.feed(1);
+    return InvoicePrinterImpl._(paperSize: paperSize, generator: generator);
+  }
 
-      // NOTE: As these values can come with accents, we need to remove them.
-      bytes += generator.text(removeDiacritics(request.invoiceCustomer));
-      bytes += generator.text(removeDiacritics(request.invoiceCity));
+  @override
+  InvoicePrinter addCut() {
+    bytes += _generator.cut();
 
-      bytes += generator.text(request.invoiceDate);
+    return this;
+  }
 
-      bytes += generator.feed(1);
+  @override
+  InvoicePrinter addImage(Image image) {
+    bytes += _generator.image(image);
 
-      // FIXME: Remove these constant values.
-      bytes += generator.row([
-        PosColumn(
-          text: "PRODUCTO",
-          styles: PosStyles(align: PosAlign.left, underline: true),
-          width: 5,
+    return this;
+  }
+
+  @override
+  InvoicePrinter addSpace(int amount) {
+    bytes += _generator.feed(1);
+
+    return this;
+  }
+
+  @override
+  InvoicePrinter addText(InvoiceText text) {
+    final alignment = switch (text.alignment) {
+      TextAlignment.CENTER => pos_utils.PosAlign.center,
+      TextAlignment.LEFT => pos_utils.PosAlign.left,
+      TextAlignment.RIGHT => pos_utils.PosAlign.right,
+    };
+
+    bytes += _generator.text(
+      // We need to remove the diacritics. We are not allowing accents at the
+      // moment.
+      // We are also cutting the text value to the max characters. This might
+      // might be unwanted.
+      removeDiacritics(
+        text.value.substring(
+          0,
+          min(text.value.length, paperSize.maxCharacters),
         ),
-        PosColumn(
-          text: "U.",
-          width: 2,
-          styles: PosStyles(align: PosAlign.right, underline: true),
+      ),
+      styles: pos_utils.PosStyles(bold: text.bold, align: alignment),
+    );
+
+    return this;
+  }
+
+  @override
+  InvoicePrinter addRow(Iterable<InvoiceColumn> columns) {
+    // Idk why but this library uses 12 as the preferred max size.
+    assert(columns.fold(0, (acc, it) => acc + it.width) <= 12);
+
+    List<pos_utils.PosColumn> cols = columns.map((it) {
+      final alignment = switch (it.text.alignment) {
+        TextAlignment.CENTER => pos_utils.PosAlign.center,
+        TextAlignment.LEFT => pos_utils.PosAlign.left,
+        TextAlignment.RIGHT => pos_utils.PosAlign.right,
+      };
+
+      return pos_utils.PosColumn(
+        // We need to remove the diacritics. We are not allowing accents at the
+        // moment.
+        // TODO: We are NOT cutting the text value to the max characters here,
+        //  as that would take more time that I don't have. :p
+        text: removeDiacritics(it.text.value),
+        width: it.width,
+        styles: pos_utils.PosStyles(
+          bold: it.text.bold,
+          align: alignment,
+          underline: it.underline,
         ),
-        PosColumn(
-          text: "VALOR",
-          styles: PosStyles(align: PosAlign.right, underline: true),
-          width: 5,
-        ),
-      ]);
-
-      for (final product in request.invoiceProducts) {
-        bytes += generator.row([
-          PosColumn(
-            text: product.name,
-            styles: PosStyles(align: PosAlign.left),
-            width: 5,
-          ),
-          PosColumn(
-            text: product.quantity,
-            width: 2,
-            styles: PosStyles(align: PosAlign.right),
-          ),
-          PosColumn(
-            text: product.unitPrice,
-            styles: PosStyles(align: PosAlign.right),
-            width: 5,
-          ),
-        ]);
-        bytes += generator.row([
-          PosColumn(
-            text: product.total,
-            styles: PosStyles(align: PosAlign.right),
-            width: 12,
-          ),
-        ]);
-      }
-
-      bytes += generator.feed(1);
-
-      // FIXME: Remove these constant values.
-      bytes += generator.text(
-        "TOTAL",
-        styles: PosStyles(bold: true, align: PosAlign.right),
       );
-      bytes += generator.text(
-        request.totalValue,
-        styles: PosStyles(align: PosAlign.right),
-      );
+    }).toList();
 
-      // This one might not work in all printers, but still add the command.
-      bytes += generator.cut();
+    bytes += _generator.row(cols);
 
-      _logger.d('Printing invoice');
-      await PrintBluetoothThermal.writeBytes(bytes);
-    } finally {
-      _logger.d('Disconnecting from printer');
-      await PrintBluetoothThermal.disconnect;
-    }
+    return this;
+  }
+
+  @override
+  Future<Result> print(String macAddress) {
+    return Result.asyncOf(() {
+          _logger.d('Connecting to printer');
+          return PrintBluetoothThermal.connect(macPrinterAddress: macAddress);
+        })
+        .mapAsync((_) {
+          _logger.d('Printing invoice');
+          return PrintBluetoothThermal.writeBytes(bytes);
+        })
+        // Ignore the result. We only need to know if the operation was
+        // successful.
+        .map((_) => unit)
+        .whenComplete(() async {
+          await PrintBluetoothThermal.disconnect;
+        });
   }
 }

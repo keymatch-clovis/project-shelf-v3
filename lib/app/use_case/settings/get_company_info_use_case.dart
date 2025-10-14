@@ -1,16 +1,15 @@
-import 'package:logger/web.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/company_info_response.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
-import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
+import 'package:project_shelf_v3/app/use_case/use_case.dart';
 import 'package:project_shelf_v3/main.dart';
 
-final class GetCompanyInfoUseCase {
-  final _logger = Logger(printer: UseCasePrinter());
-
+final class GetCompanyInfoUseCase extends UseCase<Unit, CompanyInfoResponse> {
   final _service = getIt.get<CompanyInfoService>();
 
-  Future<CompanyInfoResponse> exec() async {
-    _logger.d('Getting company info');
+  @override
+  Future<CompanyInfoResponse> exec(_) async {
+    logger.d('Getting company info');
     return _service
         .get()
         .then((it) {

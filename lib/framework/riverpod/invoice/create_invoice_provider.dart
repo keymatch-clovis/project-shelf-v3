@@ -20,8 +20,8 @@ import 'package:project_shelf_v3/app/use_case/product/find_product_use_case.dart
 import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
 import 'package:project_shelf_v3/main.dart';
@@ -245,8 +245,8 @@ final class CreateInvoiceAsyncNotifier
       CreateInvoiceRequest(
         date: value.dateInput.value!,
         customerId: value.customerInput.value!.id,
-        remainingUnpaidBalance: value.currency.parse(
-          value.remainingUnpaidBalanceInput.value!,
+        remainingUnpaidBalance: value.currency.tryParse(
+          value.remainingUnpaidBalanceInput.value,
         ),
         invoiceProducts: value.invoiceProducts.values.map((it) {
           return CreateInvoiceProductRequest(

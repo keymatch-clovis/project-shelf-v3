@@ -1,6 +1,14 @@
 {
     "@@locale": "es",
     "products": "Productos",
+    "nit_document": "NIT: {document}, régimen simple",
+    "@nit_document": {
+        "placeholders": {
+            "document": {
+                "type": "String"
+            }
+        }
+    },
     "remaining_unpaid_balance": "Valor por pagar",
     "no_date_selected": "Fecha sin seleccionar",
     "err_value_required": "Un valor es requerido",
