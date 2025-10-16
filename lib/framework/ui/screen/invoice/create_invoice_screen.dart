@@ -91,7 +91,7 @@ final class CreateInvoiceScreen extends ConsumerWidget {
                   .read(createInvoiceProvider.notifier)
                   .getProductAvailableStock(product);
 
-              showDialog<InvoiceProductDto>(
+              showDialog<InvoiceProductFormDialogResultDto>(
                 context: context,
                 builder: (_) => InvoiceProductFormDialog(
                   InvoiceProductFormArgs(
@@ -100,10 +100,13 @@ final class CreateInvoiceScreen extends ConsumerWidget {
                   ),
                 ),
               ).then((it) async {
-                if (it != null) {
-                  ref
-                      .read(createInvoiceProvider.notifier)
-                      .addInvoiceProduct(it);
+                switch (it?.action) {
+                  case InvoiceProductFormDialogAction.EDIT:
+                    ref
+                        .read(createInvoiceProvider.notifier)
+                        .addInvoiceProduct(it!.invoiceProduct!);
+                  default:
+                  // Do nothing :p
                 }
               });
             },

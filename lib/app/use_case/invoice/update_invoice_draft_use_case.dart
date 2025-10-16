@@ -34,15 +34,10 @@ final class UpdateInvoiceDraftUseCase {
     invoiceDraft.clearProducts();
 
     for (final invoiceProduct in request.invoiceProducts) {
-      final currentStock = await _productService
-          .findById(invoiceProduct.productId)
-          .then((it) => it.stock);
-
       invoiceDraft.addProduct(
         productId: invoiceProduct.productId,
         unitPrice: invoiceProduct.unitPrice,
         quantity: invoiceProduct.quantity,
-        currentStock: currentStock,
       );
     }
 

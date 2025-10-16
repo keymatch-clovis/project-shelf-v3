@@ -143,7 +143,7 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
           final productId =
               productMap[invoiceProduct['product_uuid'] as String]!;
           final unitPrice = Money.fromIntWithCurrency(
-            invoiceProduct['price'] as int,
+            ((invoiceProduct['price'] as int) / 100).toInt(),
             defaultCurrency,
           );
           final quantity = invoiceProduct['count'] as int;

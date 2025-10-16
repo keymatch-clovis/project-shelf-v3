@@ -32,14 +32,6 @@ final class InvoiceDraft {
 
   Id? id;
 
-  // We can use this structure for checking fields:
-  //
-  // DateTime? _date;
-  // DateTime? get date => _date;
-  // set date(DateTime? date) {
-  //   _date = date;
-  // }
-
   DateTime? date;
 
   Id? customerId;
@@ -53,19 +45,9 @@ final class InvoiceDraft {
     required int productId,
     required Money unitPrice,
     required int quantity,
-    required int currentStock,
   }) {
     assert(quantity > 0);
     assert(!unitPrice.isNegative);
-
-    // Check all the registered products in this invoice to see if they are not
-    // exceding the stock value.
-    final productQuantity = products
-        .where((it) => it.productId == productId)
-        .fold(0, (acc, it) {
-          return acc + it.quantity;
-        });
-    assert(currentStock >= quantity + productQuantity);
 
     products.add(
       InvoiceDraftProduct(

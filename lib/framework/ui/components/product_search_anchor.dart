@@ -5,7 +5,6 @@ import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/product_search_provider.dart';
 import 'package:project_shelf_v3/framework/ui/components/empty_placeholder.dart';
-import 'package:project_shelf_v3/framework/ui/components/product_list_tile.dart';
 
 final class ProductSearchAnchor extends ConsumerStatefulWidget {
   final void Function(ProductDto) onSelect;
