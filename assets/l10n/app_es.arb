@@ -3,6 +3,7 @@
     "products": "Productos",
     "value": "Valor",
     "product": "Producto",
+    "search_product": "Buscar producto",
     "unit_abbreviated": "U",
     "nit_document": "NIT: {document}, régimen simple",
     "@nit_document": {
