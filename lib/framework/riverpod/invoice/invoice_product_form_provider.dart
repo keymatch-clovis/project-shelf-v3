@@ -95,11 +95,7 @@ final class InvoiceProductFormNotifier
       ),
       quantityInput: Input(
         value: args.invoiceProduct?.quantity.toString(),
-        validationRules: {
-          IsRequiredRule(),
-          IsIntegerRule(),
-          IsMaximumRule(args.availableStock),
-        },
+        validationRules: {IsRequiredRule(), IsIntegerRule()},
       ),
       tempId: args.invoiceProduct?.tempId,
       // This is not the same as `product.stock`, as that is the current
