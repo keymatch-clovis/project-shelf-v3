@@ -134,6 +134,12 @@ abstract class AppLocalizations {
   /// **'No invoices'**
   String get no_invoices;
 
+  /// No description provided for @delete_invoice_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete invoice product'**
+  String get delete_invoice_product;
+
   /// No description provided for @details.
   ///
   /// In en, this message translates to:

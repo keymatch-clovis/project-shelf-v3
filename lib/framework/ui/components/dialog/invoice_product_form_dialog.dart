@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/web.dart';
 import 'package:money2/money2.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_form_dialog_result_dto.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_product_form_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/currency_input_formatter.dart';
 import 'package:project_shelf_v3/framework/ui/common/validation_error_parser.dart';
 import 'package:project_shelf_v3/framework/ui/components/custom_object_field.dart';
+import 'package:project_shelf_v3/framework/ui/components/dialog/accept_dialog.dart';
 import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 
 final class InvoiceProductFormDialog extends ConsumerWidget {
@@ -17,6 +19,7 @@ final class InvoiceProductFormDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context)!;
     final provider = invoiceProductFormProvider(args);
     final state = ref.watch(provider);
 
@@ -25,8 +28,40 @@ final class InvoiceProductFormDialog extends ConsumerWidget {
         data,
         onUnitPriceChanged: ref.read(provider.notifier).setUnitPrice,
         onQuantityChanged: ref.read(provider.notifier).setQuantity,
-        onDismissed: () => Navigator.pop(context),
-        onSubmitted: () => Navigator.pop(context, data.invoiceProduct),
+        onDismissed: () => Navigator.pop(
+          context,
+          InvoiceProductFormDialogResultDto(
+            action: InvoiceProductFormDialogAction.DISMISS,
+          ),
+        ),
+        onSubmitted: () => Navigator.pop(
+          context,
+          InvoiceProductFormDialogResultDto(
+            invoiceProduct: data.invoiceProduct,
+            action: InvoiceProductFormDialogAction.EDIT,
+          ),
+        ),
+        onDelete: () {
+          showDialog<bool>(
+            context: context,
+            builder: (_) => AcceptDialog(
+              title: localizations.delete_invoice_product,
+              onAccept: () {},
+            ),
+          ).then((it) {
+            if (context.mounted) {
+              if (it == true) {
+                Navigator.pop(
+                  context,
+                  InvoiceProductFormDialogResultDto(
+                    invoiceProduct: data.invoiceProduct,
+                    action: InvoiceProductFormDialogAction.DELETE,
+                  ),
+                );
+              }
+            }
+          });
+        },
       ),
       loading: () => const _LoadingDialog(),
       error: (err, _) {
@@ -43,6 +78,7 @@ final class _Dialog extends StatelessWidget {
   final void Function(String) onQuantityChanged;
   final void Function() onDismissed;
   final void Function() onSubmitted;
+  final void Function() onDelete;
 
   const _Dialog(
     this.state, {
@@ -50,6 +86,7 @@ final class _Dialog extends StatelessWidget {
     required this.onQuantityChanged,
     required this.onDismissed,
     required this.onSubmitted,
+    required this.onDelete,
   });
 
   @override
@@ -111,16 +148,26 @@ final class _Dialog extends StatelessWidget {
             const SizedBox(height: 24),
             Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 4,
               children: [
-                TextButton(
-                  onPressed: onDismissed,
-                  child: Text(localizations.close),
-                ),
-                FilledButton(
-                  onPressed: state.isValid ? onSubmitted : null,
-                  child: Text(localizations.accept),
+                if (state.tempId != null) ...[
+                  IconButton(
+                    icon: const Icon(Icons.delete_outlined),
+                    onPressed: onDelete,
+                  ),
+                ],
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: onDismissed,
+                      child: Text(localizations.close),
+                    ),
+                    FilledButton(
+                      onPressed: state.isValid ? onSubmitted : null,
+                      child: Text(localizations.accept),
+                    ),
+                  ],
                 ),
               ],
             ),

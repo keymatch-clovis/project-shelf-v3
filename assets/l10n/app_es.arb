@@ -1,6 +1,9 @@
 {
     "@@locale": "es",
     "products": "Productos",
+    "value": "Valor",
+    "product": "Producto",
+    "unit_abbreviated": "U",
     "nit_document": "NIT: {document}, régimen simple",
     "@nit_document": {
         "placeholders": {

@@ -17,12 +17,14 @@ final class CreateInvoiceRequest {
   final DateTime date;
   final Id customerId;
   final List<CreateInvoiceProductRequest> invoiceProducts;
+  final Id invoiceDraftId;
   final Money? remainingUnpaidBalance;
 
   const CreateInvoiceRequest({
     required this.date,
     required this.customerId,
     required this.invoiceProducts,
+    required this.invoiceDraftId,
     this.remainingUnpaidBalance,
   });
 }

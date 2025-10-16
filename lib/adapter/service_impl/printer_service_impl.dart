@@ -85,16 +85,8 @@ final class PrinterServiceImpl implements PrinterService {
           width: 2,
         ),
         InvoiceColumn(
-          text: InvoiceText(product.unitPrice, alignment: TextAlignment.RIGHT),
+          text: InvoiceText(product.total, alignment: TextAlignment.RIGHT),
           width: 5,
-        ),
-      ]);
-      printer.addRow([
-        InvoiceColumn(
-          text: InvoiceText(
-            '= ${product.total}',
-            alignment: TextAlignment.RIGHT,
-          ),
         ),
       ]);
     }
@@ -111,19 +103,6 @@ final class PrinterServiceImpl implements PrinterService {
     printer.addText(
       InvoiceText(request.totalValue, alignment: TextAlignment.RIGHT),
     );
-
-    printer.addSpace(1);
-    printer.addText(
-      InvoiceText(request.remainingUnpaidBalanceLiteral, bold: true),
-    );
-
-    if (request.remainingUnpaidBalance != null) {
-      printer.addText(InvoiceText(request.remainingUnpaidBalance!));
-    } else {
-      printer.addRow([
-        InvoiceColumn(text: InvoiceText("        "), underline: true),
-      ]);
-    }
 
     printer.addCut();
 

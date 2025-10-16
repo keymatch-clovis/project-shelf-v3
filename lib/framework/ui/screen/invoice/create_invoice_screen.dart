@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
+import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_form_dialog_result_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/common/date_time_extensions.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
@@ -59,7 +60,7 @@ final class CreateInvoiceScreen extends ConsumerWidget {
               // [availableStock] + the amount we are editing.
               availableStock += invoiceProduct.quantity;
 
-              showDialog<InvoiceProductDto>(
+              showDialog<InvoiceProductFormDialogResultDto>(
                 context: context,
                 builder: (_) => InvoiceProductFormDialog(
                   InvoiceProductFormArgs(
@@ -71,10 +72,17 @@ final class CreateInvoiceScreen extends ConsumerWidget {
                   ),
                 ),
               ).then((it) async {
-                if (it != null) {
-                  ref
-                      .read(createInvoiceProvider.notifier)
-                      .addInvoiceProduct(it);
+                switch (it?.action) {
+                  case InvoiceProductFormDialogAction.DELETE:
+                    ref
+                        .read(createInvoiceProvider.notifier)
+                        .deleteProduct(it!.invoiceProduct!);
+                  case InvoiceProductFormDialogAction.EDIT:
+                    ref
+                        .read(createInvoiceProvider.notifier)
+                        .addInvoiceProduct(it!.invoiceProduct!);
+                  default:
+                  // Do nothing :p
                 }
               });
             },
@@ -250,24 +258,7 @@ final class _Actions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isProductsEmpty = ref.watch(
-      createInvoiceProvider.select((it) => it.value!.invoiceProducts.isEmpty),
-    );
-
-    var children = <Widget>[];
-    switch (currentTab) {
-      case 1:
-        children = [
-          IconButton(
-            onPressed: isProductsEmpty
-                ? null
-                : ref.read(createInvoiceProvider.notifier).clearProducts,
-            icon: const Icon(Icons.delete_sweep_outlined),
-          ),
-        ];
-    }
-
-    return BottomAppBar(child: Row(children: children));
+    return BottomAppBar();
   }
 }
 

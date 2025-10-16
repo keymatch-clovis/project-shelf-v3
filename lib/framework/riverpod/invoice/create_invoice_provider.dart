@@ -235,6 +235,20 @@ final class CreateInvoiceAsyncNotifier
     _saveDraft();
   }
 
+  Future<void> deleteProduct(InvoiceProductDto invoiceProduct) async {
+    final value = await future;
+
+    // Update the state.
+    state = AsyncData(
+      value.copyWith(
+        invoiceProducts: value.invoiceProducts..remove(invoiceProduct.tempId),
+      ),
+    );
+
+    // Save the draft state.
+    _saveDraft();
+  }
+
   Future<void> create() async {
     final value = await future;
     assert(value.isValid);
@@ -248,6 +262,7 @@ final class CreateInvoiceAsyncNotifier
         remainingUnpaidBalance: value.currency.tryParse(
           value.remainingUnpaidBalanceInput.value,
         ),
+        invoiceDraftId: value.invoiceDraftId,
         invoiceProducts: value.invoiceProducts.values.map((it) {
           return CreateInvoiceProductRequest(
             productId: it.product.id,

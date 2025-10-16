@@ -15,16 +15,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get total => 'Total';
 
   @override
-  String get value => 'Value';
+  String get value => 'Valor';
 
   @override
-  String get unit_abbreviated => 'U.';
+  String get unit_abbreviated => 'U';
 
   @override
   String get no_city_set => 'No city set';
 
   @override
   String get no_invoices => 'No invoices';
+
+  @override
+  String get delete_invoice_product => 'Delete invoice product';
 
   @override
   String get details => 'Details';
@@ -230,7 +233,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get name => 'Name';
 
   @override
-  String get product => 'Product';
+  String get product => 'Producto';
 
   @override
   String get product_created => 'Product created';

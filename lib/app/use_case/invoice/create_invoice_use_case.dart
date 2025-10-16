@@ -1,6 +1,7 @@
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/dto/create_invoice_request.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
+import 'package:project_shelf_v3/app/service/invoice_draft_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/currency_extensions.dart';
@@ -12,6 +13,7 @@ final class CreateInvoiceUseCase {
   final _logger = Logger(printer: UseCasePrinter());
 
   final _service = getIt.get<InvoiceService>();
+  final _invoiceDraftService = getIt.get<InvoiceDraftService>();
   final _productService = getIt.get<ProductService>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
@@ -50,6 +52,9 @@ final class CreateInvoiceUseCase {
     }
 
     _logger.d("Creating invoice");
-    _service.create(invoice);
+    await _service.create(invoice);
+
+    _logger.d("Deleting invoice draft");
+    await _invoiceDraftService.delete(dto.invoiceDraftId);
   }
 }

@@ -76,6 +76,10 @@ final class InvoiceProductFormNotifier
   FutureOr<InvoiceProductFormState> build() async {
     final appPreferences = await ref.watch(appPreferencesProvider.future);
 
+    final unitPrice =
+        args.invoiceProduct?.unitPrice.minorUnits.toString() ??
+        args.product.defaultPrice.minorUnits.toString();
+
     return InvoiceProductFormState(
       currency: appPreferences.defaultCurrency,
       productInput: Input(
@@ -83,7 +87,7 @@ final class InvoiceProductFormNotifier
         validationRules: {IsRequiredRule()},
       ),
       unitPriceInput: Input(
-        value: args.invoiceProduct?.unitPrice.minorUnits.toString(),
+        value: unitPrice,
         validationRules: {
           IsRequiredRule(),
           IsMoneyRule(appPreferences.defaultCurrency),

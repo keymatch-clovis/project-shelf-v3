@@ -6,6 +6,7 @@
     "unit_abbreviated": "U.",
     "no_city_set": "No city set",
     "no_invoices": "No invoices",
+    "delete_invoice_product": "Delete invoice product",
     "details": "Details",
     "quantity": "Quantity",
     "remaining_unpaid_balance": "Remaining unpaid balance",

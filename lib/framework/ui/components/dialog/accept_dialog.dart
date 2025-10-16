@@ -46,7 +46,7 @@ class AcceptDialog extends StatelessWidget {
                 ),
                 FilledButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                     onAccept();
                   },
                   child: Text(localizations.accept),

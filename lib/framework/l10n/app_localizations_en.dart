@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_invoices => 'No invoices';
 
   @override
+  String get delete_invoice_product => 'Delete invoice product';
+
+  @override
   String get details => 'Details';
 
   @override

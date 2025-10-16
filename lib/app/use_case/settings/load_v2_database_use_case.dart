@@ -81,7 +81,7 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
     for (final product in products) {
       final name = product['name'] as String;
       final defaultPrice = Money.fromIntWithCurrency(
-        product['price'] as int,
+        ((product['price'] as int) / 100).toInt(),
         defaultCurrency,
       );
       final stock = product['stock'] as int;
