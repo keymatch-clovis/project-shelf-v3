@@ -51,10 +51,14 @@ final class InvoiceProductFormDialog extends ConsumerWidget {
           ).then((it) {
             if (context.mounted) {
               if (it == true) {
+                final state = ref.read(provider);
+
+                print(state.value);
+
                 Navigator.pop(
                   context,
                   InvoiceProductFormDialogResultDto(
-                    invoiceProduct: data.invoiceProduct,
+                    invoiceProduct: state.value!.invoiceProduct,
                     action: InvoiceProductFormDialogAction.DELETE,
                   ),
                 );

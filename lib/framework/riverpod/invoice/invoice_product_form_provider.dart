@@ -45,6 +45,7 @@ abstract class InvoiceProductFormState with _$InvoiceProductFormState {
     }
 
     return InvoiceProductDto(
+      tempId: tempId,
       product: productInput.value!,
       unitPrice: currency.parse(unitPriceInput.value),
       quantity: int.parse(quantityInput.value),
@@ -77,8 +78,7 @@ final class InvoiceProductFormNotifier
     final appPreferences = await ref.watch(appPreferencesProvider.future);
 
     final unitPrice =
-        args.invoiceProduct?.unitPrice.minorUnits.toString() ??
-        args.product.defaultPrice.minorUnits.toString();
+        args.invoiceProduct?.unitPrice ?? args.product.defaultPrice;
 
     return InvoiceProductFormState(
       currency: appPreferences.defaultCurrency,
@@ -87,7 +87,7 @@ final class InvoiceProductFormNotifier
         validationRules: {IsRequiredRule()},
       ),
       unitPriceInput: Input(
-        value: unitPrice,
+        value: unitPrice.minorUnits.toString(),
         validationRules: {
           IsRequiredRule(),
           IsMoneyRule(appPreferences.defaultCurrency),
@@ -97,6 +97,9 @@ final class InvoiceProductFormNotifier
         value: args.invoiceProduct?.quantity.toString(),
         validationRules: {IsRequiredRule(), IsIntegerRule()},
       ),
+      totalValue: args.invoiceProduct != null
+          ? unitPrice * args.invoiceProduct!.quantity
+          : null,
       tempId: args.invoiceProduct?.tempId,
       // This is not the same as `product.stock`, as that is the current
       // product stock stored in the database. This current stock is the one

@@ -42,7 +42,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get search_customer => 'Search customer';
 
   @override
-  String get search_product => 'Search product';
+  String get search_product => 'Buscar producto';
 
   @override
   String get invoice_created => 'Invoice created';

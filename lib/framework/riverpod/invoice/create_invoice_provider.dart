@@ -220,7 +220,6 @@ final class CreateInvoiceAsyncNotifier
           }
           return acc;
         });
-    assert(availableStock >= 0);
 
     return availableStock;
   }
@@ -238,12 +237,10 @@ final class CreateInvoiceAsyncNotifier
   Future<void> deleteProduct(InvoiceProductDto invoiceProduct) async {
     final value = await future;
 
+    final copy = {...value.invoiceProducts}..remove(invoiceProduct.tempId);
+
     // Update the state.
-    state = AsyncData(
-      value.copyWith(
-        invoiceProducts: value.invoiceProducts..remove(invoiceProduct.tempId),
-      ),
-    );
+    state = AsyncData(value.copyWith(invoiceProducts: copy));
 
     // Save the draft state.
     _saveDraft();
