@@ -1,0 +1,8 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          databases:
+            # https://drift.simonbinder.eu/migrations/#configuration
+            shelf_database: lib/framework/drift/shelf_database.dart

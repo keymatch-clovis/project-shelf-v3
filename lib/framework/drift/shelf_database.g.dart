@@ -31,6 +31,15 @@ class $ProductTableTable extends ProductTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _stockMeta = const VerificationMeta('stock');
+  @override
+  late final GeneratedColumn<int> stock = GeneratedColumn<int>(
+    'stock',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _defaultPriceMeta = const VerificationMeta(
     'defaultPrice',
   );
@@ -53,13 +62,15 @@ class $ProductTableTable extends ProductTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _stockMeta = const VerificationMeta('stock');
+  static const VerificationMeta _currencyIsoCodeMeta = const VerificationMeta(
+    'currencyIsoCode',
+  );
   @override
-  late final GeneratedColumn<int> stock = GeneratedColumn<int>(
-    'stock',
+  late final GeneratedColumn<String> currencyIsoCode = GeneratedColumn<String>(
+    'currency_iso_code',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
@@ -99,9 +110,10 @@ class $ProductTableTable extends ProductTable
   List<GeneratedColumn> get $columns => [
     id,
     name,
+    stock,
     defaultPrice,
     purchasePrice,
-    stock,
+    currencyIsoCode,
     createdAt,
     updatedAt,
     pendingDeleteUntil,
@@ -129,6 +141,14 @@ class $ProductTableTable extends ProductTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('stock')) {
+      context.handle(
+        _stockMeta,
+        stock.isAcceptableOrUnknown(data['stock']!, _stockMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stockMeta);
+    }
     if (data.containsKey('default_price')) {
       context.handle(
         _defaultPriceMeta,
@@ -151,13 +171,16 @@ class $ProductTableTable extends ProductTable
     } else if (isInserting) {
       context.missing(_purchasePriceMeta);
     }
-    if (data.containsKey('stock')) {
+    if (data.containsKey('currency_iso_code')) {
       context.handle(
-        _stockMeta,
-        stock.isAcceptableOrUnknown(data['stock']!, _stockMeta),
+        _currencyIsoCodeMeta,
+        currencyIsoCode.isAcceptableOrUnknown(
+          data['currency_iso_code']!,
+          _currencyIsoCodeMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_stockMeta);
+      context.missing(_currencyIsoCodeMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -237,18 +260,20 @@ class $ProductTableTable extends ProductTable
 class ProductTableCompanion extends UpdateCompanion<ProductDto> {
   final Value<int> id;
   final Value<String> name;
+  final Value<int> stock;
   final Value<int> defaultPrice;
   final Value<int> purchasePrice;
-  final Value<int> stock;
+  final Value<String> currencyIsoCode;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<DateTime?> pendingDeleteUntil;
   const ProductTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.stock = const Value.absent(),
     this.defaultPrice = const Value.absent(),
     this.purchasePrice = const Value.absent(),
-    this.stock = const Value.absent(),
+    this.currencyIsoCode = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.pendingDeleteUntil = const Value.absent(),
@@ -256,24 +281,27 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
   ProductTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    required int stock,
     required int defaultPrice,
     required int purchasePrice,
-    required int stock,
+    required String currencyIsoCode,
     required DateTime createdAt,
     required DateTime updatedAt,
     this.pendingDeleteUntil = const Value.absent(),
   }) : name = Value(name),
+       stock = Value(stock),
        defaultPrice = Value(defaultPrice),
        purchasePrice = Value(purchasePrice),
-       stock = Value(stock),
+       currencyIsoCode = Value(currencyIsoCode),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<ProductDto> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<int>? stock,
     Expression<int>? defaultPrice,
     Expression<int>? purchasePrice,
-    Expression<int>? stock,
+    Expression<String>? currencyIsoCode,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? pendingDeleteUntil,
@@ -281,9 +309,10 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (stock != null) 'stock': stock,
       if (defaultPrice != null) 'default_price': defaultPrice,
       if (purchasePrice != null) 'purchase_price': purchasePrice,
-      if (stock != null) 'stock': stock,
+      if (currencyIsoCode != null) 'currency_iso_code': currencyIsoCode,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (pendingDeleteUntil != null)
@@ -294,9 +323,10 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
   ProductTableCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
+    Value<int>? stock,
     Value<int>? defaultPrice,
     Value<int>? purchasePrice,
-    Value<int>? stock,
+    Value<String>? currencyIsoCode,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<DateTime?>? pendingDeleteUntil,
@@ -304,9 +334,10 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     return ProductTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      stock: stock ?? this.stock,
       defaultPrice: defaultPrice ?? this.defaultPrice,
       purchasePrice: purchasePrice ?? this.purchasePrice,
-      stock: stock ?? this.stock,
+      currencyIsoCode: currencyIsoCode ?? this.currencyIsoCode,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       pendingDeleteUntil: pendingDeleteUntil ?? this.pendingDeleteUntil,
@@ -322,14 +353,17 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (stock.present) {
+      map['stock'] = Variable<int>(stock.value);
+    }
     if (defaultPrice.present) {
       map['default_price'] = Variable<int>(defaultPrice.value);
     }
     if (purchasePrice.present) {
       map['purchase_price'] = Variable<int>(purchasePrice.value);
     }
-    if (stock.present) {
-      map['stock'] = Variable<int>(stock.value);
+    if (currencyIsoCode.present) {
+      map['currency_iso_code'] = Variable<String>(currencyIsoCode.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -350,9 +384,10 @@ class ProductTableCompanion extends UpdateCompanion<ProductDto> {
     return (StringBuffer('ProductTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('stock: $stock, ')
           ..write('defaultPrice: $defaultPrice, ')
           ..write('purchasePrice: $purchasePrice, ')
-          ..write('stock: $stock, ')
+          ..write('currencyIsoCode: $currencyIsoCode, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('pendingDeleteUntil: $pendingDeleteUntil')
@@ -1591,9 +1626,10 @@ typedef $$ProductTableTableCreateCompanionBuilder =
     ProductTableCompanion Function({
       Value<int> id,
       required String name,
+      required int stock,
       required int defaultPrice,
       required int purchasePrice,
-      required int stock,
+      required String currencyIsoCode,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<DateTime?> pendingDeleteUntil,
@@ -1602,9 +1638,10 @@ typedef $$ProductTableTableUpdateCompanionBuilder =
     ProductTableCompanion Function({
       Value<int> id,
       Value<String> name,
+      Value<int> stock,
       Value<int> defaultPrice,
       Value<int> purchasePrice,
-      Value<int> stock,
+      Value<String> currencyIsoCode,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<DateTime?> pendingDeleteUntil,
@@ -1658,6 +1695,11 @@ class $$ProductTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get stock => $composableBuilder(
+    column: $table.stock,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get defaultPrice => $composableBuilder(
     column: $table.defaultPrice,
     builder: (column) => ColumnFilters(column),
@@ -1668,8 +1710,8 @@ class $$ProductTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get stock => $composableBuilder(
-    column: $table.stock,
+  ColumnFilters<String> get currencyIsoCode => $composableBuilder(
+    column: $table.currencyIsoCode,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1733,6 +1775,11 @@ class $$ProductTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get stock => $composableBuilder(
+    column: $table.stock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get defaultPrice => $composableBuilder(
     column: $table.defaultPrice,
     builder: (column) => ColumnOrderings(column),
@@ -1743,8 +1790,8 @@ class $$ProductTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get stock => $composableBuilder(
-    column: $table.stock,
+  ColumnOrderings<String> get currencyIsoCode => $composableBuilder(
+    column: $table.currencyIsoCode,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1779,6 +1826,9 @@ class $$ProductTableTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
+  GeneratedColumn<int> get stock =>
+      $composableBuilder(column: $table.stock, builder: (column) => column);
+
   GeneratedColumn<int> get defaultPrice => $composableBuilder(
     column: $table.defaultPrice,
     builder: (column) => column,
@@ -1789,8 +1839,10 @@ class $$ProductTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get stock =>
-      $composableBuilder(column: $table.stock, builder: (column) => column);
+  GeneratedColumn<String> get currencyIsoCode => $composableBuilder(
+    column: $table.currencyIsoCode,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -1860,18 +1912,20 @@ class $$ProductTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<int> stock = const Value.absent(),
                 Value<int> defaultPrice = const Value.absent(),
                 Value<int> purchasePrice = const Value.absent(),
-                Value<int> stock = const Value.absent(),
+                Value<String> currencyIsoCode = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> pendingDeleteUntil = const Value.absent(),
               }) => ProductTableCompanion(
                 id: id,
                 name: name,
+                stock: stock,
                 defaultPrice: defaultPrice,
                 purchasePrice: purchasePrice,
-                stock: stock,
+                currencyIsoCode: currencyIsoCode,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 pendingDeleteUntil: pendingDeleteUntil,
@@ -1880,18 +1934,20 @@ class $$ProductTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
+                required int stock,
                 required int defaultPrice,
                 required int purchasePrice,
-                required int stock,
+                required String currencyIsoCode,
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<DateTime?> pendingDeleteUntil = const Value.absent(),
               }) => ProductTableCompanion.insert(
                 id: id,
                 name: name,
+                stock: stock,
                 defaultPrice: defaultPrice,
                 purchasePrice: purchasePrice,
-                stock: stock,
+                currencyIsoCode: currencyIsoCode,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 pendingDeleteUntil: pendingDeleteUntil,

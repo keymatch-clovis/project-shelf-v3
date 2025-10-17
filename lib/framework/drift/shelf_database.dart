@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
@@ -8,11 +9,16 @@ import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
+import 'package:project_shelf_v3/framework/drift/migrations.dart';
 import 'package:project_shelf_v3/framework/drift/table/city_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/customer_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/invoice_product_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/invoice_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/product_table.dart';
+
+// https://drift.simonbinder.eu/migrations/tests/#verifying-a-database-schema-at-runtime
+// ignore: depend_on_referenced_packages
+import 'package:drift_dev/api/migrations_native.dart';
 
 part 'shelf_database.g.dart';
 
@@ -37,7 +43,7 @@ class ShelfDatabase extends _$ShelfDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   static QueryExecutor _openConnection() {
     Logger(printer: FrameworkPrinter()).i('Opening database');
@@ -54,6 +60,15 @@ class ShelfDatabase extends _$ShelfDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    beforeOpen: (_) async {
+      // This check pulls in a fair amount of code that's not needed
+      // anywhere else, so we recommend only doing it in debug builds.
+      // https://drift.simonbinder.eu/Migrations/tests/#verifying-a-database-schema-at-runtime
+      if (kDebugMode) {
+        await validateDatabaseSchema();
+      }
+    },
+    onUpgrade: schemaUpgrade,
     onCreate: (m) async {
       _logger.d('Creating database');
       await m.createAll();
