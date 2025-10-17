@@ -71,10 +71,10 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
         spacing: COMPACT_SPACING.toDouble(),
         children: [
           ShelfTextField(
-            key: const ValueKey('key'),
+            key: const ValueKey('name'),
+            label: localizations.name,
             isRequired: true,
             value: widget.nameInput.value,
-            label: localizations.name,
             focusNode: _nameFieldFocus,
             onFieldSubmitted: (_) => _defaultPriceFieldFocus.requestFocus(),
             onChanged: widget.onNameChanged,
@@ -85,6 +85,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
             errors: widget.nameInput.errors.parseErrors(context),
           ),
           ShelfTextField(
+            key: const ValueKey('default_price'),
             label: localizations.default_price,
             focusNode: _defaultPriceFieldFocus,
             value: widget.defaultPriceInput.value,
@@ -100,6 +101,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
             ],
           ),
           ShelfTextField(
+            key: const ValueKey('purchase_price'),
             label: localizations.purchase_price,
             value: widget.purchasePriceInput.value,
             focusNode: _purchasePriceFieldFocus,
@@ -115,6 +117,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
             ],
           ),
           ShelfTextField(
+            key: const ValueKey('stock'),
             label: localizations.stock,
             value: widget.stockInput.value,
             focusNode: _stockFieldFocus,

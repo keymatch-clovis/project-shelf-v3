@@ -13,18 +13,21 @@ class UpdateProductUseCase {
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   Future<Product> exec(UpdateProductRequest request) async {
-    final appPreferences = await _appPreferencesService.getAppPreferences();
+    final defaultCurrency = await _appPreferencesService
+        .getAppPreferences()
+        .then((it) => it.defaultCurrency);
 
     _logger.d('Updating product with: $request');
     return await _service.update(
       Product.fromMoney(
-        appPreferences.defaultCurrency,
+        defaultCurrency,
         id: request.id,
         name: request.name,
         defaultPrice: request.defaultPrice,
         purchasePrice: request.purchasePrice,
         stock: request.stock,
       ),
+      defaultCurrency: defaultCurrency,
     );
   }
 }

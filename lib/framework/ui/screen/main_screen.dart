@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
+import 'package:project_shelf_v3/framework/ui/common/keys.dart';
 
 class MainScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -17,6 +18,7 @@ class MainScreen extends StatelessWidget {
         selectedIndex: navigationShell.currentIndex,
         destinations: [
           NavigationDestination(
+            key: const ValueKey(UiKey.NAVIGATION_PRODUCTS),
             icon: const Icon(Icons.category_outlined),
             selectedIcon: const Icon(Icons.category_rounded),
             label: localizations.products,

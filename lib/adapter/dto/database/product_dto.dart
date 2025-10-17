@@ -17,6 +17,8 @@ class ProductDto {
   final DateTime updatedAt;
   final DateTime? pendingDeleteUntil;
 
+  // TODO: We need to add the currency here
+
   ProductDto({
     required this.id,
     required this.name,

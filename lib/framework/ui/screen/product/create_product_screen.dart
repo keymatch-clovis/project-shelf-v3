@@ -178,6 +178,7 @@ class _CreateAction extends ConsumerWidget {
           onPressed: data.isValid
               ? ref.read(createProductProvider.notifier).create
               : null,
+          key: const ValueKey('save'),
           child: Text(localizations.save),
         );
       },

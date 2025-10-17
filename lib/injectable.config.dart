@@ -29,6 +29,8 @@ import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
 import 'package:project_shelf_v3/app/service/product_service.dart' as _i339;
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart'
     as _i367;
+import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart'
+    as _i1054;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
     as _i875;
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart'
@@ -98,6 +100,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => shelfDatabaseModule.testModule,
       registerFor: {_test},
       dispose: _i792.dispose,
+    );
+    gh.singleton<_i1054.CreateInvoiceUseCase>(
+      () => _i1054.CreateInvoiceUseCase(),
+      registerFor: {_prod, _integration_test},
     );
     return this;
   }

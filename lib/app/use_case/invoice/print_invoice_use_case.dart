@@ -88,6 +88,7 @@ final class PrintInvoiceUseCase {
           for (final invoiceProduct in it) {
             final product = await _productService.findById(
               invoiceProduct.productId,
+              defaultCurrency: defaultCurrency,
             );
 
             result.add(
