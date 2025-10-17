@@ -8,7 +8,7 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(as: InvoiceDraftService, order: RegisterOrder.SERVICE)
+// @Singleton(as: InvoiceDraftService, order: RegisterOrder.SERVICE)
 final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   final _logger = Logger(printer: ImplPrinter());
 
@@ -24,7 +24,8 @@ final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   Future<List<InvoiceDraft>> get({required Currency currency}) {
     _logger.d("Finding invoice drafts");
     return _repository.get().then((it) {
-      return it.map((it) => it.toEntity(currency)).toList();
+      // return it.map((it) => it.toEntity(currency)).toList();
+      return [];
     });
   }
 

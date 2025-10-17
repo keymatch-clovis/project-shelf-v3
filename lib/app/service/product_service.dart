@@ -5,7 +5,7 @@ import 'package:project_shelf_v3/domain/entity/product.dart';
 
 abstract interface class ProductService {
   /// CREATE related
-  Future<Result<Id, Error>> save(Product product);
+  Future<Result<Id, Exception>> save(Product product);
 
   /// UPDATE related
   Future<Product> update(Product product);

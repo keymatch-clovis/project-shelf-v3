@@ -9,16 +9,14 @@ import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(order: RegisterOrder.USE_CASE)
+@LazySingleton(order: RegisterOrder.USE_CASE)
 final class CreateProductUseCase {
   final _logger = Logger(printer: UseCasePrinter());
 
   final _service = getIt.get<ProductService>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
-  CreateProductUseCase();
-
-  Future<Result<Product, Error>> exec(CreateProductRequest request) async {
+  Future<Result<Product, Exception>> exec(CreateProductRequest request) async {
     final defaultCurrency = await _appPreferencesService
         .getAppPreferences()
         .then((it) => it.defaultCurrency);

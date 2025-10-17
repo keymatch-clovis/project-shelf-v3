@@ -7,7 +7,7 @@ import 'injectable.config.dart';
 final getIt = GetIt.instance;
 
 @InjectableInit()
-void configureDependencies(String env) => getIt.init(
+Future<void> configureDependencies(String env) async => await getIt.init(
   environmentFilter: SimpleEnvironmentFilter(
     filter: (envs) {
       // If the dependency has no environment registered, it means it can be

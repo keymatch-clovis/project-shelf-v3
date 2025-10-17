@@ -11,12 +11,12 @@ import 'package:project_shelf_v3/injectable.dart';
 
 @Singleton(as: ProductService, order: RegisterOrder.SERVICE)
 final class ProductServiceImpl implements ProductService {
-  final Logger _logger = Logger(printer: ImplPrinter());
+  final _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<ProductRepository>();
 
   @override
-  Future<Result<Id, Error>> save(Product product) async {
+  Future<Result<Id, Exception>> save(Product product) async {
     _logger.d('Creating product');
     return await _repository.create(
       CreateArgs(

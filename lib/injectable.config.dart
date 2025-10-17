@@ -15,8 +15,8 @@ import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.d
     as _i600;
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart'
     as _i341;
-import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart'
-    as _i393;
+import 'package:project_shelf_v3/adapter/repository/company_info_repository.dart'
+    as _i549;
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart'
     as _i144;
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart'
@@ -25,8 +25,6 @@ import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_im
     as _i523;
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart'
     as _i92;
-import 'package:project_shelf_v3/adapter/service_impl/invoice_draft_service_impl.dart'
-    as _i324;
 import 'package:project_shelf_v3/adapter/service_impl/invoice_service_impl.dart'
     as _i13;
 import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart'
@@ -34,30 +32,30 @@ import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart'
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart'
     as _i327;
 import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
-import 'package:project_shelf_v3/app/service/invoice_draft_service.dart'
-    as _i895;
 import 'package:project_shelf_v3/app/service/invoice_service.dart' as _i719;
 import 'package:project_shelf_v3/app/service/product_service.dart' as _i339;
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart'
     as _i367;
-import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart'
-    as _i1054;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
     as _i875;
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart'
     as _i350;
+import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart'
+    as _i572;
+import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart'
+    as _i295;
 import 'package:project_shelf_v3/framework/drift/dao/invoice_dao.dart' as _i481;
 import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart' as _i382;
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart' as _i310;
 import 'package:project_shelf_v3/framework/drift/shelf_database_module.dart'
     as _i792;
-import 'package:project_shelf_v3/framework/object_box/invoice_draft_box.dart'
-    as _i823;
-import 'package:project_shelf_v3/framework/object_box/object_box.dart' as _i58;
-import 'package:project_shelf_v3/framework/object_box/object_box_module.dart'
-    as _i978;
 import 'package:project_shelf_v3/framework/root_bundle/root_bundle_module.dart'
     as _i784;
+import 'package:project_shelf_v3/framework/sembast/document/company_info_document.dart'
+    as _i254;
+import 'package:project_shelf_v3/framework/sembast/sembast.dart' as _i630;
+import 'package:project_shelf_v3/framework/sembast/sembast_module.dart'
+    as _i588;
 import 'package:project_shelf_v3/framework/shared_preferences/shared_preferences_module.dart'
     as _i938;
 
@@ -73,7 +71,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final shelfDatabaseModule = _$ShelfDatabaseModule();
-    final objectBoxModule = _$ObjectBoxModule();
+    final sembastModule = _$SembastModule();
     final rootBundleModule = _$RootBundleModule();
     final sharedPreferencesModule = _$SharedPreferencesModule();
     gh.singleton<_i310.ShelfDatabase>(
@@ -81,8 +79,8 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_test},
       dispose: _i792.dispose,
     );
-    await gh.singletonAsync<_i58.ObjectBox>(
-      () => objectBoxModule.testModule,
+    await gh.singletonAsync<_i630.Sembast>(
+      () => sembastModule.testModule,
       registerFor: {_test},
       preResolve: true,
     );
@@ -91,13 +89,15 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_prod, _integration_test},
       dispose: _i792.dispose,
     );
-    await gh.singletonAsync<_i58.ObjectBox>(
-      () => objectBoxModule.module,
+    await gh.singletonAsync<_i630.Sembast>(
+      () => sembastModule.module,
       registerFor: {_prod, _integration_test},
       preResolve: true,
     );
-    gh.singleton<_i393.InvoiceDraftRepository>(() => _i823.InvoiceDraftBox());
     gh.singleton<_i468.ProductRepository>(() => _i382.ProductDao());
+    gh.singleton<_i549.CompanyInfoRepository>(
+      () => _i254.CompanyInfoDocument(),
+    );
     gh.singleton<_i144.InvoiceRepository>(() => _i481.InvoiceDao());
     gh.singleton<_i341.AssetRepository>(
       () => rootBundleModule.testModule,
@@ -117,24 +117,24 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i429.AssetService>(() => _i92.AssetServiceImpl());
     gh.singleton<_i719.InvoiceService>(() => _i13.InvoiceServiceImpl());
-    gh.singleton<_i895.InvoiceDraftService>(
-      () => _i324.InvoiceDraftServiceImpl(),
-    );
     gh.singleton<_i339.ProductService>(() => _i376.ProductServiceImpl());
     gh.singleton<_i327.AppPreferencesService>(
       () => _i523.AppPreferencesServiceImpl(),
     );
-    gh.singleton<_i1054.CreateInvoiceUseCase>(
-      () => _i1054.CreateInvoiceUseCase(),
-    );
     gh.singleton<_i367.GetAppPreferencesUseCase>(
       () => _i367.GetAppPreferencesUseCase(),
     );
-    gh.singleton<_i875.CreateProductUseCase>(
-      () => _i875.CreateProductUseCase(),
-    );
     gh.singleton<_i350.SearchProductUseCase>(
       () => _i350.SearchProductUseCase(),
+    );
+    gh.lazySingleton<_i875.CreateProductUseCase>(
+      () => _i875.CreateProductUseCase(),
+    );
+    gh.lazySingleton<_i572.UpdateProductUseCase>(
+      () => _i572.UpdateProductUseCase(),
+    );
+    gh.lazySingleton<_i295.WatchProductsUseCase>(
+      () => _i295.WatchProductsUseCase(),
     );
     return this;
   }
@@ -142,7 +142,7 @@ extension GetItInjectableX on _i174.GetIt {
 
 class _$ShelfDatabaseModule extends _i792.ShelfDatabaseModule {}
 
-class _$ObjectBoxModule extends _i978.ObjectBoxModule {}
+class _$SembastModule extends _i588.SembastModule {}
 
 class _$RootBundleModule extends _i784.RootBundleModule {}
 

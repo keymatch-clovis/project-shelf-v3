@@ -10,7 +10,7 @@ import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(order: RegisterOrder.USE_CASE)
+// @Singleton(order: RegisterOrder.USE_CASE)
 final class CreateInvoiceUseCase {
   final _logger = Logger(printer: UseCasePrinter());
 

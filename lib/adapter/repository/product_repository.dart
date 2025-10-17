@@ -36,7 +36,7 @@ final class UpdateArgs {
 
 abstract interface class ProductRepository {
   /// CREATE related
-  Future<Result<Id, Error>> create(CreateArgs args);
+  Future<Result<Id, Exception>> create(CreateArgs args);
 
   /// UPDATE related
   Future<ProductDto> update(UpdateArgs args);

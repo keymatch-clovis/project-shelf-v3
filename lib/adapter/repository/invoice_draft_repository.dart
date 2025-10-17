@@ -1,5 +1,3 @@
-import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_dto.dart';
-
 final class CreateProductDto {
   final int productId;
   final int unitPrice;
@@ -50,9 +48,9 @@ abstract interface class InvoiceDraftRepository {
   Future<void> update(UpdateArgs args);
 
   /// READ related
-  Future<List<InvoiceDraftDto>> get();
+  Future<List<dynamic>> get();
 
-  Future<InvoiceDraftDto> findWithId(int id);
+  Future<dynamic> findWithId(int id);
 
   Future<void> delete(int id);
 }

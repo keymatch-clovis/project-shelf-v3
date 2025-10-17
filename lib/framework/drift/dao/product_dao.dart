@@ -16,7 +16,7 @@ class ProductDao implements ProductRepository {
   final _database = getIt.get<ShelfDatabase>();
 
   @override
-  Future<Result<Id, Error>> create(CreateArgs args) async {
+  Future<Result<Id, Exception>> create(CreateArgs args) async {
     final dateTime = DateTime.now();
 
     _logger.d("Creating product with: $args");

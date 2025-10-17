@@ -1,23 +1,21 @@
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
 class UpdateProductRequest {
   final Id id;
   final String name;
-  final Money? defaultPrice;
-  final Money? purchasePrice;
-  final int? stock;
+  final Option<Money> defaultPrice;
+  final Option<Money> purchasePrice;
+  final Option<int> stock;
 
   UpdateProductRequest({
     required this.id,
     required this.name,
-    this.defaultPrice,
-    this.purchasePrice,
-    this.stock,
-  });
-
-  @override
-  String toString() {
-    return "[$id], name=$name, defaultPrice=$defaultPrice, purchasePrice=$purchasePrice, stock=$stock";
-  }
+    Money? defaultPrice,
+    Money? purchasePrice,
+    int? stock,
+  }) : defaultPrice = Option.from(defaultPrice),
+       purchasePrice = Option.from(purchasePrice),
+       stock = Option.from(stock);
 }

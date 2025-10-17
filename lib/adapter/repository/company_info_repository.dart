@@ -1,5 +1,3 @@
-import 'package:project_shelf_v3/adapter/dto/object_box/company_info_dto.dart';
-
 final class CreateArgs {
   final int id;
   final String? logoFileName;
@@ -19,6 +17,6 @@ final class CreateArgs {
 }
 
 abstract interface class CompanyInfoRepository {
-  Future<Iterable<CompanyInfoDto>> get();
+  Future<Iterable<dynamic>> get();
   Future<void> create(CreateArgs args);
 }
