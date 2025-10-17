@@ -13,9 +13,12 @@ class ProductTable extends Table {
 
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
+  IntColumn get stock => integer()();
+
   IntColumn get defaultPrice => integer()();
   IntColumn get purchasePrice => integer()();
-  IntColumn get stock => integer()();
+  TextColumn get currencyIsoCode => text()();
+
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get pendingDeleteUntil => dateTime().nullable()();
