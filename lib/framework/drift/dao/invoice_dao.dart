@@ -59,6 +59,7 @@ final class InvoiceDao implements InvoiceRepository {
               remainingUnpaidBalance: args.remainingUnpaidBalance,
               customer: args.customerId,
               total: args.total,
+              currencyIsoCode: args.currencyIsoCode,
               createdAt: dateTime,
               updatedAt: dateTime,
             ),
@@ -73,6 +74,9 @@ final class InvoiceDao implements InvoiceRepository {
                 product: invoiceProduct.productId,
                 quantity: invoiceProduct.quantity,
                 unitPrice: invoiceProduct.unitPrice,
+                // Use the same currency as the invoice. We could change this
+                // in the future to allow for more flexibility.
+                currencyIsoCode: args.currencyIsoCode,
                 createdAt: dateTime,
               ),
             );

@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_dto.dart';
@@ -7,6 +8,7 @@ import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/object_box/object_box.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
+@Singleton(as: InvoiceDraftRepository, order: RegisterOrder.REPOSITORY)
 final class InvoiceDraftBox implements InvoiceDraftRepository {
   final _logger = Logger(printer: FrameworkPrinter());
   final _objectBox = getIt.get<ObjectBox>();

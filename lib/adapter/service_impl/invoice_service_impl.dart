@@ -47,6 +47,10 @@ final class InvoiceServiceImpl implements InvoiceService {
           );
         }).toList(),
         total: invoice.total.minorUnits.toInt(),
+        // Although this value is presently derived from the remaining unpaid
+        // balance, one could just as suitably utilise the total price, as it
+        // ought to make no substantive difference.
+        currencyIsoCode: invoice.remainingUnpaidBalance.currency.isoCode,
       ),
     );
   }
@@ -74,9 +78,9 @@ final class InvoiceServiceImpl implements InvoiceService {
             (it) => InvoiceProduct(
               invoiceId: it.invoice,
               productId: it.product,
-              unitPrice: Money.fromIntWithCurrency(
+              unitPrice: Money.fromInt(
                 it.unitPrice,
-                defaultCurrency,
+                isoCode: it.currencyIsoCode,
               ),
               quantity: it.quantity,
             ),

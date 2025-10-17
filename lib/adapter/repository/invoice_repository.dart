@@ -23,6 +23,7 @@ final class CreateArgs {
   final List<CreateProductArgs> invoiceProducts;
   final int remainingUnpaidBalance;
   final int total;
+  final String currencyIsoCode;
 
   const CreateArgs({
     required this.number,
@@ -31,6 +32,7 @@ final class CreateArgs {
     required this.invoiceProducts,
     required this.remainingUnpaidBalance,
     required this.total,
+    required this.currencyIsoCode,
   });
 }
 

@@ -9,11 +9,7 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(
-  as: ProductRepository,
-  env: [Environment.prod, CustomEnvironment.integrationTest],
-  order: RegisterOrder.REPOSITORY,
-)
+@Singleton(as: ProductRepository, order: RegisterOrder.REPOSITORY)
 class ProductDao implements ProductRepository {
   final Logger _logger = Logger(printer: FrameworkPrinter());
 

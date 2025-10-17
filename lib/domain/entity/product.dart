@@ -22,5 +22,7 @@ class Product {
     assert(!defaultPrice.isNegative);
     assert(!purchasePrice.isNegative);
     assert(stock >= 0);
+
+    assert(defaultPrice.isInSameCurrencyAs(purchasePrice));
   }
 }

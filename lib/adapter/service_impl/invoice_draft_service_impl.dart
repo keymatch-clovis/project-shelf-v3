@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart';
@@ -7,6 +8,7 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
+@Singleton(as: InvoiceDraftService, order: RegisterOrder.SERVICE)
 final class InvoiceDraftServiceImpl implements InvoiceDraftService {
   final _logger = Logger(printer: ImplPrinter());
 
