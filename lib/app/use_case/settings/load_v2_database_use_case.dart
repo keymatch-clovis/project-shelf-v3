@@ -12,7 +12,7 @@ import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 
 final class LoadV2DatabaseUseCase extends UseCase<String, Result> {

@@ -7,7 +7,7 @@ import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 class CustomerDao implements CustomerRepository {
   final Logger _logger = Logger(printer: FrameworkPrinter());

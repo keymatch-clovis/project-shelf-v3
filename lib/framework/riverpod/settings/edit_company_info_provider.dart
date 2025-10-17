@@ -13,7 +13,7 @@ import 'package:project_shelf_v3/app/use_case/settings/create_company_logo_use_c
 import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/set_company_info_use_case.dart';
 import 'package:project_shelf_v3/domain/entity/company_logo.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part 'edit_company_info_provider.freezed.dart';
 

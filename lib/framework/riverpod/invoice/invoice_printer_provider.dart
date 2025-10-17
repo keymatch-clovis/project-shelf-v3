@@ -11,7 +11,7 @@ import 'package:project_shelf_v3/app/use_case/get_printers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/print_invoice_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part 'invoice_printer_provider.freezed.dart';
 

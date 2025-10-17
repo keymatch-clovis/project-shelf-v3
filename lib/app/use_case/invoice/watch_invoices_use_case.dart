@@ -4,7 +4,7 @@ import 'package:project_shelf_v3/app/dto/invoice_response.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 final class WatchInvoicesUseCase {

@@ -8,7 +8,7 @@ import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/app/dto/create_customer_request.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
 import 'package:project_shelf_v3/common/string_extensions.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part 'create_customer_provider.freezed.dart';
 

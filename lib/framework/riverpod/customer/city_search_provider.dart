@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 /// Provider related
 final class CitySearchNotifier extends StreamNotifier<Iterable<CityDto>> {

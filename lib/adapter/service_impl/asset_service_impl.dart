@@ -1,5 +1,6 @@
 import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
@@ -7,8 +8,9 @@ import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/city.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
+@Singleton(as: AssetService)
 final class AssetServiceImpl implements AssetService {
   final _logger = Logger(printer: ImplPrinter());
 

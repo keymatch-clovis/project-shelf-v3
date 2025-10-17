@@ -11,7 +11,7 @@ import 'package:project_shelf_v3/app/use_case/invoice/search_invoices_with_use_c
 import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part 'customer_details_provider.freezed.dart';
 

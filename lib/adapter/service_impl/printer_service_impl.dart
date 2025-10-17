@@ -7,7 +7,7 @@ import 'package:project_shelf_v3/app/dto/print_invoice_request.dart';
 import 'package:project_shelf_v3/app/dto/printer_info_response.dart';
 import 'package:project_shelf_v3/app/service/printer_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 final class PrinterServiceImpl implements PrinterService {
   final _logger = Logger(printer: ImplPrinter());

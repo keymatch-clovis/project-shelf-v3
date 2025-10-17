@@ -10,7 +10,7 @@ import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 final class InvoiceServiceImpl implements InvoiceService {
   final _logger = Logger(printer: ImplPrinter());

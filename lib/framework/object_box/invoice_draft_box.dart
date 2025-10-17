@@ -5,7 +5,7 @@ import 'package:project_shelf_v3/adapter/dto/object_box/invoice_draft_product_dt
 import 'package:project_shelf_v3/adapter/repository/invoice_draft_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/object_box/object_box.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 final class InvoiceDraftBox implements InvoiceDraftRepository {
   final _logger = Logger(printer: FrameworkPrinter());

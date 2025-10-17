@@ -8,7 +8,7 @@ import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 final class InvoiceDao implements InvoiceRepository {
   final _logger = Logger(printer: FrameworkPrinter());

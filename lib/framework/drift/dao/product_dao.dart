@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
@@ -6,8 +7,9 @@ import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
+@Injectable(as: ProductRepository)
 class ProductDao implements ProductRepository {
   final Logger _logger = Logger(printer: FrameworkPrinter());
 

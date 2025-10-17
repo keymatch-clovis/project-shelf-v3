@@ -4,7 +4,7 @@ import 'package:project_shelf_v3/app/dto/company_info_response.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/domain/entity/company_info.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 final class CompanyInfoServiceImpl implements CompanyInfoService {
   final _logger = Logger(printer: ImplPrinter());

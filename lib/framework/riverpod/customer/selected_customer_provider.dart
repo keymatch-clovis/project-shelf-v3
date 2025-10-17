@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 /// State related
 enum SelectedCustomerStatus { INITIAL, LOADING, DELETED }

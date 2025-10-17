@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
@@ -6,9 +7,10 @@ import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
-class ProductServiceImpl implements ProductService {
+@Injectable(as: ProductService)
+final class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<ProductRepository>();

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Provider related

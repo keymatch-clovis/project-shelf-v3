@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part "splash_screen_provider.freezed.dart";

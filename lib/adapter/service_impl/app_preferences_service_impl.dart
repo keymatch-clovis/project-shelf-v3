@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/common/constants.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
@@ -5,8 +6,9 @@ import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/adapter/repository/app_preferences_repository.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/domain/entity/app_preferences.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
+@Injectable(as: AppPreferencesService)
 class AppPreferencesServiceImpl implements AppPreferencesService {
   final _logger = Logger(printer: ImplPrinter());
 

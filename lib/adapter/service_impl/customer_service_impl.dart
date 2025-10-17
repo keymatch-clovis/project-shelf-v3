@@ -6,7 +6,7 @@ import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 class CustomerServiceImpl implements CustomerService {
   final _logger = Logger(printer: ImplPrinter());

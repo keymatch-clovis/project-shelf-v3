@@ -17,7 +17,7 @@ import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.da
 import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/debouncer.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part 'create_product_provider.freezed.dart';
 

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:project_shelf_v3/app/use_case/settings/load_v2_database_use_case.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part 'load_v2_database_provider.freezed.dart';
 

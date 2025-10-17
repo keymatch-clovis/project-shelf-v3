@@ -24,7 +24,7 @@ import 'package:project_shelf_v3/domain/entity/invoice_draft.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/selected_invoice_draft_provider.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 part "create_invoice_provider.freezed.dart";
 

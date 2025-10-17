@@ -2,7 +2,7 @@ import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/company_info_response.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/app/use_case/use_case.dart';
-import 'package:project_shelf_v3/main.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 final class GetCompanyInfoUseCase extends UseCase<Unit, CompanyInfoResponse> {
   final _service = getIt.get<CompanyInfoService>();
