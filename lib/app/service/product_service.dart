@@ -5,13 +5,13 @@ import 'package:project_shelf_v3/domain/entity/product.dart';
 
 abstract interface class ProductService {
   /// CREATE related
-  Future<Id> create(Product product);
+  Future<Result<Id, Error>> save(Product product);
 
   /// UPDATE related
-  Future<Product> update(Product product, {required Currency defaultCurrency});
+  Future<Product> update(Product product);
 
   /// READ related
-  Stream<List<Product>> watch({required Currency defaultCurrency});
+  Stream<List<Product>> watch();
 
   Stream<List<Product>> search(
     String value, {
@@ -23,8 +23,8 @@ abstract interface class ProductService {
     required Currency defaultCurrency,
   });
 
-  Future<Product> findById(Id id, {required Currency defaultCurrency});
-  Future<Product> findByName(String name, {required Currency defaultCurrency});
+  Future<Product> findById(Id id);
+  Future<Product> findByName(String name);
 
   /// DELETE related
   Future<void> delete(Id id);

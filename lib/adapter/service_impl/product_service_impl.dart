@@ -9,18 +9,14 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(
-  as: ProductService,
-  env: [Environment.prod, CustomEnvironment.integrationTest],
-  order: RegisterOrder.SERVICE,
-)
+@Singleton(as: ProductService, order: RegisterOrder.SERVICE)
 final class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<ProductRepository>();
 
   @override
-  Future<Id> create(Product product) async {
+  Future<Result<Id, Error>> save(Product product) async {
     _logger.d('Creating product');
     return await _repository.create(
       CreateArgs(
@@ -28,36 +24,37 @@ final class ProductServiceImpl implements ProductService {
         defaultPrice: product.defaultPrice.minorUnits.toInt(),
         purchasePrice: product.purchasePrice.minorUnits.toInt(),
         stock: product.stock,
+        // Although this value is presently derived from the default price, one
+        // could just as suitably utilise the purchase price, as it ought to
+        // make no substantive difference.
+        currencyIsoCode: product.defaultPrice.currency.isoCode,
       ),
     );
   }
 
   @override
-  Future<Product> update(
-    Product product, {
-    required Currency defaultCurrency,
-  }) async {
+  Future<Product> update(Product product) async {
     _logger.d('Updating product with: $product');
 
     return await _repository
         .update(
           UpdateArgs(
-            id: product.id!,
+            id: product.id.unwrap(),
             name: product.name,
             defaultPrice: product.defaultPrice.amount.minorUnits.toInt(),
             purchasePrice: product.purchasePrice.amount.minorUnits.toInt(),
             stock: product.stock,
           ),
         )
-        .then((dto) => dto.toEntity(defaultCurrency));
+        .then((dto) => dto.toEntity());
   }
 
   @override
-  Stream<List<Product>> watch({required Currency defaultCurrency}) {
+  Stream<List<Product>> watch() {
     _logger.d('Watching products');
 
     return _repository.watch().map((dtos) {
-      return dtos.map((dto) => dto.toEntity(defaultCurrency)).toList();
+      return dtos.map((dto) => dto.toEntity()).toList();
     });
   }
 
@@ -69,7 +66,7 @@ final class ProductServiceImpl implements ProductService {
     _logger.d('Searching product with: $value');
 
     return _repository.search(value).map((dtos) {
-      return dtos.map((dto) => dto.toEntity(defaultCurrency)).toList();
+      return dtos.map((dto) => dto.toEntity()).toList();
     });
   }
 
@@ -80,30 +77,21 @@ final class ProductServiceImpl implements ProductService {
   }) async {
     _logger.d('Searching product with name: $name');
 
-    return _repository
-        .searchWithName(name)
-        .then((dto) => dto?.toEntity(defaultCurrency));
+    return _repository.searchWithName(name).then((dto) => dto?.toEntity());
   }
 
   @override
-  Future<Product> findById(Id id, {required Currency defaultCurrency}) async {
+  Future<Product> findById(Id id) async {
     _logger.d('Finding product with ID: $id');
 
-    return _repository
-        .findById(id)
-        .then((dto) => dto.toEntity(defaultCurrency));
+    return _repository.findById(id).then((dto) => dto.toEntity());
   }
 
   @override
-  Future<Product> findByName(
-    String name, {
-    required Currency defaultCurrency,
-  }) async {
+  Future<Product> findByName(String name) async {
     _logger.d('Finding product with name: $name');
 
-    return _repository
-        .findByName(name)
-        .then((dto) => dto.toEntity(defaultCurrency));
+    return _repository.findByName(name).then((dto) => dto.toEntity());
   }
 
   @override

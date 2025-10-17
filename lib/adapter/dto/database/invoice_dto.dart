@@ -14,6 +14,9 @@ final class InvoiceDto {
   final int remainingUnpaidBalance;
   final int customer;
   final int total;
+
+  final String currencyIsoCode;
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -24,6 +27,7 @@ final class InvoiceDto {
     required this.remainingUnpaidBalance,
     required this.customer,
     required this.total,
+    required this.currencyIsoCode,
     required this.createdAt,
     required this.updatedAt,
   });

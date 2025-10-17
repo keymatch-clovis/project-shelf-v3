@@ -12,6 +12,7 @@ ProductDto _$ProductDtoFromJson(Map<String, dynamic> json) => ProductDto(
   defaultPrice: (json['default_price'] as num).toInt(),
   purchasePrice: (json['purchase_price'] as num).toInt(),
   stock: (json['stock'] as num).toInt(),
+  currencyIsoCode: json['currency_iso_code'] as String,
   createdAt: const DateTimeEpochConverter().fromJson(
     (json['created_at'] as num).toInt(),
   ),
@@ -31,6 +32,7 @@ Map<String, dynamic> _$ProductDtoToJson(ProductDto instance) =>
       'default_price': instance.defaultPrice,
       'purchase_price': instance.purchasePrice,
       'stock': instance.stock,
+      'currency_iso_code': instance.currencyIsoCode,
       'created_at': const DateTimeEpochConverter().toJson(instance.createdAt),
       'updated_at': const DateTimeEpochConverter().toJson(instance.updatedAt),
       'pending_delete_until': _$JsonConverterToJson<int, DateTime>(

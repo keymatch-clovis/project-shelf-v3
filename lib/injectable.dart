@@ -10,6 +10,8 @@ final getIt = GetIt.instance;
 void configureDependencies(String env) => getIt.init(
   environmentFilter: SimpleEnvironmentFilter(
     filter: (envs) {
+      // If the dependency has no environment registered, it means it can be
+      // used anywhere.
       if (envs.isEmpty) {
         return true;
       }

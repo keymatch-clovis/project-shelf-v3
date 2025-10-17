@@ -7,12 +7,14 @@ final class CreateArgs {
   final int defaultPrice;
   final int purchasePrice;
   final int stock;
+  final String currencyIsoCode;
 
   const CreateArgs({
     required this.name,
     required this.defaultPrice,
     required this.purchasePrice,
     required this.stock,
+    required this.currencyIsoCode,
   });
 }
 
@@ -34,7 +36,7 @@ final class UpdateArgs {
 
 abstract interface class ProductRepository {
   /// CREATE related
-  Future<Id> create(CreateArgs args);
+  Future<Result<Id, Error>> create(CreateArgs args);
 
   /// UPDATE related
   Future<ProductDto> update(UpdateArgs args);

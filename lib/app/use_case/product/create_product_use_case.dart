@@ -1,10 +1,11 @@
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/create_product_request.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
+import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
-import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
@@ -17,18 +18,26 @@ final class CreateProductUseCase {
 
   CreateProductUseCase();
 
-  Future<Id> exec(CreateProductRequest request) async {
-    final appPreferences = await _appPreferencesService.getAppPreferences();
+  Future<Result<Product, Error>> exec(CreateProductRequest request) async {
+    final defaultCurrency = await _appPreferencesService
+        .getAppPreferences()
+        .then((it) => it.defaultCurrency);
 
-    _logger.d('Creating product');
-    return await _service.create(
-      Product.fromMoney(
-        appPreferences.defaultCurrency,
-        name: request.name,
-        defaultPrice: request.defaultPrice,
-        purchasePrice: request.purchasePrice,
-        stock: request.stock,
-      ),
+    final defaultPrice = request.defaultPrice.unwrapOr(defaultCurrency.zero);
+    final purchasePrice = request.purchasePrice.unwrapOr(defaultCurrency.zero);
+    final stock = request.stock.unwrapOr(0);
+
+    final product = Product(
+      name: request.name,
+      defaultPrice: defaultPrice,
+      purchasePrice: purchasePrice,
+      stock: stock,
     );
+
+    _logger.d('Saving product');
+    return await _service.save(product).map((id) {
+      product.id = Option.some(id);
+      return product;
+    });
   }
 }

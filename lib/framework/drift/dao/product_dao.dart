@@ -20,22 +20,25 @@ class ProductDao implements ProductRepository {
   final _database = getIt.get<ShelfDatabase>();
 
   @override
-  Future<Id> create(CreateArgs args) async {
-    _logger.d("Creating product with: $args");
+  Future<Result<Id, Error>> create(CreateArgs args) async {
     final dateTime = DateTime.now();
 
-    return await _database
-        .into(_database.productTable)
-        .insert(
-          ProductTableCompanion.insert(
-            name: args.name,
-            defaultPrice: args.defaultPrice,
-            purchasePrice: args.purchasePrice,
-            stock: args.stock,
-            createdAt: dateTime,
-            updatedAt: dateTime,
+    _logger.d("Creating product with: $args");
+    return Result.asyncOf(
+      () => _database
+          .into(_database.productTable)
+          .insert(
+            ProductTableCompanion.insert(
+              name: args.name,
+              defaultPrice: args.defaultPrice,
+              purchasePrice: args.purchasePrice,
+              currencyIsoCode: args.currencyIsoCode,
+              stock: args.stock,
+              createdAt: dateTime,
+              updatedAt: dateTime,
+            ),
           ),
-        );
+    );
   }
 
   @override
@@ -61,7 +64,6 @@ class ProductDao implements ProductRepository {
   @override
   Stream<List<ProductDto>> watch() {
     _logger.d("Watching products");
-    // TODO: Maybe we can set the ordering later.
     return (_database.select(
       _database.productTable,
     )..orderBy([(e) => OrderingTerm(expression: e.name)])).watch();

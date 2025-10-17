@@ -13,6 +13,7 @@ InvoiceProductDto _$InvoiceProductDtoFromJson(Map<String, dynamic> json) =>
       product: (json['product'] as num).toInt(),
       quantity: (json['quantity'] as num).toInt(),
       unitPrice: (json['unit_price'] as num).toInt(),
+      currencyIsoCode: json['currency_iso_code'] as String,
       createdAt: const DateTimeEpochConverter().fromJson(
         (json['created_at'] as num).toInt(),
       ),
@@ -25,5 +26,6 @@ Map<String, dynamic> _$InvoiceProductDtoToJson(InvoiceProductDto instance) =>
       'product': instance.product,
       'quantity': instance.quantity,
       'unit_price': instance.unitPrice,
+      'currency_iso_code': instance.currencyIsoCode,
       'created_at': const DateTimeEpochConverter().toJson(instance.createdAt),
     };

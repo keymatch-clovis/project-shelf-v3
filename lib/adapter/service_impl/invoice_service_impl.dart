@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:logger/web.dart';
 import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
@@ -12,11 +13,11 @@ import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
+@Singleton(as: InvoiceService, order: RegisterOrder.SERVICE)
 final class InvoiceServiceImpl implements InvoiceService {
   final _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<InvoiceRepository>();
-  final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   @override
   Stream<Iterable<InvoiceResponse>> watch(Currency currency) {
@@ -65,10 +66,6 @@ final class InvoiceServiceImpl implements InvoiceService {
   @override
   Future<Iterable<InvoiceProduct>> findInvoiceProducts(Id invoiceId) async {
     _logger.d('Finding invoice products for invoice ID: $invoiceId');
-
-    final defaultCurrency = await _appPreferencesService
-        .getAppPreferences()
-        .then((it) => it.defaultCurrency);
 
     return _repository
         .findInvoiceProducts(invoiceId)

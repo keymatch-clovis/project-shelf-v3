@@ -12,7 +12,7 @@ import 'package:project_shelf_v3/injectable.dart';
 
 @Singleton(
   as: AssetService,
-  env: [Environment.prod, CustomEnvironment.integrationTest],
+  // TODO: remove this
   order: RegisterOrder.DEPENDANT_SERVICE,
 )
 final class AssetServiceImpl implements AssetService {

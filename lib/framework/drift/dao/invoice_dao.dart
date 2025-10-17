@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
@@ -10,6 +11,7 @@ import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
+@Singleton(as: InvoiceRepository, order: RegisterOrder.REPOSITORY)
 final class InvoiceDao implements InvoiceRepository {
   final _logger = Logger(printer: FrameworkPrinter());
 

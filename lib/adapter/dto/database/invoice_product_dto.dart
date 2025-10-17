@@ -11,6 +11,9 @@ final class InvoiceProductDto {
   final int product;
   final int quantity;
   final int unitPrice;
+
+  final String currencyIsoCode;
+
   final DateTime createdAt;
 
   const InvoiceProductDto({
@@ -19,6 +22,7 @@ final class InvoiceProductDto {
     required this.product,
     required this.quantity,
     required this.unitPrice,
+    required this.currencyIsoCode,
     required this.createdAt,
   });
 

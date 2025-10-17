@@ -13,11 +13,12 @@ class ProductDto {
   final int defaultPrice;
   final int purchasePrice;
   final int stock;
+
+  final String currencyIsoCode;
+
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? pendingDeleteUntil;
-
-  // TODO: We need to add the currency here
 
   ProductDto({
     required this.id,
@@ -25,6 +26,9 @@ class ProductDto {
     required this.defaultPrice,
     required this.purchasePrice,
     required this.stock,
+
+    required this.currencyIsoCode,
+
     required this.createdAt,
     required this.updatedAt,
     this.pendingDeleteUntil,
@@ -33,13 +37,12 @@ class ProductDto {
   factory ProductDto.fromJson(Map<String, dynamic> json) =>
       _$ProductDtoFromJson(json);
 
-  Product toEntity(Currency currency) {
-    return Product.fromMoney(
-      currency,
+  Product toEntity() {
+    return Product(
       id: id,
       name: name,
-      defaultPrice: Money.fromIntWithCurrency(defaultPrice, currency),
-      purchasePrice: Money.fromIntWithCurrency(purchasePrice, currency),
+      defaultPrice: Money.fromInt(defaultPrice, isoCode: currencyIsoCode),
+      purchasePrice: Money.fromInt(purchasePrice, isoCode: currencyIsoCode),
       stock: stock,
     );
   }

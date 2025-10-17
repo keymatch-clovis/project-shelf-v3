@@ -1,15 +1,18 @@
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 
 final class CreateProductRequest {
   final String name;
-  final Money? defaultPrice;
-  final Money? purchasePrice;
-  final int? stock;
+  final Option<Money> defaultPrice;
+  final Option<Money> purchasePrice;
+  final Option<int> stock;
 
   CreateProductRequest({
     required this.name,
-    this.defaultPrice,
-    this.purchasePrice,
-    this.stock,
-  });
+    Money? defaultPrice,
+    Money? purchasePrice,
+    int? stock,
+  }) : defaultPrice = Option.from(defaultPrice),
+       purchasePrice = Option.from(purchasePrice),
+       stock = Option.from(stock);
 }

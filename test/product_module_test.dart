@@ -1,18 +1,14 @@
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:injectable/injectable.dart' as injectable;
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/create_product_request.dart';
-import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
 void main() {
-  late ProductService service;
-
   setUp(() {
     configureDependencies(injectable.Environment.test);
-
-    service = getIt.get<ProductService>();
   });
 
   test('Creates product', () async {
@@ -22,8 +18,7 @@ void main() {
       name: faker.randomGenerator.string(10),
     );
 
-    final id = await CreateProductUseCase().exec(request);
-    final product = await service.findById(id);
+    final product = await CreateProductUseCase().exec(request).unwrap();
 
     expect(product.name, request.name.toUpperCase());
     expect(product.defaultPrice.isZero, true);

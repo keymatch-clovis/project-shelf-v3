@@ -10,7 +10,7 @@ import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(env: [Environment.prod, CustomEnvironment.integrationTest])
+@Singleton(order: RegisterOrder.USE_CASE)
 final class CreateInvoiceUseCase {
   final _logger = Logger(printer: UseCasePrinter());
 
@@ -43,13 +43,10 @@ final class CreateInvoiceUseCase {
 
     _logger.d("Adding products to invoice");
     for (final invoiceProduct in dto.invoiceProducts) {
-      final product = await _productService.findById(
-        invoiceProduct.productId,
-        defaultCurrency: defaultCurrency,
-      );
+      final product = await _productService.findById(invoiceProduct.productId);
 
       invoice.addProduct(
-        productId: product.id!,
+        productId: product.id.unwrap(),
         unitPrice: invoiceProduct.unitPrice,
         quantity: invoiceProduct.quantity,
         stock: product.stock,

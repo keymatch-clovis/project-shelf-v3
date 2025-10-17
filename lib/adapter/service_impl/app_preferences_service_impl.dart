@@ -8,11 +8,7 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/domain/entity/app_preferences.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(
-  as: AppPreferencesService,
-  env: [Environment.prod, CustomEnvironment.integrationTest],
-  order: RegisterOrder.SERVICE,
-)
+@Singleton(as: AppPreferencesService, order: RegisterOrder.SERVICE)
 class AppPreferencesServiceImpl implements AppPreferencesService {
   final _logger = Logger(printer: ImplPrinter());
 

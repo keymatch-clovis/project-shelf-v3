@@ -15,7 +15,11 @@ abstract class ShelfDatabaseModule {
   )
   ShelfDatabase get module => ShelfDatabase();
 
-  @Singleton(env: [Environment.test], dispose: dispose)
+  @Singleton(
+    env: [Environment.test],
+    dispose: dispose,
+    order: RegisterOrder.BASE,
+  )
   ShelfDatabase get testModule => ShelfDatabase(
     DatabaseConnection(
       NativeDatabase.memory(),

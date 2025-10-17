@@ -43,7 +43,7 @@ class ShelfDatabase extends _$ShelfDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   static QueryExecutor _openConnection() {
     Logger(printer: FrameworkPrinter()).i('Opening database');

@@ -34,6 +34,7 @@ extension Migrations on GeneratedDatabase {
 
   static final _upgrade = migrationSteps(
     from1To2: (m, schema) async {
+      // Adds currency ISO code column to product table.
       await m.alterTable(
         TableMigration(
           schema.product,
@@ -41,6 +42,30 @@ extension Migrations on GeneratedDatabase {
             schema.product.currencyIsoCode: const Constant<String>('COP'),
           },
           newColumns: [schema.product.currencyIsoCode],
+        ),
+      );
+    },
+    from2To3: (Migrator m, Schema3 schema) async {
+      // Adds currency ISO code column to invoice table, and invoice product table.
+      await m.alterTable(
+        TableMigration(
+          schema.invoice,
+          columnTransformer: {
+            schema.invoice.currencyIsoCode: const Constant<String>('COP'),
+          },
+          newColumns: [schema.invoice.currencyIsoCode],
+        ),
+      );
+
+      await m.alterTable(
+        TableMigration(
+          schema.invoiceProduct,
+          columnTransformer: {
+            schema.invoiceProduct.currencyIsoCode: const Constant<String>(
+              'COP',
+            ),
+          },
+          newColumns: [schema.invoiceProduct.currencyIsoCode],
         ),
       );
     },

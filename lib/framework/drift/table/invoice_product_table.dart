@@ -11,9 +11,10 @@ class InvoiceProductTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get invoice => integer().references(InvoiceTable, #id)();
   IntColumn get product => integer().references(ProductTable, #id)();
-
   IntColumn get quantity => integer()();
+
   IntColumn get unitPrice => integer()();
+  TextColumn get currencyIsoCode => text()();
 
   DateTimeColumn get createdAt => dateTime()();
 }

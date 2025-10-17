@@ -10,8 +10,10 @@ class InvoiceTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get number => integer().unique()();
   DateTimeColumn get date => dateTime()();
+
   IntColumn get remainingUnpaidBalance => integer()();
   IntColumn get total => integer()();
+  TextColumn get currencyIsoCode => text()();
 
   IntColumn get customer => integer().references(CustomerTable, #id)();
 
