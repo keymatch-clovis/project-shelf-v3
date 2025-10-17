@@ -10,10 +10,30 @@ final getIt = GetIt.instance;
 void configureDependencies(String env) => getIt.init(
   environmentFilter: SimpleEnvironmentFilter(
     filter: (envs) {
-      if (envs.isNotEmpty) {
-        return envs.contains(env);
+      if (envs.isEmpty) {
+        return true;
       }
-      return true;
+
+      return envs.contains(env);
     },
   ),
 );
+
+// https://pub.dev/packages/injectable#manual-order
+abstract class RegisterOrder {
+  static const BASE = -200;
+
+  static const REPOSITORY = -100;
+
+  // NOTE: These are not correct, and I'm trying to actively remove. This made
+  // me realize how services can't depend on other services, as these problems
+  // might arise.
+  static const DEPENDANT_SERVICE = -51;
+  static const SERVICE = -50;
+
+  static const USE_CASE = 0;
+}
+
+abstract class CustomEnvironment {
+  static const String integrationTest = 'integration_test';
+}

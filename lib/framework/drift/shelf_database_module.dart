@@ -4,19 +4,24 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:injectable/injectable.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
+import 'package:project_shelf_v3/injectable.dart';
 
 @module
-abstract class ShelfDatabaseMock {
-  final _database = ShelfDatabase(
+abstract class ShelfDatabaseModule {
+  @Singleton(
+    env: [Environment.prod, CustomEnvironment.integrationTest],
+    dispose: dispose,
+    order: RegisterOrder.BASE,
+  )
+  ShelfDatabase get module => ShelfDatabase();
+
+  @Singleton(env: [Environment.test], dispose: dispose)
+  ShelfDatabase get testModule => ShelfDatabase(
     DatabaseConnection(
       NativeDatabase.memory(),
       closeStreamsSynchronously: true,
     ),
   );
-
-  @test
-  @Singleton(dispose: dispose)
-  ShelfDatabase get mock => _database;
 }
 
 FutureOr dispose(ShelfDatabase database) async {

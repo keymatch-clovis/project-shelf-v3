@@ -65,12 +65,13 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return Padding(
-    padding: MEDIUM_SPACING_ALL,
+      padding: MEDIUM_SPACING_ALL,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: COMPACT_SPACING.toDouble(),
         children: [
           ShelfTextField(
+            key: const ValueKey('key'),
             isRequired: true,
             value: widget.nameInput.value,
             label: localizations.name,

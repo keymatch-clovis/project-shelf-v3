@@ -112,6 +112,7 @@ class _ShelfTextFieldState extends State<ShelfTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
+          key: widget.key,
           enabled: widget.enabled,
           readOnly: widget.readOnly,
           maxLength: widget.maxLength,

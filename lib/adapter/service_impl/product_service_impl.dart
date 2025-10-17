@@ -1,20 +1,23 @@
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
+import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
-import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Injectable(as: ProductService)
+@Singleton(
+  as: ProductService,
+  env: [Environment.prod, CustomEnvironment.integrationTest],
+  order: RegisterOrder.SERVICE,
+)
 final class ProductServiceImpl implements ProductService {
   final Logger _logger = Logger(printer: ImplPrinter());
 
   final _repository = getIt.get<ProductRepository>();
-  final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   @override
   Future<Id> create(Product product) async {
@@ -30,12 +33,11 @@ final class ProductServiceImpl implements ProductService {
   }
 
   @override
-  Future<Product> update(Product product) async {
+  Future<Product> update(
+    Product product, {
+    required Currency defaultCurrency,
+  }) async {
     _logger.d('Updating product with: $product');
-
-    final defaultCurrency = await _appPreferencesService
-        .getAppPreferences()
-        .then((it) => it.defaultCurrency);
 
     return await _repository
         .update(
@@ -51,72 +53,57 @@ final class ProductServiceImpl implements ProductService {
   }
 
   @override
-  Stream<List<Product>> watch() {
+  Stream<List<Product>> watch({required Currency defaultCurrency}) {
     _logger.d('Watching products');
 
-    // NOTE: I do this here and not inside the `watch` method, because I don't
-    // really know if the stream emits more values after one call. So it might
-    // get the app preferences more than once.
-    final appPreferences = _appPreferencesService.getAppPreferences();
-
-    return _repository.watch().asyncMap((dtos) async {
-      final preferences = await appPreferences;
-
-      return dtos
-          .map((dto) => dto.toEntity(preferences.defaultCurrency))
-          .toList();
+    return _repository.watch().map((dtos) {
+      return dtos.map((dto) => dto.toEntity(defaultCurrency)).toList();
     });
   }
 
   @override
-  Stream<List<Product>> search(String value) {
+  Stream<List<Product>> search(
+    String value, {
+    required Currency defaultCurrency,
+  }) {
     _logger.d('Searching product with: $value');
 
-    // NOTE: I do this here and not inside the `search` method, because I don't
-    // really know if the stream emits more values after one call. So it might
-    // get the app preferences more than once.
-    final appPreferences = _appPreferencesService.getAppPreferences();
-
-    return _repository.search(value).asyncMap((dtos) async {
-      final preferences = await appPreferences;
-
-      return dtos
-          .map((dto) => dto.toEntity(preferences.defaultCurrency))
-          .toList();
+    return _repository.search(value).map((dtos) {
+      return dtos.map((dto) => dto.toEntity(defaultCurrency)).toList();
     });
   }
 
   @override
-  Future<Product?> searchWithName(String name) async {
+  Future<Product?> searchWithName(
+    String name, {
+    required Currency defaultCurrency,
+  }) async {
     _logger.d('Searching product with name: $name');
-
-    final appPreferences = await _appPreferencesService.getAppPreferences();
 
     return _repository
         .searchWithName(name)
-        .then((dto) => dto?.toEntity(appPreferences.defaultCurrency));
+        .then((dto) => dto?.toEntity(defaultCurrency));
   }
 
   @override
-  Future<Product> findById(Id id) async {
+  Future<Product> findById(Id id, {required Currency defaultCurrency}) async {
     _logger.d('Finding product with ID: $id');
-
-    final appPreferences = await _appPreferencesService.getAppPreferences();
 
     return _repository
         .findById(id)
-        .then((dto) => dto.toEntity(appPreferences.defaultCurrency));
+        .then((dto) => dto.toEntity(defaultCurrency));
   }
 
   @override
-  Future<Product> findByName(String name) async {
+  Future<Product> findByName(
+    String name, {
+    required Currency defaultCurrency,
+  }) async {
     _logger.d('Finding product with name: $name');
-
-    final appPreferences = await _appPreferencesService.getAppPreferences();
 
     return _repository
         .findByName(name)
-        .then((dto) => dto.toEntity(appPreferences.defaultCurrency));
+        .then((dto) => dto.toEntity(defaultCurrency));
   }
 
   @override

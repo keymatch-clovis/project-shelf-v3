@@ -10,7 +10,11 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/city.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(as: AssetService)
+@Singleton(
+  as: AssetService,
+  env: [Environment.prod, CustomEnvironment.integrationTest],
+  order: RegisterOrder.DEPENDANT_SERVICE,
+)
 final class AssetServiceImpl implements AssetService {
   final _logger = Logger(printer: ImplPrinter());
 

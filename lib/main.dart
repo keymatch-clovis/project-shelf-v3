@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:injectable/injectable.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/ui/routing/router.dart';
@@ -12,7 +13,7 @@ void main() async {
   // Almost all projects have this.
   WidgetsFlutterBinding.ensureInitialized();
 
-  configureDependencies();
+  configureDependencies(Environment.prod);
 
   await Jiffy.setLocale(PlatformDispatcher.instance.locale.languageCode);
 
