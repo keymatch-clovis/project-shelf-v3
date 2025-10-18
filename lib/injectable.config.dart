@@ -27,11 +27,14 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart'
     as _i327;
 import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
 import 'package:project_shelf_v3/app/service/city_service.dart' as _i936;
+import 'package:project_shelf_v3/app/service/customer_service.dart' as _i1059;
 import 'package:project_shelf_v3/app/service/product_service.dart' as _i339;
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart'
     as _i367;
 import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart'
     as _i950;
+import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart'
+    as _i953;
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart'
     as _i84;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
@@ -45,6 +48,8 @@ import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.da
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart'
     as _i295;
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart' as _i513;
+import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart'
+    as _i426;
 import 'package:project_shelf_v3/framework/drift/dao/invoice_dao.dart' as _i481;
 import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart' as _i382;
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart' as _i310;
@@ -95,7 +100,6 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_prod, _integration_test},
       preResolve: true,
     );
-    gh.singleton<_i339.ProductService>(() => _i382.ProductDao());
     gh.singleton<_i549.CompanyInfoRepository>(
       () => _i254.CompanyInfoDocument(),
     );
@@ -117,9 +121,11 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_prod, _integration_test},
     );
     gh.singleton<_i429.AssetService>(() => _i92.AssetServiceImpl());
+    gh.singleton<_i339.ProductService>(() => _i382.ProductDao());
     gh.singleton<_i327.AppPreferencesService>(
       () => _i523.AppPreferencesServiceImpl(),
     );
+    gh.singleton<_i1059.CustomerService>(() => _i426.CustomerDao());
     gh.singleton<_i936.CityService>(() => _i513.CityDao());
     gh.singleton<_i367.GetAppPreferencesUseCase>(
       () => _i367.GetAppPreferencesUseCase(),
@@ -132,6 +138,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i950.SearchCitiesUseCase>(
       () => _i950.SearchCitiesUseCase(),
+    );
+    gh.lazySingleton<_i953.CreateCustomerUseCase>(
+      () => _i953.CreateCustomerUseCase(),
     );
     gh.lazySingleton<_i875.CreateProductUseCase>(
       () => _i875.CreateProductUseCase(),

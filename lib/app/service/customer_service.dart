@@ -1,21 +1,17 @@
 import 'package:oxidized/oxidized.dart';
-import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
 
 abstract interface class CustomerService {
-  /// CREATE related
-  Future<Id> create(Customer customer);
+  Future<Result<Id, Exception>> create(Customer customer);
+  Future<Result<Unit, Exception>> update(Customer customer);
 
-  /// UPDATE related
-  Future<void> update(Customer customer);
+  Stream<Iterable<Customer>> watch();
 
-  /// READ related
-  Stream<Iterable<CustomerResponse>> watch();
-  Stream<Iterable<CustomerResponse>> search(String query);
-  Future<CustomerResponse> findWithId(Id id);
+  Stream<Iterable<Customer>> search(String query);
 
-  /// DELETE related
+  Future<Result<Customer, Exception>> findWithId(Id id);
+
   Future<void> delete(Id id);
   Future<Result> deleteAll();
 }

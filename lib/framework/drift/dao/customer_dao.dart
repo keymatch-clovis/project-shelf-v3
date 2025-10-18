@@ -1,38 +1,48 @@
 import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
-import 'package:project_shelf_v3/adapter/repository/customer_repository.dart';
+import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/entity/customer.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-class CustomerDao implements CustomerRepository {
-  final Logger _logger = Logger(printer: FrameworkPrinter());
+@Singleton(as: CustomerService, order: RegisterOrder.SERVICE)
+class CustomerDao implements CustomerService {
+  final _logger = Logger(printer: FrameworkPrinter());
 
   final _database = getIt.get<ShelfDatabase>();
 
   /// CREATE related
   @override
-  Future<Id> create(CreateArgs args) async {
-    _logger.d("Creating customer with: $args");
+  Future<Result<Id, Exception>> create(Customer customer) async {
+    _logger.d("Creating customer with: $customer");
     final dateTime = DateTime.now();
 
-    return await _database
-        .into(_database.customerTable)
-        .insert(
-          CustomerTableCompanion.insert(
-            name: args.name,
-            businessName: Value.absentIfNull(args.businessName),
-            city: args.cityId,
-            address: Value.absentIfNull(args.address),
-            phoneNumber: Value.absentIfNull(args.phoneNumber),
-            createdAt: dateTime,
-            updatedAt: dateTime,
+    return Result.asyncOf(
+      () => _database
+          .into(_database.customerTable)
+          .insert(
+            CustomerTableCompanion.insert(
+              name: customer.name,
+              businessName: Value.absentIfNull(
+                customer.businessName.toNullable(),
+              ),
+              city: customer.cityId,
+              address: Value.absentIfNull(customer.address.toNullable()),
+              phoneNumber: Value.absentIfNull(
+                customer.phoneNumber.toNullable(),
+              ),
+              createdAt: dateTime,
+              updatedAt: dateTime,
+            ),
           ),
-        );
+    );
   }
 
   /// READ related
@@ -119,11 +129,14 @@ class CustomerDao implements CustomerRepository {
   }
 
   @override
-  Future<CustomerDto> findWithId(Id id) {
+  Future<Result<Customer, Exception>> findWithId(Id id) {
     _logger.d("Finding customer with ID: $id");
-    return (_database.select(_database.customerTable)
-          ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull()))
-        .getSingle();
+    final query = _database.select(_database.customerTable)
+      ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull());
+
+    return Result.asyncOf(
+      query.getSingle,
+    ).map((it) => it.toEntity()).mapErr((err) => err as SqliteException);
   }
 
   @override
@@ -149,23 +162,22 @@ class CustomerDao implements CustomerRepository {
 
   /// UPDATE related
   @override
-  Future<CustomerDto> update(UpdateArgs args) async {
-    _logger.d("Updating customer with: $args");
-
+  Future<Result<Unit, Exception>> update(Customer customer) async {
     final statement = _database.update(_database.customerTable)
-      ..where((r) => r.id.equals(args.id));
+      ..where((r) => r.id.equals(customer.id.unwrap()));
 
-    await statement.write(
-      CustomerTableCompanion(
-        name: Value(args.name),
-        city: Value(args.cityId),
-        address: Value.absentIfNull(args.address),
-        phoneNumber: Value.absentIfNull(args.phoneNumber),
-        updatedAt: Value(DateTime.now()),
+    _logger.d("Updating customer with: $customer");
+    return Result.asyncOf(
+      () => statement.write(
+        CustomerTableCompanion(
+          name: Value(customer.name),
+          city: Value(customer.cityId),
+          address: Value.absentIfNull(customer.address.toNullable()),
+          phoneNumber: Value.absentIfNull(customer.phoneNumber.toNullable()),
+          updatedAt: Value(DateTime.now()),
+        ),
       ),
-    );
-
-    return findWithId(args.id);
+    ).map((_) => unit).mapErr((err) => err as SqliteException);
   }
 
   /// DELETE related
@@ -186,5 +198,17 @@ class CustomerDao implements CustomerRepository {
     return Result.asyncOf(_database.delete(_database.customerTable).go)
     // Discard the result, we only need to know everything went fine.
     .map((_) => unit);
+  }
+
+  @override
+  Stream<Iterable<Customer>> search(String query) {
+    // TODO: implement search
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<Iterable<Customer>> watch() {
+    // TODO: implement watch
+    throw UnimplementedError();
   }
 }

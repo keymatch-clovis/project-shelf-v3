@@ -12,7 +12,7 @@ import 'package:project_shelf_v3/framework/drift/exception_extension.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(as: ProductService, order: RegisterOrder.REPOSITORY)
+@Singleton(as: ProductService, order: RegisterOrder.SERVICE)
 class ProductDao implements ProductService {
   final Logger _logger = Logger(printer: FrameworkPrinter());
 
@@ -24,28 +24,25 @@ class ProductDao implements ProductService {
 
     _logger.d("Creating product with: $product");
     return Result.asyncOf(
-      () => _database
-          .into(_database.productTable)
-          .insert(
-            ProductTableCompanion.insert(
-              name: product.name,
-              defaultPrice: product.defaultPrice.minorUnits.toInt(),
-              purchasePrice: product.purchasePrice.minorUnits.toInt(),
-              stock: product.stock,
-              // Although this value is presently derived from the default
-              // price, one could just as suitably utilise the purchase price,
-              // as it ought to make no substantive difference.
-              currencyIsoCode: product.defaultPrice.currency.isoCode,
-              createdAt: dateTime,
-              updatedAt: dateTime,
-            ),
-          ),
-    ).mapErr((err) {
-      if (err is SqliteException) {
-        return err.toShelfException();
-      }
-      throw AssertionError(err);
-    });
+          () => _database
+              .into(_database.productTable)
+              .insert(
+                ProductTableCompanion.insert(
+                  name: product.name,
+                  defaultPrice: product.defaultPrice.minorUnits.toInt(),
+                  purchasePrice: product.purchasePrice.minorUnits.toInt(),
+                  stock: product.stock,
+                  // Although this value is presently derived from the default
+                  // price, one could just as suitably utilise the purchase price,
+                  // as it ought to make no substantive difference.
+                  currencyIsoCode: product.defaultPrice.currency.isoCode,
+                  createdAt: dateTime,
+                  updatedAt: dateTime,
+                ),
+              ),
+        )
+        .mapErr((err) => err as SqliteException)
+        .mapErr((err) => err.toShelfException());
   }
 
   @override
