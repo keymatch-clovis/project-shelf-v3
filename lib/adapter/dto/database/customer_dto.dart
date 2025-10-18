@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
 
@@ -34,12 +35,12 @@ class CustomerDto {
 
   Customer toEntity() {
     return Customer(
-      id: id,
+      id: Some(id),
       name: name,
       cityId: city,
-      businessName: businessName,
-      address: address,
-      phoneNumber: phoneNumber,
+      businessName: Option.from(businessName),
+      address: Option.from(address),
+      phoneNumber: Option.from(phoneNumber),
     );
   }
 }

@@ -9,53 +9,38 @@ final class Customer {
   // https://stackoverflow.com/questions/723587/whats-the-longest-possible-worldwide-phone-number-i-should-consider-in-sql-varc#4729239
   static const MAX_PHONE_NUMBER_LENGTH = 50;
 
-  final String name;
-  final Id cityId;
+  String name;
+  Id cityId;
 
   Option<Id> id;
-  final Option<String> businessName;
-  final Option<String> address;
-  final Option<String> phoneNumber;
+  Option<String> businessName;
+  Option<String> address;
+  Option<String> phoneNumber;
 
   Customer({
-    required String name,
+    required this.name,
     required this.cityId,
-
-    Id? id,
-    String? businessName,
-    String? address,
-    String? phoneNumber,
-  }) : id = Option.from(id),
-       name = name.trim().toUpperCase(),
-       businessName = Option.from(businessName?.trim().toUpperCase()),
-       address = Option.from(address?.trim().toUpperCase()),
-       phoneNumber = Option.from(phoneNumber?.trim()) {
+    required this.id,
+    required this.businessName,
+    required this.address,
+    required this.phoneNumber,
+  }) {
+    name = name.trim().toUpperCase();
     assert(name.length <= MAX_NAME_LENGTH);
-    this.businessName.map((it) {
+
+    businessName = businessName.map((it) => it.trim().toUpperCase());
+    businessName.map((it) {
       assert(it.length <= MAX_BUSINESS_NAME_LENGTH);
     });
-    this.address.map((it) {
+
+    address = address.map((it) => it.trim().toUpperCase());
+    address.map((it) {
       assert(it.length <= MAX_ADDRESS_LENGTH);
     });
-    this.phoneNumber.map((it) {
+
+    phoneNumber = phoneNumber.map((it) => it.trim());
+    phoneNumber.map((it) {
       assert(it.length <= MAX_PHONE_NUMBER_LENGTH);
     });
   }
-
-  factory Customer.fromOptional({
-    required String name,
-    required Id cityId,
-
-    Option<Id>? id,
-    Option<String>? businessName,
-    Option<String>? address,
-    Option<String>? phoneNumber,
-  }) => Customer(
-    name: name,
-    cityId: cityId,
-    id: id?.toNullable(),
-    businessName: businessName?.toNullable(),
-    address: address?.toNullable(),
-    phoneNumber: phoneNumber?.toNullable(),
-  );
 }

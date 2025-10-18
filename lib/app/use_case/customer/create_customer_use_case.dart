@@ -16,12 +16,13 @@ final class CreateCustomerUseCase {
   Future<Result<Customer, Exception>> exec(
     CreateCustomerRequest request,
   ) async {
-    final customer = Customer.fromOptional(
+    final customer = Customer(
+      id: None(),
       name: request.name,
       cityId: request.cityId,
+      businessName: request.businessName,
       address: request.address,
       phoneNumber: request.phoneNumber,
-      businessName: request.businessName,
     );
 
     _logger.d('Creating customer');

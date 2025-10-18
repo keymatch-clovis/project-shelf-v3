@@ -6,6 +6,7 @@ import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
+import 'package:project_shelf_v3/common/exception/not_found_exception.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
@@ -134,9 +135,10 @@ class CustomerDao implements CustomerService {
     final query = _database.select(_database.customerTable)
       ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull());
 
-    return Result.asyncOf(
-      query.getSingle,
-    ).map((it) => it.toEntity()).mapErr((err) => err as SqliteException);
+    return Result.asyncOf(query.getSingle)
+        .map((it) => it.toEntity())
+        .mapErr((err) => err as StateError)
+        .mapErr((_) => NotFoundException());
   }
 
   @override
@@ -202,13 +204,33 @@ class CustomerDao implements CustomerService {
 
   @override
   Stream<Iterable<Customer>> search(String query) {
-    // TODO: implement search
-    throw UnimplementedError();
+    return _database
+        .customSelect(
+          '''
+            SELECT 
+              customer.id, rank
+            FROM customer_fts fts
+              JOIN customer ON customer.id = fts.customer_id
+            WHERE
+              customer.pending_delete_until IS NULL
+              AND customer_fts MATCH ?
+            ORDER BY rank;
+          ''',
+          // https://sqlite.org/fts5.html
+          // NOTE: Notice the escaped string here. This is important.
+          variables: [Variable.withString('"$query"*')],
+          readsFrom: {_database.customerTable, _database.cityTable},
+        )
+        .watch()
+        .map((rows) => rows.map((row) => CustomerDto.fromJson(row.data)))
+        .map((it) => it.map((it) => it.toEntity()));
   }
 
   @override
-  Stream<Iterable<Customer>> watch() {
-    // TODO: implement watch
-    throw UnimplementedError();
+  Stream<Iterable<Customer>> get() {
+    final query = _database.select(_database.customerTable)
+      ..orderBy([(e) => OrderingTerm(expression: e.name)]);
+
+    return query.watch().map((it) => it.map((it) => it.toEntity()));
   }
 }

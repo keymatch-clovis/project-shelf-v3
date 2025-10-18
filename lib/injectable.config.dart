@@ -35,6 +35,16 @@ import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart'
     as _i950;
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart'
     as _i953;
+import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.dart'
+    as _i1044;
+import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart'
+    as _i657;
+import 'package:project_shelf_v3/app/use_case/customer/get_customers_use_case.dart'
+    as _i215;
+import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart'
+    as _i167;
+import 'package:project_shelf_v3/app/use_case/customer/update_customer_use_case.dart'
+    as _i318;
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart'
     as _i84;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
@@ -139,8 +149,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i950.SearchCitiesUseCase>(
       () => _i950.SearchCitiesUseCase(),
     );
+    gh.lazySingleton<_i318.UpdateCustomerUseCase>(
+      () => _i318.UpdateCustomerUseCase(),
+    );
+    gh.lazySingleton<_i657.FindCustomerUseCase>(
+      () => _i657.FindCustomerUseCase(),
+    );
     gh.lazySingleton<_i953.CreateCustomerUseCase>(
       () => _i953.CreateCustomerUseCase(),
+    );
+    gh.lazySingleton<_i167.SearchCustomersUseCase>(
+      () => _i167.SearchCustomersUseCase(),
+    );
+    gh.lazySingleton<_i1044.DeleteCustomerUseCase>(
+      () => _i1044.DeleteCustomerUseCase(),
     );
     gh.lazySingleton<_i875.CreateProductUseCase>(
       () => _i875.CreateProductUseCase(),
@@ -153,6 +175,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i295.WatchProductsUseCase>(
       () => _i295.WatchProductsUseCase(),
+    );
+    gh.lazySingleton<_i215.GetCustomersUseCase>(
+      () => _i215.GetCustomersUseCase(),
     );
     return this;
   }
