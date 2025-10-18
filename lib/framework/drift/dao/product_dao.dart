@@ -4,82 +4,92 @@ import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
-import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
-import 'package:project_shelf_v3/common/exception/product_name_taken_exception.dart';
+import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/entity/product.dart';
+import 'package:project_shelf_v3/framework/drift/exception_extension.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(as: ProductRepository, order: RegisterOrder.REPOSITORY)
-class ProductDao implements ProductRepository {
+@Singleton(as: ProductService, order: RegisterOrder.REPOSITORY)
+class ProductDao implements ProductService {
   final Logger _logger = Logger(printer: FrameworkPrinter());
 
   final _database = getIt.get<ShelfDatabase>();
 
   @override
-  Future<Result<Id, Exception>> create(CreateArgs args) async {
+  Future<Result<Id, Exception>> create(Product product) async {
     final dateTime = DateTime.now();
 
-    _logger.d("Creating product with: $args");
+    _logger.d("Creating product with: $product");
     return Result.asyncOf(
       () => _database
           .into(_database.productTable)
           .insert(
             ProductTableCompanion.insert(
-              name: args.name,
-              defaultPrice: args.defaultPrice,
-              purchasePrice: args.purchasePrice,
-              currencyIsoCode: args.currencyIsoCode,
-              stock: args.stock,
+              name: product.name,
+              defaultPrice: product.defaultPrice.minorUnits.toInt(),
+              purchasePrice: product.purchasePrice.minorUnits.toInt(),
+              stock: product.stock,
+              // Although this value is presently derived from the default
+              // price, one could just as suitably utilise the purchase price,
+              // as it ought to make no substantive difference.
+              currencyIsoCode: product.defaultPrice.currency.isoCode,
               createdAt: dateTime,
               updatedAt: dateTime,
             ),
           ),
     ).mapErr((err) {
       if (err is SqliteException) {
-        // These come from:
-        // https://sqlite.org/rescode.html#primary_result_code_list
-        return switch (err.resultCode) {
-          19 => ProductNameTakenException(),
-          _ => err,
-        };
+        return err.toShelfException();
       }
-
       throw AssertionError(err);
     });
   }
 
   @override
-  Future<ProductDto> update(UpdateArgs args) async {
-    _logger.d("Updating product with: $args");
-
+  Future<Result<Unit, Exception>> update(Product product) async {
     final statement = _database.update(_database.productTable)
-      ..where((r) => r.id.equals(args.id));
+      ..where((r) => r.id.equals(product.id.unwrap()));
 
-    await statement.write(
-      ProductTableCompanion(
-        name: Value(args.name),
-        defaultPrice: Value(args.defaultPrice),
-        purchasePrice: Value(args.purchasePrice),
-        stock: Value(args.stock),
-        updatedAt: Value(DateTime.now()),
+    _logger.d("Updating product with: $product");
+    return Result.asyncOf(
+      () => statement.write(
+        ProductTableCompanion(
+          name: Value(product.name),
+          defaultPrice: Value(product.defaultPrice.minorUnits.toInt()),
+          purchasePrice: Value(product.purchasePrice.minorUnits.toInt()),
+          stock: Value(product.stock),
+          // Although this value is presently derived from the default price,
+          // one could just as suitably utilise the purchase price, as it ought
+          // to make no substantive difference.
+          currencyIsoCode: Value(product.defaultPrice.currency.isoCode),
+          updatedAt: Value(DateTime.now()),
+        ),
       ),
-    );
-
-    return await findById(args.id);
+    ).map((_) => unit).mapErr((err) {
+      if (err is SqliteException) {
+        return err.toShelfException();
+      }
+      throw AssertionError(err);
+    });
   }
 
   @override
-  Stream<List<ProductDto>> watch() {
+  Stream<Iterable<Product>> watch() {
     _logger.d("Watching products");
-    return (_database.select(
-      _database.productTable,
-    )..orderBy([(e) => OrderingTerm(expression: e.name)])).watch();
+
+    final query = _database.select(_database.productTable)
+      ..orderBy([(e) => OrderingTerm(expression: e.name)]);
+
+    return query.watch().map((it) {
+      return it.map((it) => it.toEntity());
+    });
   }
 
   @override
-  Stream<List<ProductDto>> search(String value) {
+  Stream<Iterable<Product>> search(String value) {
     _logger.d("Searching products with: $value");
     return _database
         .customSelect(
@@ -98,32 +108,41 @@ class ProductDao implements ProductRepository {
         )
         .watch()
         .map((rows) {
-          return rows.map((row) => ProductDto.fromJson(row.data)).toList();
+          return rows.map((row) => ProductDto.fromJson(row.data));
+        })
+        .map((it) {
+          return it.map((it) => it.toEntity());
         });
   }
 
   @override
-  Future<ProductDto?> searchWithName(String name) {
+  Future<Option<Product>> searchWithName(String name) {
+    final query = _database.select(_database.productTable)
+      ..where((e) => e.name.equals(name) & e.pendingDeleteUntil.isNull());
+
     _logger.d("Searching product with name: $name");
-    return (_database.select(_database.productTable)
-          ..where((e) => e.name.equals(name) & e.pendingDeleteUntil.isNull()))
-        .getSingleOrNull();
+    return query
+        .getSingleOrNull()
+        .then((it) => it?.toEntity())
+        .then(Option.from);
   }
 
   @override
-  Future<ProductDto> findById(Id id) {
+  Future<Product> findById(Id id) {
+    final query = _database.select(_database.productTable)
+      ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull());
+
     _logger.d("Finding product with ID: $id");
-    return (_database.select(_database.productTable)
-          ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull()))
-        .getSingle();
+    return query.getSingle().then((it) => it.toEntity());
   }
 
   @override
-  Future<ProductDto> findByName(String name) {
+  Future<Product> findByName(String name) {
+    final query = _database.select(_database.productTable)
+      ..where((e) => e.name.equals(name) & e.pendingDeleteUntil.isNull());
+
     _logger.d("Finding product with name: $name");
-    return (_database.select(_database.productTable)
-          ..where((e) => e.name.equals(name) & e.pendingDeleteUntil.isNull()))
-        .getSingle();
+    return query.getSingle().then((it) => it.toEntity());
   }
 
   @override

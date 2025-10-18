@@ -93,4 +93,23 @@ void main() {
     expect(updatedProduct.purchasePrice.minorUnits.toInt(), 20);
     expect(updatedProduct.stock, 20);
   });
+
+  test('Updates product, fails with product name taken', () async {
+    final product1 = await getIt
+        .get<CreateProductUseCase>()
+        .exec(CreateProductRequest(name: faker.randomGenerator.string(10)))
+        .unwrap();
+
+    final product2 = await getIt
+        .get<CreateProductUseCase>()
+        .exec(CreateProductRequest(name: faker.randomGenerator.string(10)))
+        .unwrap();
+
+    final result = await getIt.get<UpdateProductUseCase>().exec(
+      UpdateProductRequest(id: product2.id.unwrap(), name: product1.name),
+    );
+
+    expect(result.isErr(), true);
+    expect(result.unwrapErr(), isA<ProductNameTakenException>());
+  });
 }

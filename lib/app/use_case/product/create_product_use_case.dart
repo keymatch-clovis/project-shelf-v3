@@ -33,7 +33,7 @@ final class CreateProductUseCase {
     );
 
     _logger.d('Saving product');
-    return await _service.save(product).map((id) {
+    return await _service.create(product).map((id) {
       product.id = Option.some(id);
       return product;
     });

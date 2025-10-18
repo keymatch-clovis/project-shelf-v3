@@ -14,7 +14,7 @@ final class WatchProductsUseCase {
   final _service = getIt.get<ProductService>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
-  Stream<List<Product>> exec() {
+  Stream<Iterable<Product>> exec() {
     _logger.d('Watching products');
 
     return Stream.fromFuture(

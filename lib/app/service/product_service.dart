@@ -1,27 +1,18 @@
-import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 
 abstract interface class ProductService {
   /// CREATE related
-  Future<Result<Id, Exception>> save(Product product);
-
-  /// UPDATE related
-  Future<Product> update(Product product);
+  Future<Result<Id, Exception>> create(Product product);
+  Future<Result<Unit, Exception>> update(Product product);
 
   /// READ related
-  Stream<List<Product>> watch();
+  Stream<Iterable<Product>> watch();
 
-  Stream<List<Product>> search(
-    String value, {
-    required Currency defaultCurrency,
-  });
+  Stream<Iterable<Product>> search(String value);
 
-  Future<Product?> searchWithName(
-    String name, {
-    required Currency defaultCurrency,
-  });
+  Future<Option<Product>> searchWithName(String name);
 
   Future<Product> findById(Id id);
   Future<Product> findByName(String name);

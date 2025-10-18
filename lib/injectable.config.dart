@@ -19,16 +19,12 @@ import 'package:project_shelf_v3/adapter/repository/company_info_repository.dart
     as _i549;
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart'
     as _i144;
-import 'package:project_shelf_v3/adapter/repository/product_repository.dart'
-    as _i468;
 import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_impl.dart'
     as _i523;
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart'
     as _i92;
 import 'package:project_shelf_v3/adapter/service_impl/invoice_service_impl.dart'
     as _i13;
-import 'package:project_shelf_v3/adapter/service_impl/product_service_impl.dart'
-    as _i376;
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart'
     as _i327;
 import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
@@ -94,7 +90,7 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_prod, _integration_test},
       preResolve: true,
     );
-    gh.singleton<_i468.ProductRepository>(() => _i382.ProductDao());
+    gh.singleton<_i339.ProductService>(() => _i382.ProductDao());
     gh.singleton<_i549.CompanyInfoRepository>(
       () => _i254.CompanyInfoDocument(),
     );
@@ -117,18 +113,17 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i429.AssetService>(() => _i92.AssetServiceImpl());
     gh.singleton<_i719.InvoiceService>(() => _i13.InvoiceServiceImpl());
-    gh.singleton<_i339.ProductService>(() => _i376.ProductServiceImpl());
     gh.singleton<_i327.AppPreferencesService>(
       () => _i523.AppPreferencesServiceImpl(),
     );
     gh.singleton<_i367.GetAppPreferencesUseCase>(
       () => _i367.GetAppPreferencesUseCase(),
     );
-    gh.singleton<_i350.SearchProductUseCase>(
-      () => _i350.SearchProductUseCase(),
-    );
     gh.lazySingleton<_i875.CreateProductUseCase>(
       () => _i875.CreateProductUseCase(),
+    );
+    gh.lazySingleton<_i350.SearchProductUseCase>(
+      () => _i350.SearchProductUseCase(),
     );
     gh.lazySingleton<_i572.UpdateProductUseCase>(
       () => _i572.UpdateProductUseCase(),

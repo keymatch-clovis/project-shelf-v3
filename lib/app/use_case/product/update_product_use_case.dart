@@ -16,7 +16,7 @@ final class UpdateProductUseCase {
   final _service = getIt.get<ProductService>();
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
-  Future<Result<Product, Error>> exec(UpdateProductRequest request) async {
+  Future<Result<Product, Exception>> exec(UpdateProductRequest request) async {
     final defaultCurrency = await _appPreferencesService
         .getAppPreferences()
         .then((it) => it.defaultCurrency);
@@ -34,8 +34,6 @@ final class UpdateProductUseCase {
     );
 
     _logger.d('Updating product with: $product');
-    return await _service.update(product).then((it) {
-      return Result.ok(it);
-    });
+    return _service.update(product).map((_) => product);
   }
 }
