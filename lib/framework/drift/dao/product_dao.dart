@@ -1,9 +1,11 @@
 import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/adapter/repository/product_repository.dart';
+import 'package:project_shelf_v3/common/exception/product_name_taken_exception.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
@@ -34,7 +36,18 @@ class ProductDao implements ProductRepository {
               updatedAt: dateTime,
             ),
           ),
-    );
+    ).mapErr((err) {
+      if (err is SqliteException) {
+        // These come from:
+        // https://sqlite.org/rescode.html#primary_result_code_list
+        return switch (err.resultCode) {
+          19 => ProductNameTakenException(),
+          _ => err,
+        };
+      }
+
+      throw AssertionError(err);
+    });
   }
 
   @override

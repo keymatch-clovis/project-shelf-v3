@@ -9,7 +9,7 @@ import 'package:project_shelf_v3/app/dto/update_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
-import 'package:project_shelf_v3/common/error/product_name_taken_error.dart';
+import 'package:project_shelf_v3/common/exception/product_name_taken_exception.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
 void main() {
@@ -41,14 +41,14 @@ void main() {
   test('Creates product, fails with product name taken', () async {
     final request = CreateProductRequest(
       name: faker.randomGenerator.string(10),
-      defaultPrice: Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name),
-      purchasePrice: Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name),
-      stock: 10,
     );
 
     await getIt.get<CreateProductUseCase>().exec(request).unwrap();
 
     final result = await getIt.get<CreateProductUseCase>().exec(request);
+
+    expect(result.isErr(), true);
+    expect(result.unwrapErr(), isA<ProductNameTakenException>());
   });
 
   test('Reads products', () async {
