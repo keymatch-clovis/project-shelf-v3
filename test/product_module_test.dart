@@ -7,6 +7,8 @@ import 'package:project_shelf_v3/app/common/constants.dart';
 import 'package:project_shelf_v3/app/dto/create_product_request.dart';
 import 'package:project_shelf_v3/app/dto/update_product_request.dart';
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
 import 'package:project_shelf_v3/common/exception/product_name_taken_exception.dart';
@@ -111,5 +113,20 @@ void main() {
 
     expect(result.isErr(), true);
     expect(result.unwrapErr(), isA<ProductNameTakenException>());
+  });
+
+  test('Deletes product', () async {
+    final product = await getIt
+        .get<CreateProductUseCase>()
+        .exec(CreateProductRequest(name: faker.randomGenerator.string(10)))
+        .unwrap();
+
+    await getIt.get<DeleteProductUseCase>().exec(product.id.unwrap());
+
+    final result = await getIt.get<SearchProductUseCase>().exec(
+      name: product.name,
+    );
+
+    expect(result.isNone(), true);
   });
 }

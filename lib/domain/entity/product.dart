@@ -2,7 +2,9 @@ import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
-class Product {
+final class Product {
+  static const MAX_NAME_SIZE = 255;
+
   String name;
   Money defaultPrice;
   Money purchasePrice;
@@ -22,6 +24,8 @@ class Product {
     assert(!defaultPrice.isNegative);
     assert(!purchasePrice.isNegative);
     assert(stock >= 0);
+
+    assert(name.length <= MAX_NAME_SIZE);
 
     assert(defaultPrice.isInSameCurrencyAs(purchasePrice));
   }

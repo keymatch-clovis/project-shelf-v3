@@ -34,6 +34,8 @@ import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preference
     as _i367;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
     as _i875;
+import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart'
+    as _i925;
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart'
     as _i350;
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart'
@@ -118,6 +120,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i367.GetAppPreferencesUseCase>(
       () => _i367.GetAppPreferencesUseCase(),
+    );
+    gh.singleton<_i925.DeleteProductUseCase>(
+      () => _i925.DeleteProductUseCase(),
     );
     gh.lazySingleton<_i875.CreateProductUseCase>(
       () => _i875.CreateProductUseCase(),
