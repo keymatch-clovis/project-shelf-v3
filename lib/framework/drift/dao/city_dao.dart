@@ -1,19 +1,22 @@
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
-import 'package:project_shelf_v3/adapter/repository/city_repository.dart';
+import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
+import 'package:project_shelf_v3/domain/entity/city.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-class CityDao implements CityRepository {
+@Singleton(as: CityService, order: RegisterOrder.SERVICE)
+class CityDao implements CityService {
   final _logger = Logger(printer: FrameworkPrinter());
 
   final _database = getIt.get<ShelfDatabase>();
 
   /// CREATE related
   @override
-  Future<void> createMany(Iterable<CreateArgs> args) async {
+  Future<void> createMany(Iterable<City> args) async {
     _logger.d("Creating cities: ${args.length}");
     await _database.batch((batch) {
       batch.insertAll(
@@ -28,9 +31,8 @@ class CityDao implements CityRepository {
     });
   }
 
-  /// READ related
   @override
-  Stream<List<CityDto>> search(String value) {
+  Stream<Iterable<City>> search(String value) {
     _logger.d("Searching cities with: $value");
     return _database
         .customSelect(
@@ -46,14 +48,22 @@ class CityDao implements CityRepository {
           readsFrom: {_database.cityTable},
         )
         .watch()
-        .map((rows) {
-          return rows.map((row) => CityDto.fromJson(row.data)).toList();
-        });
+        .map((rows) => rows.map((row) => CityDto.fromJson(row.data)))
+        .map((it) => it.map((it) => it.toEntity()));
   }
 
-  /// DELETE related
   @override
   Future<void> deleteAll() async {
+    _logger.d('Deleting all cities');
     await _database.delete(_database.cityTable).go();
+  }
+
+  @override
+  Stream<Iterable<City>> get() {
+    _logger.d('Getting cities');
+    return _database
+        .select(_database.cityTable)
+        .watch()
+        .map((it) => it.map((it) => it.toEntity()));
   }
 }

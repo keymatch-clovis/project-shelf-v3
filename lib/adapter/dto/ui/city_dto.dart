@@ -1,5 +1,5 @@
-import 'package:project_shelf_v3/app/dto/city_response.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/entity/city.dart';
 
 final class CityDto {
   final Id id;
@@ -12,9 +12,9 @@ final class CityDto {
     required this.department,
   });
 
-  factory CityDto.fromResponse(CityResponse city) {
-    return CityDto(id: city.id, name: city.name, department: city.department);
-  }
-
   String get fullName => '$name, $department';
+
+  City toEntity() {
+    return City(name: name, department: department);
+  }
 }

@@ -1,11 +1,10 @@
-import 'package:injectable/injectable.dart';
 import 'package:logger/web.dart';
 import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
+import 'package:project_shelf_v3/app/dto/city_response.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/dto/invoice_response.dart';
-import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
@@ -13,7 +12,6 @@ import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-@Singleton(as: InvoiceService, order: RegisterOrder.SERVICE)
 final class InvoiceServiceImpl implements InvoiceService {
   final _logger = Logger(printer: ImplPrinter());
 
@@ -100,7 +98,11 @@ final class InvoiceServiceImpl implements InvoiceService {
           CustomerResponse(
             id: it.$2.id,
             name: it.$2.name,
-            city: it.$3.toResponse(),
+            city: CityResponse(
+              id: it.$3.id,
+              name: it.$3.name,
+              department: it.$3.department,
+            ),
           ),
         );
       });

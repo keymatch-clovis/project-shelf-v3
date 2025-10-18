@@ -1,4 +1,3 @@
-import 'package:project_shelf_v3/app/dto/city_response.dart';
 import 'package:project_shelf_v3/domain/entity/city.dart';
 
 abstract interface class CityService {
@@ -6,7 +5,8 @@ abstract interface class CityService {
   Future<void> createMany(Iterable<City> args);
 
   /// READ related
-  Stream<Iterable<CityResponse>> search(String value);
+  Stream<Iterable<City>> get();
+  Stream<Iterable<City>> search(String value);
 
   /// DELETE related
   Future<void> deleteAll();

@@ -1,3 +1,4 @@
+import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
 import 'package:project_shelf_v3/app/service/asset_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
@@ -5,7 +6,8 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
-class LoadDefaultDataUseCase {
+@LazySingleton(order: RegisterOrder.USE_CASE)
+final class LoadDefaultDataUseCase {
   final _logger = Logger(printer: UseCasePrinter());
 
   /// Services related

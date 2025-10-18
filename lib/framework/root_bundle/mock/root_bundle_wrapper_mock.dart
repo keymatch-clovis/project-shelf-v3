@@ -9,7 +9,9 @@ import 'package:project_shelf_v3/framework/root_bundle/root_bundle_wrapper.dart'
 final class RootBundleWrapperMock implements AssetRepository {
   @override
   Future<String> getCities() {
-    throw UnimplementedError();
+    // Use the [dart:io] package directly.
+    final file = File(Asset.CITIES_ASSET.uri);
+    return file.readAsString();
   }
 
   @override
@@ -20,7 +22,9 @@ final class RootBundleWrapperMock implements AssetRepository {
   }
 
   @override
-  Future<ByteData> getDefaultLogo() {
-    throw UnimplementedError();
+  Future<Uint8List> getDefaultLogo() {
+    // Use the [dart:io] package directly.
+    final file = File(Asset.DEFAULT_LOGO_ASSET.uri);
+    return file.readAsBytes();
   }
 }

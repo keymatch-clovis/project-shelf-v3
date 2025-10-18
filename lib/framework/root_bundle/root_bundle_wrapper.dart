@@ -31,7 +31,14 @@ final class RootBundleWrapper implements AssetRepository {
   }
 
   @override
-  Future<ByteData> getDefaultLogo() {
-    return rootBundle.load(Asset.DEFAULT_LOGO_ASSET.uri);
+  Future<Uint8List> getDefaultLogo() {
+    // The returned [ByteData] can be converted to a [Uint8List] (a list of bytes)
+    // using [Uint8List.sublistView]. Lists of bytes can be used with APIs that
+    // accept [Uint8List] objects, such as [decodeImageFromList], as well as any
+    // API that accepts a [List<int>], such as [File.writeAsBytes] or
+    // [Utf8Codec.decode] (accessible via [utf8]).
+    return rootBundle
+        .load(Asset.DEFAULT_LOGO_ASSET.uri)
+        .then(Uint8List.sublistView);
   }
 }
