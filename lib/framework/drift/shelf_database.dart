@@ -43,7 +43,7 @@ class ShelfDatabase extends _$ShelfDatabase {
     : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   static QueryExecutor _openConnection() {
     Logger(printer: FrameworkPrinter()).i('Opening database');
@@ -153,7 +153,6 @@ class ShelfDatabase extends _$ShelfDatabase {
       """);
 
       // Invoice related
-
       // NOTE: As the invoices are a bit more complicated than the other tables,
       // we will make the triggers as app logic, and not database logic. This
       // means the other tables might also be migrated to app logic. For now

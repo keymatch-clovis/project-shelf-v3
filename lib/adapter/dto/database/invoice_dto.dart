@@ -1,7 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
-import 'package:project_shelf_v3/app/dto/invoice_response.dart';
+import 'package:project_shelf_v3/domain/entity/invoice.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 
 part "invoice_dto.g.dart";
 
@@ -36,15 +38,20 @@ final class InvoiceDto {
     return _$InvoiceDtoFromJson(json);
   }
 
-  InvoiceResponse toResponse(Currency currency) => InvoiceResponse(
-    id: id,
-    number: number,
-    date: date,
-    remainingUnpaidBalance: Money.fromIntWithCurrency(
-      remainingUnpaidBalance,
-      currency,
-    ),
-    total: Money.fromIntWithCurrency(total, currency),
-    customerId: customer,
-  );
+  Invoice toEntity({required Iterable<InvoiceProduct> invoiceProducts}) {
+    final currency = Currency.create(currencyIsoCode, 0);
+
+    return Invoice(
+      id: Some(id),
+      number: Some(number),
+      date: date,
+      currency: currency,
+      remainingUnpaidBalance: Money.fromIntWithCurrency(
+        remainingUnpaidBalance,
+        currency,
+      ),
+      customerId: customer,
+      invoiceProducts: invoiceProducts,
+    );
+  }
 }

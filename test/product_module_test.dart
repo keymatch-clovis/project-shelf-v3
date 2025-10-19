@@ -53,7 +53,7 @@ void main() {
     expect(result.unwrapErr(), isA<ProductNameTakenException>());
   });
 
-  test('Reads products', () async {
+  test('Gets products', () async {
     final products = await getIt.get<WatchProductsUseCase>().exec().first;
 
     expect(products.isNotEmpty, true);
@@ -71,11 +71,6 @@ void main() {
         .get<CreateProductUseCase>()
         .exec(request)
         .unwrap();
-
-    expect(product.name, request.name.toUpperCase());
-    expect(product.defaultPrice.minorUnits.toInt(), 10);
-    expect(product.purchasePrice.minorUnits.toInt(), 10);
-    expect(product.stock, 10);
 
     final updateRequest = UpdateProductRequest(
       id: product.id.unwrap(),

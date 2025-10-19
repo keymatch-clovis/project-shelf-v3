@@ -17,4 +17,5 @@ class InvoiceProductTable extends Table {
   TextColumn get currencyIsoCode => text()();
 
   DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
 }

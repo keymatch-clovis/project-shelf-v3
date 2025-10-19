@@ -1442,6 +1442,17 @@ class $InvoiceProductTableTable extends InvoiceProductTable
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1451,6 +1462,7 @@ class $InvoiceProductTableTable extends InvoiceProductTable
     unitPrice,
     currencyIsoCode,
     createdAt,
+    updatedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1518,6 +1530,14 @@ class $InvoiceProductTableTable extends InvoiceProductTable
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
     return context;
   }
 
@@ -1572,6 +1592,7 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
   final Value<int> unitPrice;
   final Value<String> currencyIsoCode;
   final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const InvoiceProductTableCompanion({
     this.id = const Value.absent(),
     this.invoice = const Value.absent(),
@@ -1580,6 +1601,7 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
     this.unitPrice = const Value.absent(),
     this.currencyIsoCode = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   InvoiceProductTableCompanion.insert({
     this.id = const Value.absent(),
@@ -1589,12 +1611,14 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
     required int unitPrice,
     required String currencyIsoCode,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : invoice = Value(invoice),
        product = Value(product),
        quantity = Value(quantity),
        unitPrice = Value(unitPrice),
        currencyIsoCode = Value(currencyIsoCode),
-       createdAt = Value(createdAt);
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
   static Insertable<InvoiceProductDto> custom({
     Expression<int>? id,
     Expression<int>? invoice,
@@ -1603,6 +1627,7 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
     Expression<int>? unitPrice,
     Expression<String>? currencyIsoCode,
     Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1612,6 +1637,7 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
       if (unitPrice != null) 'unit_price': unitPrice,
       if (currencyIsoCode != null) 'currency_iso_code': currencyIsoCode,
       if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
@@ -1623,6 +1649,7 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
     Value<int>? unitPrice,
     Value<String>? currencyIsoCode,
     Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
   }) {
     return InvoiceProductTableCompanion(
       id: id ?? this.id,
@@ -1632,6 +1659,7 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
       unitPrice: unitPrice ?? this.unitPrice,
       currencyIsoCode: currencyIsoCode ?? this.currencyIsoCode,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -1659,6 +1687,9 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
     return map;
   }
 
@@ -1671,7 +1702,8 @@ class InvoiceProductTableCompanion extends UpdateCompanion<InvoiceProductDto> {
           ..write('quantity: $quantity, ')
           ..write('unitPrice: $unitPrice, ')
           ..write('currencyIsoCode: $currencyIsoCode, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -3349,6 +3381,7 @@ typedef $$InvoiceProductTableTableCreateCompanionBuilder =
       required int unitPrice,
       required String currencyIsoCode,
       required DateTime createdAt,
+      required DateTime updatedAt,
     });
 typedef $$InvoiceProductTableTableUpdateCompanionBuilder =
     InvoiceProductTableCompanion Function({
@@ -3359,6 +3392,7 @@ typedef $$InvoiceProductTableTableUpdateCompanionBuilder =
       Value<int> unitPrice,
       Value<String> currencyIsoCode,
       Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
     });
 
 final class $$InvoiceProductTableTableReferences
@@ -3453,6 +3487,11 @@ class $$InvoiceProductTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$InvoiceTableTableFilterComposer get invoice {
     final $$InvoiceTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -3534,6 +3573,11 @@ class $$InvoiceProductTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$InvoiceTableTableOrderingComposer get invoice {
     final $$InvoiceTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3606,6 +3650,9 @@ class $$InvoiceProductTableTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   $$InvoiceTableTableAnnotationComposer get invoice {
     final $$InvoiceTableTableAnnotationComposer composer = $composerBuilder(
@@ -3697,6 +3744,7 @@ class $$InvoiceProductTableTableTableManager
                 Value<int> unitPrice = const Value.absent(),
                 Value<String> currencyIsoCode = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
               }) => InvoiceProductTableCompanion(
                 id: id,
                 invoice: invoice,
@@ -3705,6 +3753,7 @@ class $$InvoiceProductTableTableTableManager
                 unitPrice: unitPrice,
                 currencyIsoCode: currencyIsoCode,
                 createdAt: createdAt,
+                updatedAt: updatedAt,
               ),
           createCompanionCallback:
               ({
@@ -3715,6 +3764,7 @@ class $$InvoiceProductTableTableTableManager
                 required int unitPrice,
                 required String currencyIsoCode,
                 required DateTime createdAt,
+                required DateTime updatedAt,
               }) => InvoiceProductTableCompanion.insert(
                 id: id,
                 invoice: invoice,
@@ -3723,6 +3773,7 @@ class $$InvoiceProductTableTableTableManager
                 unitPrice: unitPrice,
                 currencyIsoCode: currencyIsoCode,
                 createdAt: createdAt,
+                updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(

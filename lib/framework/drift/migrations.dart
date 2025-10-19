@@ -69,5 +69,17 @@ extension Migrations on GeneratedDatabase {
         ),
       );
     },
+    from3To4: (Migrator m, Schema4 schema) async {
+      // Adds updated at column to invoice product table.
+      await m.alterTable(
+        TableMigration(
+          schema.invoiceProduct,
+          columnTransformer: {
+            schema.invoiceProduct.updatedAt: schema.invoiceProduct.createdAt,
+          },
+          newColumns: [schema.invoiceProduct.updatedAt],
+        ),
+      );
+    },
   );
 }

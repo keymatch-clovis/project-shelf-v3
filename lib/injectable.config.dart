@@ -17,8 +17,6 @@ import 'package:project_shelf_v3/adapter/repository/asset_repository.dart'
     as _i341;
 import 'package:project_shelf_v3/adapter/repository/company_info_repository.dart'
     as _i549;
-import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart'
-    as _i144;
 import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_impl.dart'
     as _i523;
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart'
@@ -28,6 +26,7 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart'
 import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
 import 'package:project_shelf_v3/app/service/city_service.dart' as _i936;
 import 'package:project_shelf_v3/app/service/customer_service.dart' as _i1059;
+import 'package:project_shelf_v3/app/service/invoice_service.dart' as _i719;
 import 'package:project_shelf_v3/app/service/product_service.dart' as _i339;
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart'
     as _i367;
@@ -45,6 +44,12 @@ import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case
     as _i167;
 import 'package:project_shelf_v3/app/use_case/customer/update_customer_use_case.dart'
     as _i318;
+import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart'
+    as _i1054;
+import 'package:project_shelf_v3/app/use_case/invoice/get_invoices_use_case.dart'
+    as _i659;
+import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_use_case.dart'
+    as _i851;
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart'
     as _i84;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
@@ -113,7 +118,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i549.CompanyInfoRepository>(
       () => _i254.CompanyInfoDocument(),
     );
-    gh.singleton<_i144.InvoiceRepository>(() => _i481.InvoiceDao());
     gh.singleton<_i341.AssetRepository>(
       () => rootBundleModule.testModule,
       registerFor: {_test},
@@ -131,20 +135,24 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_prod, _integration_test},
     );
     gh.singleton<_i429.AssetService>(() => _i92.AssetServiceImpl());
+    gh.singleton<_i719.InvoiceService>(() => _i481.InvoiceDao());
     gh.singleton<_i339.ProductService>(() => _i382.ProductDao());
     gh.singleton<_i327.AppPreferencesService>(
       () => _i523.AppPreferencesServiceImpl(),
     );
     gh.singleton<_i1059.CustomerService>(() => _i426.CustomerDao());
     gh.singleton<_i936.CityService>(() => _i513.CityDao());
-    gh.singleton<_i367.GetAppPreferencesUseCase>(
-      () => _i367.GetAppPreferencesUseCase(),
-    );
     gh.singleton<_i925.DeleteProductUseCase>(
       () => _i925.DeleteProductUseCase(),
     );
     gh.lazySingleton<_i84.LoadDefaultDataUseCase>(
       () => _i84.LoadDefaultDataUseCase(),
+    );
+    gh.lazySingleton<_i1054.CreateInvoiceUseCase>(
+      () => _i1054.CreateInvoiceUseCase(),
+    );
+    gh.lazySingleton<_i367.GetAppPreferencesUseCase>(
+      () => _i367.GetAppPreferencesUseCase(),
     );
     gh.lazySingleton<_i950.SearchCitiesUseCase>(
       () => _i950.SearchCitiesUseCase(),
@@ -178,6 +186,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i215.GetCustomersUseCase>(
       () => _i215.GetCustomersUseCase(),
+    );
+    gh.lazySingleton<_i659.GetInvoicesUseCase>(
+      () => _i659.GetInvoicesUseCase(),
+    );
+    gh.lazySingleton<_i851.UpdateInvoiceUseCase>(
+      () => _i851.UpdateInvoiceUseCase(),
     );
     return this;
   }
