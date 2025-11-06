@@ -136,12 +136,10 @@ final class _FormPane extends ConsumerWidget {
           children: [
             ImageButton(
               onTap: onAddImage,
-              image: data.companyLogo.value != null
-                  ? Image.memory(
-                      data.companyLogo.value!.bytes,
-                      fit: BoxFit.cover,
-                    )
-                  : null,
+              image: data.companyLogo.value.when(
+                some: (it) => Image.memory(it.bytes, fit: BoxFit.cover),
+                none: () => null,
+              ),
             ),
             SizedBox(height: S_SPACING),
             ShelfTextField(

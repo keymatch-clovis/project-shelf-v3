@@ -1,9 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/app/service/city_service.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/city.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
 import 'package:project_shelf_v3/injectable.dart';
@@ -65,5 +67,16 @@ class CityDao implements CityService {
         .select(_database.cityTable)
         .watch()
         .map((it) => it.map((it) => it.toEntity()));
+  }
+
+  @override
+  Future<Result<City, Exception>> findWithId(Id id) {
+    _logger.d('Finding city with ID: $id');
+    final query = _database.select(_database.cityTable)
+      ..where((e) => e.id.equals(id));
+
+    return Result.asyncOf(
+      query.getSingle,
+    ).map((it) => it.toEntity()).mapErr((err) => err as Exception);
   }
 }

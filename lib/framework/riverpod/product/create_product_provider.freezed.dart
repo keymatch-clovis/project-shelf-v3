@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateProductState {
 
- CreateProductStatus get status; Currency get currency; Input get nameInput; Input get defaultPriceInput; Input get purchasePriceInput; Input<String> get stockInput; List<File> get photoFiles;
+ CreateProductStatus get status; Currency get currency; Input<String> get nameInput; Input<String> get defaultPriceInput; Input<String> get purchasePriceInput; Input<String> get stockInput; List<File> get photoFiles;
 /// Create a copy of CreateProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $CreateProductStateCopyWith<$Res>  {
   factory $CreateProductStateCopyWith(CreateProductState value, $Res Function(CreateProductState) _then) = _$CreateProductStateCopyWithImpl;
 @useResult
 $Res call({
- CreateProductStatus status, Currency currency, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input<String> stockInput, List<File> photoFiles
+ CreateProductStatus status, Currency currency, Input<String> nameInput, Input<String> defaultPriceInput, Input<String> purchasePriceInput, Input<String> stockInput, List<File> photoFiles
 });
 
 
@@ -67,9 +67,9 @@ class _$CreateProductStateCopyWithImpl<$Res>
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as CreateProductStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
-as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
-as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
-as Input,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
 as Input<String>,photoFiles: null == photoFiles ? _self.photoFiles : photoFiles // ignore: cast_nullable_to_non_nullable
 as List<File>,
   ));
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateProductStatus status,  Currency currency,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CreateProductStatus status,  Currency currency,  Input<String> nameInput,  Input<String> defaultPriceInput,  Input<String> purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateProductState() when $default != null:
 return $default(_that.status,_that.currency,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
@@ -177,7 +177,7 @@ return $default(_that.status,_that.currency,_that.nameInput,_that.defaultPriceIn
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateProductStatus status,  Currency currency,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CreateProductStatus status,  Currency currency,  Input<String> nameInput,  Input<String> defaultPriceInput,  Input<String> purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)  $default,) {final _that = this;
 switch (_that) {
 case _CreateProductState():
 return $default(_that.status,_that.currency,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
@@ -197,7 +197,7 @@ return $default(_that.status,_that.currency,_that.nameInput,_that.defaultPriceIn
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateProductStatus status,  Currency currency,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CreateProductStatus status,  Currency currency,  Input<String> nameInput,  Input<String> defaultPriceInput,  Input<String> purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateProductState() when $default != null:
 return $default(_that.status,_that.currency,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
@@ -217,9 +217,9 @@ class _CreateProductState extends CreateProductState {
 
 @override@JsonKey() final  CreateProductStatus status;
 @override final  Currency currency;
-@override final  Input nameInput;
-@override final  Input defaultPriceInput;
-@override final  Input purchasePriceInput;
+@override final  Input<String> nameInput;
+@override final  Input<String> defaultPriceInput;
+@override final  Input<String> purchasePriceInput;
 @override final  Input<String> stockInput;
  final  List<File> _photoFiles;
 @override@JsonKey() List<File> get photoFiles {
@@ -259,7 +259,7 @@ abstract mixin class _$CreateProductStateCopyWith<$Res> implements $CreateProduc
   factory _$CreateProductStateCopyWith(_CreateProductState value, $Res Function(_CreateProductState) _then) = __$CreateProductStateCopyWithImpl;
 @override @useResult
 $Res call({
- CreateProductStatus status, Currency currency, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input<String> stockInput, List<File> photoFiles
+ CreateProductStatus status, Currency currency, Input<String> nameInput, Input<String> defaultPriceInput, Input<String> purchasePriceInput, Input<String> stockInput, List<File> photoFiles
 });
 
 
@@ -281,9 +281,9 @@ class __$CreateProductStateCopyWithImpl<$Res>
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as CreateProductStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
-as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
-as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
-as Input,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
 as Input<String>,photoFiles: null == photoFiles ? _self._photoFiles : photoFiles // ignore: cast_nullable_to_non_nullable
 as List<File>,
   ));

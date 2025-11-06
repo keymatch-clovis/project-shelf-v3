@@ -13,15 +13,15 @@ sealed class SelectedCustomerState {
     : status = status ?? SelectedCustomerStatus.INITIAL;
 }
 
-final class None extends SelectedCustomerState {}
+final class NoneState extends SelectedCustomerState {}
 
-final class Selected extends SelectedCustomerState {
+final class SelectedState extends SelectedCustomerState {
   final CustomerDto customer;
 
-  const Selected({required this.customer, super.status});
+  const SelectedState({required this.customer, super.status});
 
-  Selected copyWith({CustomerDto? customer, SelectedCustomerStatus? status}) {
-    return Selected(
+  SelectedState copyWith({CustomerDto? customer, SelectedCustomerStatus? status}) {
+    return SelectedState(
       customer: customer ?? this.customer,
       status: status ?? this.status,
     );
@@ -34,17 +34,17 @@ final class SelectedCustomerNotifier extends Notifier<SelectedCustomerState> {
 
   @override
   SelectedCustomerState build() {
-    return None();
+    return NoneState();
   }
 
   void select(CustomerDto customer) {
-    state = Selected(customer: customer);
+    state = SelectedState(customer: customer);
   }
 
   Future<void> delete() async {
-    assert(state is Selected);
+    assert(state is SelectedState);
 
-    final selected = state as Selected;
+    final selected = state as SelectedState;
 
     state = (selected).copyWith(status: SelectedCustomerStatus.LOADING);
 

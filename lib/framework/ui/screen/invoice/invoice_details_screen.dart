@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
@@ -18,7 +19,7 @@ final class InvoiceDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(
-      selectedInvoiceProvider.select((it) => it as Selected),
+      selectedInvoiceProvider.select((it) => it as SelectedState),
     );
 
     // We need to listen to this [autoDispose] provider here, so it is shared
@@ -26,14 +27,14 @@ final class InvoiceDetailsScreen extends ConsumerWidget {
     //
     // NOTE: I feel this is a bit of a hack, but I don't know another way of
     // doing this.
-    ref.listen(invoiceDetailsProvider(state.invoice.id), (_, _) {});
+    ref.listen(invoiceDetailsProvider(state.invoiceId), (_, _) {});
 
     return _Screen(
-      state.invoice.id,
+      state.invoiceId,
       onPrint: () {
         showDialog(
           context: context,
-          builder: (_) => PrintInvoiceDialog(state.invoice.id),
+          builder: (_) => PrintInvoiceDialog(state.invoiceId),
         );
       },
     );
@@ -104,13 +105,14 @@ final class _AppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedState = ref.watch(
-      selectedInvoiceProvider.select((it) => it as Selected),
-    );
+    // final selectedState = ref.watch(
+    //   selectedInvoiceProvider.select((it) => it as SelectedState),
+    // );
 
     final localizations = AppLocalizations.of(context)!;
     return SliverAppBar(
-      title: Text(localizations.invoice(selectedState.invoice.number)),
+      // TODO: FIX THIS
+      title: Text(localizations.invoice(0)),
       bottom: TabBar.secondary(
         controller: _tabController,
         tabs: [
@@ -150,24 +152,24 @@ final class _DetailsPane extends ConsumerWidget {
                 ShelfTextField(
                   readOnly: true,
                   label: localizations.number,
-                  value: data.invoice.number.toString(),
+                  value: Some(data.invoice.number.toString()),
                 ),
                 ShelfTextField(
                   readOnly: true,
                   label: localizations.date,
-                  value: data.invoice.date.toString(),
+                  value: Some(data.invoice.date.toString()),
                 ),
                 CustomObjectField(
                   label: localizations.customer,
-                  value: data.invoice.customer,
+                  value: Some(data.invoice.customer),
                   body: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(data.invoice.customer.name),
-                        if (data.invoice.customer.businessName != null)
-                          Text(data.invoice.customer.businessName!),
+                        if (data.invoice.customer.businessName.isSome())
+                          Text(data.invoice.customer.businessName.unwrap()),
                       ],
                     ),
                   ),
@@ -175,7 +177,7 @@ final class _DetailsPane extends ConsumerWidget {
                 ShelfTextField(
                   readOnly: true,
                   label: localizations.remaining_unpaid_balance,
-                  value: data.invoice.remainingUnpaidBalance.toString(),
+                  value: Some(data.invoice.remainingUnpaidBalance.toString()),
                 ),
               ],
             ),
@@ -213,9 +215,9 @@ final class _InvoiceProductListPane extends ConsumerWidget {
                   padding: S_SPACING_V,
                   separatorBuilder: (_, _) =>
                       const SizedBox(height: XS_SPACING),
-                  itemCount: data.invoiceProducts.length,
+                  itemCount: data.products.length,
                   itemBuilder: (_, index) {
-                    final it = data.invoiceProducts.toList()[index];
+                    final it = data.products.toList()[index];
 
                     return _InvoiceProductListTile(it, onTap: (_) {});
                   },

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
@@ -11,6 +12,7 @@ import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
 import 'package:project_shelf_v3/app/dto/create_invoice_request.dart';
 import 'package:project_shelf_v3/app/dto/update_invoice_draft_request.dart';
+import 'package:project_shelf_v3/app/use_case/city/find_city_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_draft_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart';
@@ -68,6 +70,7 @@ final class CreateInvoiceAsyncNotifier
     extends AsyncNotifier<CreateInvoiceState> {
   final _findProductUseCase = getIt.get<FindProductUseCase>();
   final _findCustomerUseCase = getIt.get<FindCustomerUseCase>();
+  final _findCityUseCase = getIt.get<FindCityUseCase>();
   final _findInvoiceDraftUseCase = getIt.get<FindInvoiceDraftUseCase>();
   final _createInvoiceDraftUseCase = getIt.get<CreateInvoiceDraftUseCase>();
   final _updateInvoiceDraftUseCase = getIt.get<UpdateInvoiceDraftUseCase>();
@@ -82,30 +85,26 @@ final class CreateInvoiceAsyncNotifier
     final selectedInvoiceDraft = ref.watch(selectedInvoiceDraftProvider);
 
     InvoiceDraft invoiceDraft = await switch (selectedInvoiceDraft) {
-      None() => _createInvoiceDraftUseCase.exec(),
-      Selected() => _findInvoiceDraftUseCase.exec(
+      NoneState() => _createInvoiceDraftUseCase.exec(),
+      SelectedState() => _findInvoiceDraftUseCase.exec(
         selectedInvoiceDraft.searchDto.id,
       ),
     };
 
-    late DateTime date;
-    if (invoiceDraft.date != null) {
-      date = invoiceDraft.date!;
-    } else {
-      date = DateTime.now();
-    }
+    final DateTime date = invoiceDraft.date.unwrapOr(DateTime.now());
 
-    late CustomerDto? customer;
-    if (invoiceDraft.customerId != null) {
-      customer = await _findCustomerUseCase
-          .exec(invoiceDraft.customerId!)
-          .then(CustomerDto.fromResponse);
-    } else {
-      customer = null;
-    }
+    final Option<CustomerDto> customer = await invoiceDraft.customerId
+        .mapAsync((it) => _findCustomerUseCase.exec(it).unwrap())
+        .mapAsync((it) async {
+          final city = await _findCityUseCase.exec(it.cityId).unwrap();
 
-    String? remainingUnpaidBalance = invoiceDraft.remainingUnpaidBalance
-        .toString();
+          return (it, city);
+        })
+        .map((it) => CustomerDto.fromEntity(it.$1, city: it.$2));
+
+    final Option<String> remainingUnpaidBalance = invoiceDraft
+        .remainingUnpaidBalance
+        .map((it) => it.toString());
 
     Map<String, InvoiceProductDto> invoiceProducts = {};
     for (final draftProduct in invoiceDraft.products) {
@@ -126,7 +125,7 @@ final class CreateInvoiceAsyncNotifier
     return CreateInvoiceState(
       currency: appPreferences.defaultCurrency,
       invoiceDraftId: invoiceDraft.id!,
-      dateInput: Input(value: date, validationRules: {IsRequiredRule()}),
+      dateInput: Input(value: Some(date), validationRules: {IsRequiredRule()}),
       customerInput: Input<CustomerDto>(
         value: customer,
         validationRules: {IsRequiredRule()},
@@ -254,12 +253,11 @@ final class CreateInvoiceAsyncNotifier
 
     await _createInvoiceUseCase.exec(
       CreateInvoiceRequest(
-        date: value.dateInput.value!,
-        customerId: value.customerInput.value!.id,
-        remainingUnpaidBalance: value.currency.tryParse(
-          value.remainingUnpaidBalanceInput.value,
+        date: value.dateInput.value.unwrap(),
+        customerId: value.customerInput.value.map((it) => it.id).unwrap(),
+        remainingUnpaidBalance: value.remainingUnpaidBalanceInput.value.andThen(
+          (it) => Option.from(value.currency.tryParse(it)),
         ),
-        invoiceDraftId: value.invoiceDraftId,
         invoiceProducts: value.invoiceProducts.values.map((it) {
           return CreateInvoiceProductRequest(
             productId: it.product.id,
@@ -282,12 +280,16 @@ final class CreateInvoiceAsyncNotifier
         UpdateInvoiceDraftRequest(
           id: value.invoiceDraftId,
           date: value.dateInput.value,
-          customerId: value.customerInput.value?.id,
-          remainingUnpaidBalance: value.currency.tryParse(
-            value.remainingUnpaidBalanceInput.value,
-          ),
+          customerId: value.customerInput.value.map((it) => it.id),
+          // remainingUnpaidBalance: value.currency.tryParse(
+          //   value.remainingUnpaidBalanceInput.value,
+          // ),
+          remainingUnpaidBalance: value.remainingUnpaidBalanceInput.value
+              .andThen((it) => Option.from(value.currency.tryParse(it))),
           invoiceProducts: value.invoiceProducts.values.map((it) {
             return InvoiceProduct(
+              id: None(),
+              invoiceId: None(),
               productId: it.product.id,
               unitPrice: it.unitPrice,
               quantity: it.quantity,

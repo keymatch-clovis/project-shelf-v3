@@ -34,16 +34,12 @@ final class InvoiceProductDto {
     return _$InvoiceProductDtoFromJson(json);
   }
 
-  InvoiceProduct toEntity({required Id invoiceId}) {
+  InvoiceProduct toEntity(Currency currency, {required Id invoiceId}) {
     return InvoiceProduct(
       id: Some(id),
       invoiceId: Some(invoiceId),
       productId: product,
-      unitPrice: Money.fromNum(
-        unitPrice,
-        isoCode: currencyIsoCode,
-        decimalDigits: 0,
-      ),
+      unitPrice: Money.fromIntWithCurrency(unitPrice, currency),
       quantity: quantity,
     );
   }

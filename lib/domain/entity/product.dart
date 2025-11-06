@@ -5,22 +5,19 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 final class Product {
   static const MAX_NAME_SIZE = 255;
 
+  Option<Id> id;
   String name;
   Money defaultPrice;
   Money purchasePrice;
   int stock;
 
-  Option<Id> id;
-
   Product({
+    required this.id,
     required String name,
     required this.defaultPrice,
     required this.purchasePrice,
     required this.stock,
-
-    Id? id,
-  }) : id = Option.from(id),
-       name = name.trim().toUpperCase() {
+  }) : name = name.trim().toUpperCase() {
     assert(!defaultPrice.isNegative);
     assert(!purchasePrice.isNegative);
     assert(stock >= 0);

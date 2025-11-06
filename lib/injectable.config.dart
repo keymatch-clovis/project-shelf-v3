@@ -26,7 +26,6 @@ import 'package:project_shelf_v3/app/service/app_preferences_service.dart'
 import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
 import 'package:project_shelf_v3/app/service/city_service.dart' as _i936;
 import 'package:project_shelf_v3/app/service/customer_service.dart' as _i1059;
-import 'package:project_shelf_v3/app/service/invoice_service.dart' as _i719;
 import 'package:project_shelf_v3/app/service/product_service.dart' as _i339;
 import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preferences_use_case.dart'
     as _i367;
@@ -46,6 +45,8 @@ import 'package:project_shelf_v3/app/use_case/customer/update_customer_use_case.
     as _i318;
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart'
     as _i1054;
+import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_products_use_case.dart'
+    as _i39;
 import 'package:project_shelf_v3/app/use_case/invoice/get_invoices_use_case.dart'
     as _i659;
 import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_use_case.dart'
@@ -58,10 +59,13 @@ import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.da
     as _i925;
 import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.dart'
     as _i350;
+import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart'
+    as _i462;
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart'
     as _i572;
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart'
     as _i295;
+import 'package:project_shelf_v3/domain/service/invoice_service.dart' as _i239;
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart' as _i513;
 import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart'
     as _i426;
@@ -135,8 +139,8 @@ extension GetItInjectableX on _i174.GetIt {
       registerFor: {_prod, _integration_test},
     );
     gh.singleton<_i429.AssetService>(() => _i92.AssetServiceImpl());
-    gh.singleton<_i719.InvoiceService>(() => _i481.InvoiceDao());
     gh.singleton<_i339.ProductService>(() => _i382.ProductDao());
+    gh.singleton<_i239.InvoiceService>(() => _i481.InvoiceDao());
     gh.singleton<_i327.AppPreferencesService>(
       () => _i523.AppPreferencesServiceImpl(),
     );
@@ -181,6 +185,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i572.UpdateProductUseCase>(
       () => _i572.UpdateProductUseCase(),
     );
+    gh.lazySingleton<_i462.SearchProductsUseCase>(
+      () => _i462.SearchProductsUseCase(),
+    );
     gh.lazySingleton<_i295.WatchProductsUseCase>(
       () => _i295.WatchProductsUseCase(),
     );
@@ -192,6 +199,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i851.UpdateInvoiceUseCase>(
       () => _i851.UpdateInvoiceUseCase(),
+    );
+    gh.lazySingleton<_i39.FindInvoiceProductsUseCase>(
+      () => _i39.FindInvoiceProductsUseCase(),
     );
     return this;
   }

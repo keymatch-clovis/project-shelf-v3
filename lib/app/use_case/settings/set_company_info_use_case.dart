@@ -1,4 +1,5 @@
 import 'package:logger/web.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/service/company_info_service.dart';
 import 'package:project_shelf_v3/domain/entity/company_logo.dart';
 import 'package:project_shelf_v3/domain/service/file_service.dart';
@@ -13,18 +14,16 @@ final class SetCompanyInfoUseCase {
   final _fileService = getIt.get<FileService>();
 
   Future<void> exec({
-    CompanyLogo? companyLogo,
-    String? name,
-    String? document,
-    String? email,
-    String? phone,
+    required Option<CompanyLogo> companyLogo,
+    required Option<String> name,
+    required Option<String> document,
+    required Option<String> email,
+    required Option<String> phone,
   }) async {
-    if (companyLogo != null) {
-      await _fileService.saveToFile(
-        bytes: companyLogo.bytes,
-        name: companyLogo.fileName!,
-      );
-    }
+    await companyLogo.mapAsync((it) {
+      _logger.d('Saving company logo to file');
+      return _fileService.saveToFile(bytes: it.bytes, name: it.fileName!);
+    });
 
     final companyInfo = CompanyInfo(
       logo: companyLogo,

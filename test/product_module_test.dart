@@ -24,9 +24,9 @@ void main() {
   test('Creates product', () async {
     final request = CreateProductRequest(
       name: faker.randomGenerator.string(10),
-      defaultPrice: Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name),
-      purchasePrice: Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name),
-      stock: 10,
+      defaultPrice: Some(Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name)),
+      purchasePrice: Some(Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name)),
+      stock: Some(10),
     );
 
     final product = await getIt
@@ -43,6 +43,9 @@ void main() {
   test('Creates product, fails with product name taken', () async {
     final request = CreateProductRequest(
       name: faker.randomGenerator.string(10),
+      defaultPrice: None(),
+      purchasePrice: None(),
+      stock: None(),
     );
 
     await getIt.get<CreateProductUseCase>().exec(request).unwrap();
@@ -62,9 +65,9 @@ void main() {
   test('Updates product', () async {
     final request = CreateProductRequest(
       name: faker.randomGenerator.string(10),
-      defaultPrice: Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name),
-      purchasePrice: Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name),
-      stock: 10,
+      defaultPrice: Some(Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name)),
+      purchasePrice: Some(Money.fromInt(10, isoCode: DEFAULT_CURRENCY.name)),
+      stock: Some(10),
     );
 
     final product = await getIt
@@ -75,9 +78,9 @@ void main() {
     final updateRequest = UpdateProductRequest(
       id: product.id.unwrap(),
       name: faker.randomGenerator.string(20),
-      defaultPrice: Money.fromInt(20, isoCode: DEFAULT_CURRENCY.name),
-      purchasePrice: Money.fromInt(20, isoCode: DEFAULT_CURRENCY.name),
-      stock: 20,
+      defaultPrice: Some(Money.fromInt(20, isoCode: DEFAULT_CURRENCY.name)),
+      purchasePrice: Some(Money.fromInt(20, isoCode: DEFAULT_CURRENCY.name)),
+      stock: Some(20),
     );
 
     final updatedProduct = await getIt
@@ -94,16 +97,36 @@ void main() {
   test('Updates product, fails with product name taken', () async {
     final product1 = await getIt
         .get<CreateProductUseCase>()
-        .exec(CreateProductRequest(name: faker.randomGenerator.string(10)))
+        .exec(
+          CreateProductRequest(
+            name: faker.randomGenerator.string(10),
+            defaultPrice: None(),
+            purchasePrice: None(),
+            stock: None(),
+          ),
+        )
         .unwrap();
 
     final product2 = await getIt
         .get<CreateProductUseCase>()
-        .exec(CreateProductRequest(name: faker.randomGenerator.string(10)))
+        .exec(
+          CreateProductRequest(
+            name: faker.randomGenerator.string(10),
+            defaultPrice: None(),
+            purchasePrice: None(),
+            stock: None(),
+          ),
+        )
         .unwrap();
 
     final result = await getIt.get<UpdateProductUseCase>().exec(
-      UpdateProductRequest(id: product2.id.unwrap(), name: product1.name),
+      UpdateProductRequest(
+        id: product2.id.unwrap(),
+        name: product1.name,
+        defaultPrice: None(),
+        purchasePrice: None(),
+        stock: None(),
+      ),
     );
 
     expect(result.isErr(), true);
@@ -113,7 +136,14 @@ void main() {
   test('Deletes product', () async {
     final product = await getIt
         .get<CreateProductUseCase>()
-        .exec(CreateProductRequest(name: faker.randomGenerator.string(10)))
+        .exec(
+          CreateProductRequest(
+            name: faker.randomGenerator.string(10),
+            defaultPrice: None(),
+            purchasePrice: None(),
+            stock: None(),
+          ),
+        )
         .unwrap();
 
     await getIt.get<DeleteProductUseCase>().exec(product.id.unwrap());

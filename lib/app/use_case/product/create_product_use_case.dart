@@ -26,6 +26,7 @@ final class CreateProductUseCase {
     final stock = request.stock.unwrapOr(0);
 
     final product = Product(
+      id: None(),
       name: request.name,
       defaultPrice: defaultPrice,
       purchasePrice: purchasePrice,

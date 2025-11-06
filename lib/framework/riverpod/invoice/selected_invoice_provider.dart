@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
+import 'package:project_shelf_v3/common/typedefs.dart';
 
 // State related
 enum SelectedInvoiceStatus { INITIAL, LOADING, DELETED }
@@ -10,15 +10,15 @@ sealed class SelectedInvoiceState {
   const SelectedInvoiceState({this.status = SelectedInvoiceStatus.INITIAL});
 }
 
-final class None extends SelectedInvoiceState {}
+final class NoneState extends SelectedInvoiceState {}
 
-final class Selected extends SelectedInvoiceState {
-  final InvoiceDto invoice;
+final class SelectedState extends SelectedInvoiceState {
+  final Id invoiceId;
 
-  const Selected(this.invoice, {super.status});
+  const SelectedState(this.invoiceId, {super.status});
 
-  Selected copyWith({InvoiceDto? invoice, SelectedInvoiceStatus? status}) {
-    return Selected(invoice ?? this.invoice, status: status ?? this.status);
+  SelectedState copyWith({Id? invoiceId, SelectedInvoiceStatus? status}) {
+    return SelectedState(invoiceId ?? this.invoiceId, status: status ?? this.status);
   }
 }
 
@@ -26,11 +26,11 @@ final class Selected extends SelectedInvoiceState {
 final class SelectedInvoiceNotifier extends Notifier<SelectedInvoiceState> {
   @override
   SelectedInvoiceState build() {
-    return None();
+    return NoneState();
   }
 
-  void select(InvoiceDto invoice) {
-    state = Selected(invoice);
+  void select(Id invoiceId) {
+    state = SelectedState(invoiceId);
   }
 }
 

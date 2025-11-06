@@ -67,7 +67,7 @@ final class _DetailsPane extends ConsumerWidget {
           children: [
             ImageButton(
               image: Image.memory(
-                data.companyInfo.logoBytes!,
+                data.companyInfo.logoBytes.unwrap(),
                 fit: BoxFit.cover,
               ),
             ),
@@ -76,25 +76,25 @@ final class _DetailsPane extends ConsumerWidget {
               label: localizations.company_name,
               readOnly: true,
               value: data.companyInfo.name,
-              enabled: data.companyInfo.name != null,
+              enabled: data.companyInfo.name.isSome(),
             ),
             ShelfTextField(
               label: localizations.company_document,
               readOnly: true,
               value: data.companyInfo.document,
-              enabled: data.companyInfo.document != null,
+              enabled: data.companyInfo.document.isSome(),
             ),
             ShelfTextField(
               label: localizations.company_email,
               readOnly: true,
               value: data.companyInfo.email,
-              enabled: data.companyInfo.email != null,
+              enabled: data.companyInfo.email.isSome(),
             ),
             ShelfTextField(
               label: localizations.company_phone,
               readOnly: true,
               value: data.companyInfo.phone,
-              enabled: data.companyInfo.phone != null,
+              enabled: data.companyInfo.phone.isSome(),
             ),
           ],
         );

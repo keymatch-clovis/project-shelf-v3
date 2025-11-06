@@ -11,18 +11,18 @@ sealed class SelectedInvoiceDraftState {
     : status = status ?? SelectedInvoiceDraftStatus.INITIAL;
 }
 
-final class None extends SelectedInvoiceDraftState {}
+final class NoneState extends SelectedInvoiceDraftState {}
 
-final class Selected extends SelectedInvoiceDraftState {
+final class SelectedState extends SelectedInvoiceDraftState {
   final InvoiceDraftSearchDto searchDto;
 
-  Selected({required this.searchDto, super.status});
+  SelectedState({required this.searchDto, super.status});
 
-  Selected copyWith({
+  SelectedState copyWith({
     InvoiceDraftSearchDto? searchDto,
     SelectedInvoiceDraftStatus? status,
   }) {
-    return Selected(
+    return SelectedState(
       searchDto: searchDto ?? this.searchDto,
       status: status ?? this.status,
     );
@@ -34,15 +34,15 @@ final class SelectedInvoiceDraftNotifier
     extends Notifier<SelectedInvoiceDraftState> {
   @override
   SelectedInvoiceDraftState build() {
-    return None();
+    return NoneState();
   }
 
   void select(InvoiceDraftSearchDto dto) {
-    state = Selected(searchDto: dto);
+    state = SelectedState(searchDto: dto);
   }
 
   void clear() {
-    state = None();
+    state = NoneState();
   }
 }
 

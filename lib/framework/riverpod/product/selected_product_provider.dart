@@ -13,15 +13,15 @@ sealed class SelectedProductState {
     : status = status ?? SelectedProductStatus.INITIAL;
 }
 
-final class None extends SelectedProductState {}
+final class NoneState extends SelectedProductState {}
 
-final class Selected extends SelectedProductState {
+final class SelectedState extends SelectedProductState {
   final ProductDto product;
 
-  Selected({required this.product, super.status});
+  SelectedState({required this.product, super.status});
 
-  Selected copyWith({ProductDto? product, SelectedProductStatus? status}) {
-    return Selected(
+  SelectedState copyWith({ProductDto? product, SelectedProductStatus? status}) {
+    return SelectedState(
       product: product ?? this.product,
       status: status ?? this.status,
     );
@@ -34,21 +34,21 @@ final class SelectedProductNotifier extends Notifier<SelectedProductState> {
 
   @override
   SelectedProductState build() {
-    return None();
+    return NoneState();
   }
 
   void select(ProductDto product) {
-    state = Selected(product: product);
+    state = SelectedState(product: product);
   }
 
   Future<void> delete() async {
-    assert(state is Selected);
+    assert(state is SelectedState);
 
-    state = (state as Selected).copyWith(status: SelectedProductStatus.LOADING);
+    state = (state as SelectedState).copyWith(status: SelectedProductStatus.LOADING);
 
-    await _deleteProductUseCase.exec((state as Selected).product.id);
+    await _deleteProductUseCase.exec((state as SelectedState).product.id);
 
-    state = (state as Selected).copyWith(status: SelectedProductStatus.DELETED);
+    state = (state as SelectedState).copyWith(status: SelectedProductStatus.DELETED);
   }
 }
 

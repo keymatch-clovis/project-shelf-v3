@@ -14,6 +14,7 @@ import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case
 import 'package:project_shelf_v3/app/use_case/settings/set_company_info_use_case.dart';
 import 'package:project_shelf_v3/domain/entity/company_logo.dart';
 import 'package:project_shelf_v3/injectable.dart';
+import 'package:rxdart/transformers.dart';
 
 part 'edit_company_info_provider.freezed.dart';
 
@@ -39,28 +40,16 @@ final class EditCompanyInfoNotifier
   final _getCompanyInfoUseCase = getIt.get<GetCompanyInfoUseCase>();
   final _setCompanyInfoUseCase = getIt.get<SetCompanyInfoUseCase>();
   final _createCompanyLogoUseCase = getIt.get<CreateCompanyLogoUseCase>();
-  final _findFileUseCase = getIt.get<FindFileUseCase>();
 
   @override
   FutureOr<EditCompanyInfoState> build() async {
-    final companyInfo = await _getCompanyInfoUseCase.exec(unit).then((
-      it,
-    ) async {
-      Uint8List? logoBytes;
-      if (it.logoFileName != null) {
-        logoBytes = await _findFileUseCase
-            .exec(it.logoFileName!)
-            .then((it) => it.readAsBytes());
-      }
-
-      return CompanyInfoDto(
-        logoBytes: logoBytes,
-        name: it.name,
-        document: it.document,
-        email: it.email,
-        phone: it.phone,
-      );
-    });
+    final CompanyInfoDto companyInfo = await _getCompanyInfoUseCase
+        .exec(unit)
+        // Unwrap the result.
+        // NOTE: We would need to handle the error here, but for not it is fine.
+        .then((it) => it.unwrap())
+        .map((it) => CompanyInfoDto.fromEntity(it))
+        .unwrap();
 
     return EditCompanyInfoState(
       companyInfo: companyInfo,

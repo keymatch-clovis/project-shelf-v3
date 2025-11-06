@@ -8,7 +8,6 @@ import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/delete_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart';
-import 'package:project_shelf_v3/app/use_case/customer/search_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/update_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/get_customers_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
@@ -41,9 +40,9 @@ void main() {
 
     final request = CreateCustomerRequest(
       name: faker.randomGenerator.string(10),
-      businessName: faker.randomGenerator.string(10),
-      address: faker.randomGenerator.string(10),
-      phoneNumber: faker.randomGenerator.string(10),
+      businessName: Some(faker.randomGenerator.string(10)),
+      address: Some(faker.randomGenerator.string(10)),
+      phoneNumber: Some(faker.randomGenerator.string(10)),
       cityId: city.id.unwrap(),
     );
 
@@ -78,9 +77,9 @@ void main() {
 
     final request = CreateCustomerRequest(
       name: faker.randomGenerator.string(10),
-      businessName: faker.randomGenerator.string(10),
-      address: faker.randomGenerator.string(10),
-      phoneNumber: faker.randomGenerator.string(10),
+      businessName: Some(faker.randomGenerator.string(10)),
+      address: Some(faker.randomGenerator.string(10)),
+      phoneNumber: Some(faker.randomGenerator.string(10)),
       cityId: city.id.unwrap(),
     );
 
@@ -141,6 +140,9 @@ void main() {
           CreateCustomerRequest(
             name: faker.randomGenerator.string(10),
             cityId: city.id.unwrap(),
+            businessName: None(),
+            address: None(),
+            phoneNumber: None(),
           ),
         )
         .unwrap();

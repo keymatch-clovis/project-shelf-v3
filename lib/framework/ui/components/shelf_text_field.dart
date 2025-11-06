@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:oxidized/oxidized.dart';
 
 final class ShelfTextField extends StatefulWidget {
   final TextInputType? keyboardType;
@@ -19,7 +20,7 @@ final class ShelfTextField extends StatefulWidget {
   final List<String> errors;
   final void Function()? onClear;
   final bool isRequired;
-  final String? value;
+  final Option<String> value;
 
   const ShelfTextField({
     super.key,
@@ -40,7 +41,7 @@ final class ShelfTextField extends StatefulWidget {
     this.errors = const [],
     this.onClear,
     this.isRequired = false,
-    this.value,
+    this.value = const None(),
   });
 
   @override
@@ -79,8 +80,8 @@ class _ShelfTextFieldState extends State<ShelfTextField> {
       }
     });
 
-    if (widget.value != null) {
-      _controller.text = widget.value!;
+    if (widget.value.isSome()) {
+      _controller.text = widget.value.unwrap();
 
       final oldValue = _controller.value;
       TextEditingValue newValue = oldValue;

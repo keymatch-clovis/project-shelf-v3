@@ -5,12 +5,13 @@ import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
-import 'package:project_shelf_v3/app/service/invoice_service.dart';
+import 'package:project_shelf_v3/domain/aggregate/invoice_aggregate.dart';
+import 'package:project_shelf_v3/domain/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/use_case.dart';
 import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/domain/entity/customer.dart';
-import 'package:project_shelf_v3/domain/entity/invoice.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/injectable.dart';
 import 'package:sqflite/sqflite.dart';
@@ -55,15 +56,18 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       final cityId = customer['city_row_id'] as int;
 
       try {
-        final id = await _customerService.create(
-          Customer(
-            name: name,
-            phoneNumber: phone,
-            address: address,
-            businessName: businessName,
-            cityId: cityId,
-          ),
-        );
+        final id = await _customerService
+            .create(
+              Customer(
+                id: None(),
+                name: name,
+                phoneNumber: Some(phone),
+                address: Some(address),
+                businessName: Option.from(businessName),
+                cityId: cityId,
+              ),
+            )
+            .unwrap();
 
         customerMap[customer['uuid'] as String] = id;
         // ignore: empty_catches
@@ -87,32 +91,38 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       final stock = product['stock'] as int;
 
       try {
-        final id = await _productService.create(
-          Product.fromMoney(
-            defaultCurrency,
-            name: name,
-            defaultPrice: !defaultPrice.isNegative
-                ? defaultPrice
-                : defaultCurrency.zero,
-            stock: stock >= 0 ? stock : 0,
-          ),
-        );
+        final id = await _productService
+            .create(
+              Product(
+                id: None(),
+                name: name,
+                defaultPrice: !defaultPrice.isNegative
+                    ? defaultPrice
+                    : defaultCurrency.zero,
+                stock: stock >= 0 ? stock : 0,
+                purchasePrice: defaultCurrency.zero,
+              ),
+            )
+            .unwrap();
 
         productMap[product['uuid'] as String] = id;
         // ignore: empty_catches
       } catch (e) {
-        final id = await _productService.create(
-          Product.fromMoney(
-            defaultCurrency,
-            // We need to do this, as there are some products that have the
-            // same name... silly me! Maybe that won't happen here. :3
-            name: '$name ${randomHexString(5)}',
-            defaultPrice: !defaultPrice.isNegative
-                ? defaultPrice
-                : defaultCurrency.zero,
-            stock: stock >= 0 ? stock : 0,
-          ),
-        );
+        final id = await _productService
+            .create(
+              Product(
+                id: None(),
+                // We need to do this, as there are some products that have the
+                // same name... silly me! Maybe that won't happen here. :3
+                name: '$name ${randomHexString(5)}',
+                defaultPrice: !defaultPrice.isNegative
+                    ? defaultPrice
+                    : defaultCurrency.zero,
+                stock: stock >= 0 ? stock : 0,
+                purchasePrice: defaultCurrency.zero,
+              ),
+            )
+            .unwrap();
 
         productMap[product['uuid'] as String] = id;
       }
@@ -130,14 +140,7 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       );
       final uuid = invoice['uuid'];
 
-      final entity = Invoice(
-        defaultCurrency,
-        number: number,
-        date: date,
-        customerId: customerMap[invoice['customer_uuid'] as String]!,
-        remainingUnpaidBalance: defaultCurrency.zero,
-      );
-
+      final products = <InvoiceProduct>[];
       for (final invoiceProduct in invoiceProducts) {
         if (uuid == invoiceProduct['invoice_uuid'] as String) {
           final productId =
@@ -147,18 +150,28 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
             defaultCurrency,
           );
           final quantity = invoiceProduct['count'] as int;
-          entity.addProduct(
-            productId: productId,
-            unitPrice: unitPrice,
-            quantity: quantity,
-            // We need to do this, as this part of the logic and business rules is
-            // not finished! Silly me!
-            stock: double.maxFinite.toInt(),
+          products.add(
+            InvoiceProduct(
+              id: None(),
+              invoiceId: None(),
+              productId: productId,
+              unitPrice: unitPrice,
+              quantity: quantity,
+            ),
           );
         }
       }
 
-      await _invoiceService.create(entity);
+      final aggregate = InvoiceAggregate(
+        number: Some(number),
+        date: Some(date),
+        remainingUnpaidBalance: None(),
+        customerId: customerMap[invoice['customer_uuid'] as String]!,
+        currency: defaultCurrency,
+        products: products,
+      );
+
+      await _invoiceService.create(aggregate);
     }
 
     return Result.ok(unit);

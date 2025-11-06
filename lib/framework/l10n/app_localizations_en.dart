@@ -95,16 +95,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photos => 'Photos';
 
   @override
-  String get err_bluetooth_disabled => 'Bluetooth disabled.';
-
-  @override
   String get printer => 'Printer';
 
   @override
   String get business_name => 'Business name';
 
   @override
-  String get unknown_error => 'Unknown error!\nCall the police';
+  String get unknown_exception => 'Unknown exception!\nCall the police';
 
   @override
   String get city => 'City';
@@ -177,6 +174,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete_product => 'Delete product?';
+
+  @override
+  String get err_bluetooth_disabled => 'Bluetooth disabled.';
 
   @override
   String get err_blank_value => 'The value can\'t be blank';

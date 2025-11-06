@@ -12,10 +12,8 @@ class UpdateProductRequest {
   UpdateProductRequest({
     required this.id,
     required this.name,
-    Money? defaultPrice,
-    Money? purchasePrice,
-    int? stock,
-  }) : defaultPrice = Option.from(defaultPrice),
-       purchasePrice = Option.from(purchasePrice),
-       stock = Option.from(stock);
+    required this.defaultPrice,
+    required this.purchasePrice,
+    required this.stock,
+  });
 }

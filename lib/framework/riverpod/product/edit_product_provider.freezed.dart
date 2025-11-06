@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EditProductState {
 
- EditProductStatus get status; Currency get currency; ProductDto get product; Input get nameInput; Input get defaultPriceInput; Input get purchasePriceInput; Input get stockInput; List<File> get photoFiles;
+ EditProductStatus get status; Currency get currency; ProductDto get product; Input<String> get nameInput; Input<String> get defaultPriceInput; Input<String> get purchasePriceInput; Input<String> get stockInput; List<File> get photoFiles;
 /// Create a copy of EditProductState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $EditProductStateCopyWith<$Res>  {
   factory $EditProductStateCopyWith(EditProductState value, $Res Function(EditProductState) _then) = _$EditProductStateCopyWithImpl;
 @useResult
 $Res call({
- EditProductStatus status, Currency currency, ProductDto product, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input stockInput, List<File> photoFiles
+ EditProductStatus status, Currency currency, ProductDto product, Input<String> nameInput, Input<String> defaultPriceInput, Input<String> purchasePriceInput, Input<String> stockInput, List<File> photoFiles
 });
 
 
@@ -68,10 +68,10 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as EditProductStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
-as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
-as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
-as Input,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
-as Input,photoFiles: null == photoFiles ? _self.photoFiles : photoFiles // ignore: cast_nullable_to_non_nullable
+as Input<String>,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,photoFiles: null == photoFiles ? _self.photoFiles : photoFiles // ignore: cast_nullable_to_non_nullable
 as List<File>,
   ));
 }
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input<String> nameInput,  Input<String> defaultPriceInput,  Input<String> purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EditProductState() when $default != null:
 return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
@@ -178,7 +178,7 @@ return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input<String> nameInput,  Input<String> defaultPriceInput,  Input<String> purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)  $default,) {final _that = this;
 switch (_that) {
 case _EditProductState():
 return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
@@ -198,7 +198,7 @@ return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input nameInput,  Input defaultPriceInput,  Input purchasePriceInput,  Input stockInput,  List<File> photoFiles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( EditProductStatus status,  Currency currency,  ProductDto product,  Input<String> nameInput,  Input<String> defaultPriceInput,  Input<String> purchasePriceInput,  Input<String> stockInput,  List<File> photoFiles)?  $default,) {final _that = this;
 switch (_that) {
 case _EditProductState() when $default != null:
 return $default(_that.status,_that.currency,_that.product,_that.nameInput,_that.defaultPriceInput,_that.purchasePriceInput,_that.stockInput,_that.photoFiles);case _:
@@ -219,10 +219,10 @@ class _EditProductState extends EditProductState {
 @override@JsonKey() final  EditProductStatus status;
 @override final  Currency currency;
 @override final  ProductDto product;
-@override final  Input nameInput;
-@override final  Input defaultPriceInput;
-@override final  Input purchasePriceInput;
-@override final  Input stockInput;
+@override final  Input<String> nameInput;
+@override final  Input<String> defaultPriceInput;
+@override final  Input<String> purchasePriceInput;
+@override final  Input<String> stockInput;
  final  List<File> _photoFiles;
 @override@JsonKey() List<File> get photoFiles {
   if (_photoFiles is EqualUnmodifiableListView) return _photoFiles;
@@ -261,7 +261,7 @@ abstract mixin class _$EditProductStateCopyWith<$Res> implements $EditProductSta
   factory _$EditProductStateCopyWith(_EditProductState value, $Res Function(_EditProductState) _then) = __$EditProductStateCopyWithImpl;
 @override @useResult
 $Res call({
- EditProductStatus status, Currency currency, ProductDto product, Input nameInput, Input defaultPriceInput, Input purchasePriceInput, Input stockInput, List<File> photoFiles
+ EditProductStatus status, Currency currency, ProductDto product, Input<String> nameInput, Input<String> defaultPriceInput, Input<String> purchasePriceInput, Input<String> stockInput, List<File> photoFiles
 });
 
 
@@ -284,10 +284,10 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as EditProductStatus,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as Currency,product: null == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
 as ProductDto,nameInput: null == nameInput ? _self.nameInput : nameInput // ignore: cast_nullable_to_non_nullable
-as Input,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
-as Input,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
-as Input,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
-as Input,photoFiles: null == photoFiles ? _self._photoFiles : photoFiles // ignore: cast_nullable_to_non_nullable
+as Input<String>,defaultPriceInput: null == defaultPriceInput ? _self.defaultPriceInput : defaultPriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,purchasePriceInput: null == purchasePriceInput ? _self.purchasePriceInput : purchasePriceInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,stockInput: null == stockInput ? _self.stockInput : stockInput // ignore: cast_nullable_to_non_nullable
+as Input<String>,photoFiles: null == photoFiles ? _self._photoFiles : photoFiles // ignore: cast_nullable_to_non_nullable
 as List<File>,
   ));
 }

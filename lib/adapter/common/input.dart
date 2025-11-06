@@ -1,15 +1,16 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/validator/validation_error.dart';
 import 'package:project_shelf_v3/adapter/common/validator/validation_rule.dart';
 
 @immutable
 final class Input<T> {
-  final T? value;
+  final Option<T> value;
   final Set<ValidationError> errors;
   final Set<ValidationRule> _validationRules;
 
   Input({
-    this.value,
+    this.value = const None(),
     Set<ValidationRule>? validationRules,
     Set<ValidationError>? errors,
   }) : errors = errors ?? {},
@@ -55,7 +56,7 @@ final class Input<T> {
     newRules.addAll(_validationRules);
 
     return Input(
-      value: value ?? this.value,
+      value: value != null ? Some(value) : this.value,
       validationRules: newRules,
       errors: errors,
     );

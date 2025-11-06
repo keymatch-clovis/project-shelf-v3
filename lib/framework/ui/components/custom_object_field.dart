@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oxidized/oxidized.dart';
 
 enum CustomObjectFieldStatus { INITIAL, DIRTY }
 
@@ -9,7 +10,7 @@ final class CustomObjectField<T> extends StatefulWidget {
   /// Custom fields
   final Widget? body;
   final String? emptyLabel;
-  final T? value;
+  final Option<T> value;
   final String label;
   final bool isRequired;
   final void Function()? onClear;
@@ -19,7 +20,7 @@ final class CustomObjectField<T> extends StatefulWidget {
     super.key,
     this.body,
     this.emptyLabel,
-    this.value,
+    this.value = const None(),
     this.focusNode,
     this.onTap,
     // Custom fields

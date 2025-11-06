@@ -26,7 +26,7 @@ final class UpdateProductUseCase {
     final stock = request.stock.unwrapOr(0);
 
     final product = Product(
-      id: request.id,
+      id: Some(request.id),
       name: request.name,
       defaultPrice: defaultPrice,
       purchasePrice: purchasePrice,

@@ -12,6 +12,7 @@ import 'package:project_shelf_v3/app/use_case/app_preferences/get_app_preference
 import 'package:project_shelf_v3/app/use_case/city/search_cities_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/create_invoice_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/get_invoices_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart';
@@ -53,9 +54,9 @@ void main() {
         .exec(
           CreateCustomerRequest(
             name: faker.randomGenerator.string(10),
-            businessName: faker.randomGenerator.string(10),
-            address: faker.randomGenerator.string(10),
-            phoneNumber: faker.randomGenerator.string(10),
+            businessName: Some(faker.randomGenerator.string(10)),
+            address: Some(faker.randomGenerator.string(10)),
+            phoneNumber: Some(faker.randomGenerator.string(10)),
             cityId: city.id.unwrap(),
           ),
         )
@@ -66,9 +67,9 @@ void main() {
         .exec(
           CreateProductRequest(
             name: faker.randomGenerator.string(10),
-            defaultPrice: Money.fromIntWithCurrency(10, defaultCurrency),
-            purchasePrice: Money.fromIntWithCurrency(10, defaultCurrency),
-            stock: 10,
+            defaultPrice: Some(Money.fromIntWithCurrency(10, defaultCurrency)),
+            purchasePrice: Some(Money.fromIntWithCurrency(10, defaultCurrency)),
+            stock: Some(10),
           ),
         )
         .unwrap();
@@ -93,9 +94,14 @@ void main() {
         .exec(request)
         .unwrap();
 
+    final invoiceProducts = await getIt
+        .get<FindInvoiceProductsUseCase>()
+        .exec(invoice.id)
+        .unwrap();
+
     expect(invoice.date, request.date);
     expect(invoice.customerId, request.customerId);
-    expect(invoice.invoiceProducts.isNotEmpty, true);
+    expect(invoiceProducts.isNotEmpty, true);
     expect(invoice.remainingUnpaidBalance.isNonZero, true);
   });
 
@@ -123,9 +129,9 @@ void main() {
         .exec(
           CreateCustomerRequest(
             name: faker.randomGenerator.string(10),
-            businessName: faker.randomGenerator.string(10),
-            address: faker.randomGenerator.string(10),
-            phoneNumber: faker.randomGenerator.string(10),
+            businessName: Some(faker.randomGenerator.string(10)),
+            address: Some(faker.randomGenerator.string(10)),
+            phoneNumber: Some(faker.randomGenerator.string(10)),
             cityId: city.id.unwrap(),
           ),
         )
@@ -136,9 +142,9 @@ void main() {
         .exec(
           CreateProductRequest(
             name: faker.randomGenerator.string(10),
-            defaultPrice: Money.fromIntWithCurrency(10, defaultCurrency),
-            purchasePrice: Money.fromIntWithCurrency(10, defaultCurrency),
-            stock: 0,
+            defaultPrice: Some(Money.fromIntWithCurrency(10, defaultCurrency)),
+            purchasePrice: Some(Money.fromIntWithCurrency(10, defaultCurrency)),
+            stock: Some(0),
           ),
         )
         .unwrap();
@@ -168,9 +174,14 @@ void main() {
         )
         .unwrap();
 
+    final invoiceProducts = await getIt
+        .get<FindInvoiceProductsUseCase>()
+        .exec(invoice.id)
+        .unwrap();
+
     // We need to create two products for the invoice edition. One, to update
     // it, and another one, to be deleted.
-    final invoiceProductToUpdate = invoice.invoiceProducts.first;
+    final invoiceProductToUpdate = invoiceProducts.first;
 
     final invoiceProductRequests = [
       UpdateInvoiceProductRequest(
@@ -189,7 +200,7 @@ void main() {
     ];
 
     final updateRequest = UpdateInvoiceRequest(
-      id: invoice.id.unwrap(),
+      id: invoice.id,
       date: Some(Jiffy.now().subtractDuration(Duration(days: 1)).dateTime),
       invoiceProducts: invoiceProductRequests,
       remainingUnpaidBalance: Some(
@@ -200,6 +211,11 @@ void main() {
     final updatedInvoice = await getIt
         .get<UpdateInvoiceUseCase>()
         .exec(updateRequest)
+        .unwrap();
+
+    final updatedInvoiceProducts = await getIt
+        .get<FindInvoiceProductsUseCase>()
+        .exec(updatedInvoice.id)
         .unwrap();
 
     // These values must stay the same.
@@ -215,15 +231,17 @@ void main() {
 
     // Expect that we only have 2 invoice products; the one to be created, and
     // the one to be updated.
-    expect(updatedInvoice.invoiceProducts.length, 2);
+    expect(updatedInvoiceProducts.length, 2);
 
-    for (final newProduct in updatedInvoice.invoiceProducts) {
-      final oldProduct = invoice.invoiceProducts.firstWhere(
-        (it) => it.id == newProduct.id,
+    for (final newProduct in updatedInvoiceProducts) {
+      final oldProduct = Option.from(
+        invoiceProducts.where((it) => it.id == newProduct.id).singleOrNull,
       );
 
-      expect(newProduct.unitPrice != oldProduct.unitPrice, true);
-      expect(newProduct.quantity != oldProduct.quantity, true);
+      oldProduct.map((it) {
+        expect(newProduct.unitPrice != it.unitPrice, true);
+        expect(newProduct.quantity != it.quantity, true);
+      });
     }
   });
 }

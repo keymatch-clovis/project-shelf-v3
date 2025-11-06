@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_integer_rule.dart';
-import 'package:project_shelf_v3/adapter/common/validator/rule/is_maximum_rule.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
@@ -20,14 +20,14 @@ abstract class InvoiceProductFormState with _$InvoiceProductFormState {
   const factory InvoiceProductFormState({
     required Currency currency,
     required Input<ProductDto> productInput,
-    required Input unitPriceInput,
-    required Input quantityInput,
-    Money? totalValue,
+    required Input<String> unitPriceInput,
+    required Input<String> quantityInput,
+
+    @Default(None()) Option<Money> totalValue,
     // We are using this to signal if we have already created the invoice
     // product before and we are editing it---If we have the [tempId], we are
     // editing. If we do not have it, we are creating.
-    String? tempId,
-    int? availableStock,
+    @Default(None()) Option<String> tempId,
   }) = _InvoiceProductFormState;
 
   const InvoiceProductFormState._();
@@ -36,20 +36,15 @@ abstract class InvoiceProductFormState with _$InvoiceProductFormState {
     productInput.errors.isEmpty,
     unitPriceInput.errors.isEmpty,
     quantityInput.errors.isEmpty,
-    totalValue != null,
+    totalValue.isSome(),
   ].every((el) => el);
 
-  InvoiceProductDto? get invoiceProduct {
-    if (!isValid) {
-      return null;
-    }
-
+  InvoiceProductDto get invoiceProduct {
     return InvoiceProductDto(
-      tempId: tempId,
-      product: productInput.value!,
-      unitPrice: currency.parse(unitPriceInput.value),
-      quantity: int.parse(quantityInput.value),
-      total: totalValue!,
+      product: productInput.value.unwrap(),
+      unitPrice: unitPriceInput.value.map((it) => currency.parse(it)).unwrap(),
+      quantity: quantityInput.value.map((it) => int.parse(it)).unwrap(),
+      total: totalValue.unwrap(),
     );
   }
 }
@@ -57,12 +52,12 @@ abstract class InvoiceProductFormState with _$InvoiceProductFormState {
 final class InvoiceProductFormArgs {
   final int availableStock;
   final ProductDto product;
-  final InvoiceProductDto? invoiceProduct;
+  final Option<InvoiceProductDto> invoiceProduct;
 
   const InvoiceProductFormArgs({
     required this.availableStock,
     required this.product,
-    this.invoiceProduct,
+    this.invoiceProduct = const None(),
   });
 }
 
@@ -73,41 +68,39 @@ final class InvoiceProductFormNotifier
 
   InvoiceProductFormNotifier(this.args);
 
+  Option<Money> get totalValue =>
+      args.invoiceProduct.map((it) => it.unitPrice * it.quantity);
+
   @override
   FutureOr<InvoiceProductFormState> build() async {
     final appPreferences = await ref.watch(appPreferencesProvider.future);
 
-    final unitPrice =
-        args.invoiceProduct?.unitPrice ?? args.product.defaultPrice;
+    final Option<String> unitPrice = args.invoiceProduct
+        .map((it) => it.unitPrice)
+        .or(Some(args.product.defaultPrice))
+        .map((it) => it.minorUnits.toString());
+
+    final Option<String> quantity = args.invoiceProduct.map(
+      (it) => it.quantity.toString(),
+    );
 
     return InvoiceProductFormState(
       currency: appPreferences.defaultCurrency,
       productInput: Input(
-        value: args.product,
+        value: Some(args.product),
         validationRules: {IsRequiredRule()},
       ),
       unitPriceInput: Input(
-        value: unitPrice.minorUnits.toString(),
+        value: unitPrice,
         validationRules: {
           IsRequiredRule(),
           IsMoneyRule(appPreferences.defaultCurrency),
         },
       ),
       quantityInput: Input(
-        value: args.invoiceProduct?.quantity.toString(),
+        value: quantity,
         validationRules: {IsRequiredRule(), IsIntegerRule()},
       ),
-      totalValue: args.invoiceProduct != null
-          ? unitPrice * args.invoiceProduct!.quantity
-          : null,
-      tempId: args.invoiceProduct?.tempId,
-      // This is not the same as `product.stock`, as that is the current
-      // product stock stored in the database. This current stock is the one
-      // related to the products added to the invoice creation.
-      //
-      // NOTE: If we allowed only one product per invoice we wouldn't need to
-      // do this.
-      availableStock: args.availableStock,
     );
   }
 
@@ -140,26 +133,32 @@ final class InvoiceProductFormNotifier
     assert(value.isValid);
 
     return InvoiceProductDto(
-      product: value.productInput.value!,
-      unitPrice: value.currency.parse(value.unitPriceInput.value),
-      quantity: int.parse(value.quantityInput.value),
-      total: value.totalValue!,
+      product: value.productInput.value.unwrap(),
+      unitPrice: value.unitPriceInput.value
+          .map((it) => value.currency.parse(it))
+          .unwrap(),
+      quantity: value.quantityInput.value.map((it) => int.parse(it)).unwrap(),
+      total: value.totalValue.unwrap(),
     );
   }
 
   Future<void> _setTotalPrice() async {
     final value = await future;
 
-    final unitPrice = value.currency.tryParse(value.unitPriceInput.value);
+    // final unitPrice = value.currency.tryParse(value.unitPriceInput.value);
+    final unitPrice = value.unitPriceInput.value.andThen(
+      (it) => Option.from(value.currency.tryParse(it)),
+    );
 
-    // We have to set the value to an empty string, as the [tryParse] method
-    // does not allow for null values.
-    final quantity = int.tryParse(value.quantityInput.value ?? '');
+    final quantity = value.quantityInput.value.andThen(
+      (it) => Option.from(int.tryParse(it)),
+    );
 
-    if (unitPrice != null && quantity != null) {
-      state = AsyncData(value.copyWith(totalValue: unitPrice * quantity));
+    if (unitPrice.isSome() && quantity.isSome()) {
+      final totalValue = Some(unitPrice.unwrap() * quantity.unwrap());
+      state = AsyncData(value.copyWith(totalValue: totalValue));
     } else {
-      state = AsyncData(value.copyWith(totalValue: null));
+      state = AsyncData(value.copyWith(totalValue: None()));
     }
   }
 }

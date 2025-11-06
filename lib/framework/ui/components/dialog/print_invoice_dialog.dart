@@ -6,7 +6,7 @@ import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/invoice/invoice_printer_provider.dart';
 import 'package:project_shelf_v3/framework/ui/common/constants.dart';
-import 'package:project_shelf_v3/framework/ui/common/error_parser.dart';
+import 'package:project_shelf_v3/framework/ui/common/exception_parser.dart';
 
 final class PrintInvoiceDialog extends ConsumerWidget {
   final Id invoiceId;
@@ -101,8 +101,11 @@ final class _BodyPane extends ConsumerWidget {
       },
       data: (data) {
         return switch (data) {
-          Failure() => _ErrorPane(data.error, onDismiss: onDismiss),
-          Initial() => _FormPane(
+          FailureState() => _ExceptionPane(
+            data.exception,
+            onDismiss: onDismiss,
+          ),
+          InitialState() => _FormPane(
             invoiceId,
             onPrinterSelected: onPrinterSelected,
             onAccept: onAccept,
@@ -114,12 +117,12 @@ final class _BodyPane extends ConsumerWidget {
   }
 }
 
-final class _ErrorPane extends StatelessWidget {
-  final Error error;
+final class _ExceptionPane extends StatelessWidget {
+  final Exception exception;
 
   final void Function()? onDismiss;
 
-  const _ErrorPane(this.error, {this.onDismiss});
+  const _ExceptionPane(this.exception, {this.onDismiss});
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +136,12 @@ final class _ErrorPane extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              error.parseIconError(),
+              exception.parseIcon(),
               size: 96,
               color: theme.colorScheme.outlineVariant,
             ),
             Text(
-              error.parseError(context),
+              exception.parseException(context),
               textAlign: TextAlign.center,
               style: TextStyle(color: theme.colorScheme.outline),
             ),
@@ -179,7 +182,9 @@ final class _FormPane extends ConsumerWidget {
     final localizations = AppLocalizations.of(context)!;
 
     final state = ref.watch(
-      invoicePrinterProvider(invoiceId).select((it) => it.value as Initial),
+      invoicePrinterProvider(
+        invoiceId,
+      ).select((it) => it.value as InitialState),
     );
 
     final printers = state.printers.map((it) {

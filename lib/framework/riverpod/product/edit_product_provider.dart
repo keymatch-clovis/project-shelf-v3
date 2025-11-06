@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_integer_rule.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dart';
@@ -30,10 +31,10 @@ abstract class EditProductState with _$EditProductState {
     @Default(EditProductStatus.INITIAL) EditProductStatus status,
     required Currency currency,
     required ProductDto product,
-    required Input nameInput,
-    required Input defaultPriceInput,
-    required Input purchasePriceInput,
-    required Input stockInput,
+    required Input<String> nameInput,
+    required Input<String> defaultPriceInput,
+    required Input<String> purchasePriceInput,
+    required Input<String> stockInput,
     @Default([]) List<File> photoFiles,
   }) = _EditProductState;
 
@@ -59,34 +60,41 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
     final appPreferences = await ref.watch(appPreferencesProvider.future);
 
     final selectedProductState = ref.watch(selectedProductProvider);
-    assert(selectedProductState is Selected);
+    assert(selectedProductState is SelectedState);
 
-    final product = (selectedProductState as Selected).product;
+    final product = (selectedProductState as SelectedState).product;
     final isMoneyRule = IsMoneyRule(appPreferences.defaultCurrency);
+
+    final Option<String> defaultPrice =
+        product.defaultPrice.minorUnits > BigInt.zero
+        ? Some(product.defaultPrice.minorUnits.toString())
+        : None();
+
+    final Option<String> purchasePrice =
+        product.purchasePrice.minorUnits > BigInt.zero
+        ? Some(product.purchasePrice.minorUnits.toString())
+        : None();
+
+    final Option<String> stock = product.stock > 0
+        ? Some(product.stock.toString())
+        : None();
 
     return EditProductState(
       currency: appPreferences.defaultCurrency,
       product: product,
       nameInput: Input(
-        value: product.name,
+        value: Some(product.name),
         validationRules: {IsRequiredRule()},
       ),
       defaultPriceInput: Input(
-        value: product.defaultPrice.minorUnits > BigInt.zero
-            ? product.defaultPrice.minorUnits.toString()
-            : null,
+        value: defaultPrice,
         validationRules: {isMoneyRule},
       ),
       purchasePriceInput: Input(
-        value: product.purchasePrice.minorUnits > BigInt.zero
-            ? product.purchasePrice.minorUnits.toString()
-            : null,
+        value: purchasePrice,
         validationRules: {isMoneyRule},
       ),
-      stockInput: Input(
-        value: product.stock > 0 ? product.stock.toString() : null,
-        validationRules: {IsIntegerRule()},
-      ),
+      stockInput: Input(value: stock, validationRules: {IsIntegerRule()}),
     );
   }
 
@@ -161,16 +169,19 @@ class EditProductAsyncNotifier extends AsyncNotifier<EditProductState> {
         .exec(
           UpdateProductRequest(
             id: value.product.id,
-            name: value.nameInput.value.trim(),
-            defaultPrice: value.currency.tryParse(
-              value.defaultPriceInput.value,
+            name: value.nameInput.value.unwrap(),
+            defaultPrice: value.defaultPriceInput.value.andThen(
+              (it) => Option.from(value.currency.tryParse(it)),
             ),
-            purchasePrice: value.currency.tryParse(
-              value.purchasePriceInput.value,
+            purchasePrice: value.purchasePriceInput.value.andThen(
+              (it) => Option.from(value.currency.tryParse(it)),
             ),
-            stock: int.tryParse(value.stockInput.value),
+            stock: value.stockInput.value.andThen(
+              (it) => Option.from(int.tryParse(it)),
+            ),
           ),
         )
+        .unwrap()
         .then((it) {
           ref
               .read(selectedProductProvider.notifier)

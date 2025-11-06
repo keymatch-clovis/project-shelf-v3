@@ -11,16 +11,16 @@ import 'package:project_shelf_v3/framework/ui/components/shelf_text_field.dart';
 class ProductDetailsForm extends StatefulWidget {
   final Currency currency;
 
-  final Input nameInput;
+  final Input<String> nameInput;
   final void Function(String value) onNameChanged;
 
-  final Input defaultPriceInput;
+  final Input<String> defaultPriceInput;
   final void Function(String value) onDefaultPriceChanged;
 
-  final Input purchasePriceInput;
+  final Input<String> purchasePriceInput;
   final void Function(String value) onPurchasePriceChanged;
 
-  final Input stockInput;
+  final Input<String> stockInput;
   final void Function(String value) onStockChanged;
 
   const ProductDetailsForm({

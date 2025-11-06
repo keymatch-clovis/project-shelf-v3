@@ -22,34 +22,16 @@ abstract class CompanyInfoState with _$CompanyInfoState {
 // Provider related
 final class CompanyInfoNotifier extends AsyncNotifier<CompanyInfoState> {
   final _getCompanyInfoUseCase = getIt.get<GetCompanyInfoUseCase>();
-  final _getDefaultCompanyLogoUseCase = getIt
-      .get<GetDefaultCompanyLogoUseCase>();
-  final _findFileUseCase = getIt.get<FindFileUseCase>();
 
   @override
   FutureOr<CompanyInfoState> build() async {
-    final companyInfo = await _getCompanyInfoUseCase.exec(unit).then((
-      it,
-    ) async {
-      Uint8List? logoBytes;
-      if (it.logoFileName != null) {
-        logoBytes = await _findFileUseCase
-            .exec(it.logoFileName!)
-            .then((it) => it.readAsBytes());
-      } else {
-        logoBytes = await _getDefaultCompanyLogoUseCase.exec().then(
-          (it) => it.bytes,
-        );
-      }
-
-      return CompanyInfoDto(
-        logoBytes: logoBytes,
-        name: it.name,
-        document: it.document,
-        email: it.email,
-        phone: it.phone,
-      );
-    });
+    final companyInfo = await _getCompanyInfoUseCase
+        .exec(unit)
+        // Unwrap the result.
+        // NOTE: We would need to handle the error here, but for not it is fine.
+        .then((it) => it.unwrap())
+        .map((it) => CompanyInfoDto.fromEntity(it))
+        .unwrap();
 
     return CompanyInfoState(companyInfo: companyInfo);
   }

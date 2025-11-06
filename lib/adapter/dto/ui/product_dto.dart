@@ -18,7 +18,7 @@ final class ProductDto {
 
   factory ProductDto.fromEntity(Product product) {
     return ProductDto(
-      id: product.id!,
+      id: product.id.unwrap(),
       name: product.name,
       defaultPrice: product.defaultPrice,
       purchasePrice: product.purchasePrice,

@@ -12,10 +12,8 @@ final class CreateCustomerRequest {
   CreateCustomerRequest({
     required this.name,
     required this.cityId,
-    String? businessName,
-    String? address,
-    String? phoneNumber,
-  }) : businessName = Option.from(businessName),
-       address = Option.from(address),
-       phoneNumber = Option.from(phoneNumber);
+    required this.businessName,
+    required this.address,
+    required this.phoneNumber,
+  });
 }

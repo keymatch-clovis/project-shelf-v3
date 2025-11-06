@@ -23,22 +23,22 @@ sealed class InvoicePrinterState {
 }
 
 @freezed
-abstract class Initial extends InvoicePrinterState with _$Initial {
-  const factory Initial({
+abstract class InitialState extends InvoicePrinterState with _$InitialState {
+  const factory InitialState({
     @Default(InvoicePrinterStatus.INITIAL) InvoicePrinterStatus status,
     required Iterable<PrinterDataDto> printers,
     required Input<PrinterDataDto> selectedPrinter,
-  }) = _Initial;
+  }) = _InitialState;
 
-  const Initial._();
+  const InitialState._();
 
   bool get isValid => [selectedPrinter.errors.isEmpty].every((it) => it);
 }
 
-final class Failure extends InvoicePrinterState {
-  final Error error;
+final class FailureState extends InvoicePrinterState {
+  final Exception exception;
 
-  const Failure(this.error);
+  const FailureState(this.exception);
 }
 
 // Provider related
@@ -54,7 +54,6 @@ final class InvoicePrinterNotifier extends AsyncNotifier<InvoicePrinterState> {
   @override
   FutureOr<InvoicePrinterState> build() async {
     try {
-      // TODO: use oxidized
       final printers = await _getPrintersUseCase.exec().then((it) {
         return it.map(
           (it) => PrinterDataDto(name: it.name, macAddress: it.macAddress),
@@ -62,19 +61,20 @@ final class InvoicePrinterNotifier extends AsyncNotifier<InvoicePrinterState> {
       });
 
       final companyInfo = await _getCompanyInfoUseCase.exec(unit);
-      assert(companyInfo.isFilled);
+      assert(companyInfo.isOk());
+      assert(companyInfo.unwrap().isSome());
 
-      return Initial(
+      return InitialState(
         printers: printers,
         selectedPrinter: Input(validationRules: {IsRequiredRule()}),
       );
     } on Error catch (err) {
-      return Failure(err);
+      return FailureState(Exception(err));
     }
   }
 
   Future<void> setPrinter(PrinterDataDto? printerData) async {
-    final value = await future.then((it) => it as Initial);
+    final value = await future.then((it) => it as InitialState);
 
     state = AsyncData(
       value.copyWith(
@@ -84,16 +84,18 @@ final class InvoicePrinterNotifier extends AsyncNotifier<InvoicePrinterState> {
   }
 
   Future<void> print(String locale) async {
-    final value = await future.then((it) => it as Initial);
+    final value = await future.then((it) => it as InitialState);
     assert(value.isValid);
 
     state = AsyncData(value.copyWith(status: InvoicePrinterStatus.LOADING));
 
+    final printerData = value.selectedPrinter.value.unwrap();
+
     await _printInvoiceUseCase.exec(
       invoiceId: invoiceId,
       printerInfoRequest: PrinterInfoRequest(
-        name: value.selectedPrinter.value!.name,
-        macAddress: value.selectedPrinter.value!.macAddress,
+        name: printerData.name,
+        macAddress: printerData.macAddress,
       ),
       locale: locale,
     );

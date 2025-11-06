@@ -13,7 +13,7 @@ void main() async {
   // Almost all projects have this.
   WidgetsFlutterBinding.ensureInitialized();
 
-  configureDependencies(Environment.prod);
+  await configureDependencies(Environment.prod);
 
   await Jiffy.setLocale(PlatformDispatcher.instance.locale.languageCode);
 

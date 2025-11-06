@@ -125,7 +125,7 @@ class ProductDao implements ProductService {
   }
 
   @override
-  Future<Product> findById(Id id) {
+  Future<Product> findWithId(Id id) {
     final query = _database.select(_database.productTable)
       ..where((e) => e.id.equals(id) & e.pendingDeleteUntil.isNull());
 

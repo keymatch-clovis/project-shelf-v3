@@ -33,7 +33,7 @@ final class InvoiceListScreen extends ConsumerWidget {
         context.go(CustomRoute.INVOICE_CREATE.route);
       },
       onSelect: (invoice) {
-        ref.read(selectedInvoiceProvider.notifier).select(invoice);
+        ref.read(selectedInvoiceProvider.notifier).select(invoice.id);
         context.go(CustomRoute.INVOICE_DETAILS.route);
       },
     );

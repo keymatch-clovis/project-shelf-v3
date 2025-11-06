@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:logger/logger.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_details_invoice_dto.dart';
-import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/customer/customer_details_provider.dart';
@@ -28,7 +28,7 @@ final class CustomerDetailsScreen extends ConsumerWidget {
     // We can only reach this point if the selected customer provider has this
     // exact state. If it does not, it is a programming error.
     final status = ref.watch(
-      selectedCustomerProvider.select((it) => it as Selected),
+      selectedCustomerProvider.select((it) => it as SelectedState),
     );
 
     // This provider by itself is useless, as it is marked as autodispose. This
@@ -57,22 +57,10 @@ final class CustomerDetailsScreen extends ConsumerWidget {
     return _Screen(
       status.customer.id,
       onInvoiceSelected: (invoice) {
-        // TODO: FIX THIS
-        final state = ref.read(
-          selectedCustomerProvider.select((it) => it as Selected),
-        );
-
         ref
             .read(selected_invoice.selectedInvoiceProvider.notifier)
-            .select(
-              InvoiceDto(
-                id: invoice.id,
-                number: invoice.number,
-                date: invoice.date,
-                remainingUnpaidBalance: invoice.remainingUnpaidBalance,
-                customer: state.customer,
-              ),
-            );
+            .select(invoice.id);
+
         context.go(CustomRoute.INVOICE_DETAILS.route);
       },
     );
@@ -142,8 +130,8 @@ final class _AppBar extends ConsumerWidget {
     final state = ref.watch(selectedCustomerProvider);
 
     return switch (state) {
-      None() => throw AssertionError(),
-      Selected() => SliverAppBar.medium(
+      NoneState() => throw AssertionError(),
+      SelectedState() => SliverAppBar.medium(
         title: Text(
           state.customer.name,
           maxLines: 1,
@@ -188,31 +176,32 @@ final class _CustomerDetailsPane extends ConsumerWidget {
                 ShelfTextField(
                   isRequired: true,
                   readOnly: true,
-                  value: data.customer.name,
+                  value: Some(data.customer.name),
                   label: localizations.name,
                 ),
                 ShelfTextField(
                   isRequired: true,
                   readOnly: true,
-                  value:
-                      "${data.customer.city.name}, ${data.customer.city.department}",
+                  value: Some(
+                    "${data.customer.city.name}, ${data.customer.city.department}",
+                  ),
                   label: localizations.city,
                 ),
                 ShelfTextField(
                   readOnly: true,
                   value: data.customer.businessName,
-                  enabled: data.customer.businessName != null,
+                  enabled: data.customer.businessName.isSome(),
                   label: localizations.business_name,
                 ),
                 ShelfTextField(
                   readOnly: true,
                   value: data.customer.address,
-                  enabled: data.customer.address != null,
+                  enabled: data.customer.address.isSome(),
                   label: localizations.address,
                 ),
                 ShelfTextField(
                   readOnly: true,
-                  enabled: data.customer.phoneNumber != null,
+                  enabled: data.customer.phoneNumber.isSome(),
                   value: data.customer.phoneNumber,
                   label: localizations.phone_number,
                 ),

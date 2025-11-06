@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:logger/web.dart';
-import 'package:project_shelf_v3/app/service/invoice_service.dart';
+import 'package:project_shelf_v3/domain/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
 import 'package:project_shelf_v3/injectable.dart';

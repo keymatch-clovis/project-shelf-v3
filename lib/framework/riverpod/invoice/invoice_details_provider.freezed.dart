@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$InvoiceDetailsState {
 
- InvoiceDto get invoice; Iterable<InvoiceProductDto> get invoiceProducts; Money get total;
+ InvoiceDto get invoice; Iterable<InvoiceProductDto> get products; Money get total;
 /// Create a copy of InvoiceDetailsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $InvoiceDetailsStateCopyWith<InvoiceDetailsState> get copyWith => _$InvoiceDetai
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvoiceDetailsState&&(identical(other.invoice, invoice) || other.invoice == invoice)&&const DeepCollectionEquality().equals(other.invoiceProducts, invoiceProducts)&&(identical(other.total, total) || other.total == total));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvoiceDetailsState&&(identical(other.invoice, invoice) || other.invoice == invoice)&&const DeepCollectionEquality().equals(other.products, products)&&(identical(other.total, total) || other.total == total));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,invoice,const DeepCollectionEquality().hash(invoiceProducts),total);
+int get hashCode => Object.hash(runtimeType,invoice,const DeepCollectionEquality().hash(products),total);
 
 @override
 String toString() {
-  return 'InvoiceDetailsState(invoice: $invoice, invoiceProducts: $invoiceProducts, total: $total)';
+  return 'InvoiceDetailsState(invoice: $invoice, products: $products, total: $total)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $InvoiceDetailsStateCopyWith<$Res>  {
   factory $InvoiceDetailsStateCopyWith(InvoiceDetailsState value, $Res Function(InvoiceDetailsState) _then) = _$InvoiceDetailsStateCopyWithImpl;
 @useResult
 $Res call({
- InvoiceDto invoice, Iterable<InvoiceProductDto> invoiceProducts, Money total
+ InvoiceDto invoice, Iterable<InvoiceProductDto> products, Money total
 });
 
 
@@ -62,10 +62,10 @@ class _$InvoiceDetailsStateCopyWithImpl<$Res>
 
 /// Create a copy of InvoiceDetailsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? invoice = null,Object? invoiceProducts = null,Object? total = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? invoice = null,Object? products = null,Object? total = null,}) {
   return _then(_self.copyWith(
 invoice: null == invoice ? _self.invoice : invoice // ignore: cast_nullable_to_non_nullable
-as InvoiceDto,invoiceProducts: null == invoiceProducts ? _self.invoiceProducts : invoiceProducts // ignore: cast_nullable_to_non_nullable
+as InvoiceDto,products: null == products ? _self.products : products // ignore: cast_nullable_to_non_nullable
 as Iterable<InvoiceProductDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as Money,
   ));
@@ -152,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( InvoiceDto invoice,  Iterable<InvoiceProductDto> invoiceProducts,  Money total)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( InvoiceDto invoice,  Iterable<InvoiceProductDto> products,  Money total)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InvoiceDetailsState() when $default != null:
-return $default(_that.invoice,_that.invoiceProducts,_that.total);case _:
+return $default(_that.invoice,_that.products,_that.total);case _:
   return orElse();
 
 }
@@ -173,10 +173,10 @@ return $default(_that.invoice,_that.invoiceProducts,_that.total);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( InvoiceDto invoice,  Iterable<InvoiceProductDto> invoiceProducts,  Money total)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( InvoiceDto invoice,  Iterable<InvoiceProductDto> products,  Money total)  $default,) {final _that = this;
 switch (_that) {
 case _InvoiceDetailsState():
-return $default(_that.invoice,_that.invoiceProducts,_that.total);case _:
+return $default(_that.invoice,_that.products,_that.total);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +193,10 @@ return $default(_that.invoice,_that.invoiceProducts,_that.total);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( InvoiceDto invoice,  Iterable<InvoiceProductDto> invoiceProducts,  Money total)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( InvoiceDto invoice,  Iterable<InvoiceProductDto> products,  Money total)?  $default,) {final _that = this;
 switch (_that) {
 case _InvoiceDetailsState() when $default != null:
-return $default(_that.invoice,_that.invoiceProducts,_that.total);case _:
+return $default(_that.invoice,_that.products,_that.total);case _:
   return null;
 
 }
@@ -208,11 +208,11 @@ return $default(_that.invoice,_that.invoiceProducts,_that.total);case _:
 
 
 class _InvoiceDetailsState implements InvoiceDetailsState {
-  const _InvoiceDetailsState({required this.invoice, required this.invoiceProducts, required this.total});
+  const _InvoiceDetailsState({required this.invoice, required this.products, required this.total});
   
 
 @override final  InvoiceDto invoice;
-@override final  Iterable<InvoiceProductDto> invoiceProducts;
+@override final  Iterable<InvoiceProductDto> products;
 @override final  Money total;
 
 /// Create a copy of InvoiceDetailsState
@@ -225,16 +225,16 @@ _$InvoiceDetailsStateCopyWith<_InvoiceDetailsState> get copyWith => __$InvoiceDe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InvoiceDetailsState&&(identical(other.invoice, invoice) || other.invoice == invoice)&&const DeepCollectionEquality().equals(other.invoiceProducts, invoiceProducts)&&(identical(other.total, total) || other.total == total));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InvoiceDetailsState&&(identical(other.invoice, invoice) || other.invoice == invoice)&&const DeepCollectionEquality().equals(other.products, products)&&(identical(other.total, total) || other.total == total));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,invoice,const DeepCollectionEquality().hash(invoiceProducts),total);
+int get hashCode => Object.hash(runtimeType,invoice,const DeepCollectionEquality().hash(products),total);
 
 @override
 String toString() {
-  return 'InvoiceDetailsState(invoice: $invoice, invoiceProducts: $invoiceProducts, total: $total)';
+  return 'InvoiceDetailsState(invoice: $invoice, products: $products, total: $total)';
 }
 
 
@@ -245,7 +245,7 @@ abstract mixin class _$InvoiceDetailsStateCopyWith<$Res> implements $InvoiceDeta
   factory _$InvoiceDetailsStateCopyWith(_InvoiceDetailsState value, $Res Function(_InvoiceDetailsState) _then) = __$InvoiceDetailsStateCopyWithImpl;
 @override @useResult
 $Res call({
- InvoiceDto invoice, Iterable<InvoiceProductDto> invoiceProducts, Money total
+ InvoiceDto invoice, Iterable<InvoiceProductDto> products, Money total
 });
 
 
@@ -262,10 +262,10 @@ class __$InvoiceDetailsStateCopyWithImpl<$Res>
 
 /// Create a copy of InvoiceDetailsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? invoice = null,Object? invoiceProducts = null,Object? total = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? invoice = null,Object? products = null,Object? total = null,}) {
   return _then(_InvoiceDetailsState(
 invoice: null == invoice ? _self.invoice : invoice // ignore: cast_nullable_to_non_nullable
-as InvoiceDto,invoiceProducts: null == invoiceProducts ? _self.invoiceProducts : invoiceProducts // ignore: cast_nullable_to_non_nullable
+as InvoiceDto,products: null == products ? _self.products : products // ignore: cast_nullable_to_non_nullable
 as Iterable<InvoiceProductDto>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as Money,
   ));

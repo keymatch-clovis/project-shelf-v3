@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/product_dto.dart';
+import 'package:project_shelf_v3/app/use_case/city/find_city_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/customer/find_customer_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/invoice/find_invoice_use_case.dart';
@@ -22,7 +24,7 @@ part 'invoice_details_provider.freezed.dart';
 abstract class InvoiceDetailsState with _$InvoiceDetailsState {
   const factory InvoiceDetailsState({
     required InvoiceDto invoice,
-    required Iterable<InvoiceProductDto> invoiceProducts,
+    required Iterable<InvoiceProductDto> products,
     required Money total,
   }) = _InvoiceDetailsState;
 }
@@ -35,6 +37,7 @@ final class InvoiceDetailsNotifier extends AsyncNotifier<InvoiceDetailsState> {
   final findInvoiceProductsUseCase = getIt.get<FindInvoiceProductsUseCase>();
   final findCustomerUseCase = getIt.get<FindCustomerUseCase>();
   final findProductUseCase = getIt.get<FindProductUseCase>();
+  final findCityUseCase = getIt.get<FindCityUseCase>();
 
   InvoiceDetailsNotifier(this.invoiceId);
 
@@ -45,32 +48,22 @@ final class InvoiceDetailsNotifier extends AsyncNotifier<InvoiceDetailsState> {
     );
 
     final invoice = await findInvoiceUseCase.exec(invoiceId);
-    final customer = await findCustomerUseCase
-        .exec(invoice.customerId)
-        .then(CustomerDto.fromResponse);
 
     final invoiceProducts = await findInvoiceProductsUseCase
         .exec(invoice.id)
-        .then((it) async {
-          final result = <InvoiceProductDto>[];
+        .unwrap();
 
-          for (final invoiceProduct in it) {
-            final product = await findProductUseCase
-                .exec(id: invoiceProduct.productId)
-                .then(ProductDto.fromEntity);
-
-            result.add(
-              InvoiceProductDto(
-                product: product,
-                unitPrice: invoiceProduct.unitPrice,
-                quantity: invoiceProduct.quantity,
-                total: invoiceProduct.unitPrice * invoiceProduct.quantity,
-              ),
-            );
-          }
-
-          return result;
-        });
+    final customer =
+        await Stream.fromFuture(findCustomerUseCase.exec(invoice.customerId))
+            .map((it) => it.unwrap())
+            .asyncMap((it) async {
+              final city = await findCityUseCase.exec(it.cityId);
+              return (it, city);
+            })
+            .map((it) {
+              return CustomerDto.fromEntity(it.$1, city: it.$2.unwrap());
+            })
+            .single;
 
     final total = invoiceProducts.fold(
       Money.fromIntWithCurrency(0, defaultCurrency),
@@ -78,6 +71,21 @@ final class InvoiceDetailsNotifier extends AsyncNotifier<InvoiceDetailsState> {
         return acc + it.total;
       },
     );
+
+    final products = await Stream.fromIterable(invoiceProducts)
+        .asyncMap((it) async {
+          final product = await findProductUseCase.exec(id: it.productId);
+          return (it, product);
+        })
+        .map((it) {
+          return InvoiceProductDto(
+            product: ProductDto.fromEntity(it.$2),
+            unitPrice: it.$1.unitPrice,
+            quantity: it.$1.quantity,
+            total: it.$1.total,
+          );
+        })
+        .toList();
 
     return InvoiceDetailsState(
       invoice: InvoiceDto(
@@ -87,7 +95,7 @@ final class InvoiceDetailsNotifier extends AsyncNotifier<InvoiceDetailsState> {
         remainingUnpaidBalance: invoice.remainingUnpaidBalance,
         customer: customer,
       ),
-      invoiceProducts: invoiceProducts,
+      products: products,
       total: total,
     );
   }

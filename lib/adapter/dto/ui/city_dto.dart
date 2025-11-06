@@ -12,9 +12,13 @@ final class CityDto {
     required this.department,
   });
 
-  String get fullName => '$name, $department';
-
-  City toEntity() {
-    return City(name: name, department: department);
+  factory CityDto.fromEntity(City city) {
+    return CityDto(
+      id: city.id.unwrap(),
+      name: city.name,
+      department: city.department,
+    );
   }
+
+  String get fullName => '$name, $department';
 }

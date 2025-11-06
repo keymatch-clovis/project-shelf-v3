@@ -38,12 +38,12 @@ final class InvoiceDto {
     return _$InvoiceDtoFromJson(json);
   }
 
-  Invoice toEntity({required Iterable<InvoiceProduct> invoiceProducts}) {
+  Invoice toEntity() {
     final currency = Currency.create(currencyIsoCode, 0);
 
     return Invoice(
-      id: Some(id),
-      number: Some(number),
+      id: id,
+      number: number,
       date: date,
       currency: currency,
       remainingUnpaidBalance: Money.fromIntWithCurrency(
@@ -51,7 +51,6 @@ final class InvoiceDto {
         currency,
       ),
       customerId: customer,
-      invoiceProducts: invoiceProducts,
     );
   }
 }

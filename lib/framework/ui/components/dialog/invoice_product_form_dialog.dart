@@ -53,8 +53,6 @@ final class InvoiceProductFormDialog extends ConsumerWidget {
               if (it == true) {
                 final state = ref.read(provider);
 
-                print(state.value);
-
                 Navigator.pop(
                   context,
                   InvoiceProductFormDialogResultDto(
@@ -116,7 +114,9 @@ final class _Dialog extends StatelessWidget {
                 children: [
                   CustomObjectField(
                     isRequired: true,
-                    body: Text(state.productInput.value!.name),
+                    body: Text(
+                      state.productInput.value.map((it) => it.name).unwrap(),
+                    ),
                     label: localizations.product,
                   ),
                   ShelfTextField(
@@ -139,23 +139,20 @@ final class _Dialog extends StatelessWidget {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     errors: state.quantityInput.errors.parseErrors(context),
-                    helperText: localizations.current_product_stock(
-                      state.availableStock!,
-                    ),
                     onChanged: onQuantityChanged,
                   ),
                 ],
               ),
             ),
             const Divider(),
-            _Total(state.invoiceProduct?.total),
+            _Total(state.invoiceProduct.total),
             const SizedBox(height: 24),
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 4,
               children: [
-                if (state.tempId != null) ...[
+                if (state.tempId.isSome()) ...[
                   IconButton(
                     icon: const Icon(Icons.delete_outlined),
                     onPressed: onDelete,

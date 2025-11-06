@@ -7,7 +7,6 @@ import 'package:project_shelf_v3/adapter/common/validator/rule/is_required_rule.
 import 'package:project_shelf_v3/adapter/dto/ui/city_dto.dart';
 import 'package:project_shelf_v3/app/dto/create_customer_request.dart';
 import 'package:project_shelf_v3/app/use_case/customer/create_customer_use_case.dart';
-import 'package:project_shelf_v3/common/string_extensions.dart';
 import 'package:project_shelf_v3/injectable.dart';
 
 part 'create_customer_provider.freezed.dart';
@@ -85,13 +84,16 @@ class CreateCustomerNotifier extends Notifier<CreateCustomerState> {
 
     state = state.copyWith(status: CreateCustomerStatus.LOADING);
 
+    final name = state.nameInput.value.unwrap();
+    final cityId = state.cityInput.value.unwrap().id;
+
     await _createCustomerUseCase.exec(
       CreateCustomerRequest(
-        name: state.nameInput.value!,
-        cityId: state.cityInput.value!.id,
-        businessName: state.businessNameInput.value.nullIfEmpty,
-        address: state.addressInput.value.nullIfEmpty,
-        phoneNumber: state.phoneNumberInput.value.nullIfEmpty,
+        name: name,
+        cityId: cityId,
+        businessName: state.businessNameInput.value,
+        address: state.addressInput.value,
+        phoneNumber: state.phoneNumberInput.value,
       ),
     );
 

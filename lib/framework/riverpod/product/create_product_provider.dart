@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/input.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_integer_rule.dart';
 import 'package:project_shelf_v3/adapter/common/validator/rule/is_money_rule.dart';
@@ -29,9 +30,9 @@ abstract class CreateProductState with _$CreateProductState {
   const factory CreateProductState({
     @Default(CreateProductStatus.initial) CreateProductStatus status,
     required Currency currency,
-    required Input nameInput,
-    required Input defaultPriceInput,
-    required Input purchasePriceInput,
+    required Input<String> nameInput,
+    required Input<String> defaultPriceInput,
+    required Input<String> purchasePriceInput,
     required Input<String> stockInput,
     @Default([]) List<File> photoFiles,
   }) = _CreateProductState;
@@ -137,10 +138,16 @@ class CreateProductAsyncNotifier extends AsyncNotifier<CreateProductState> {
 
     await _createProductUseCase.exec(
       CreateProductRequest(
-        name: value.nameInput.value.trim(),
-        defaultPrice: value.currency.tryParse(value.defaultPriceInput.value),
-        purchasePrice: value.currency.tryParse(value.purchasePriceInput.value),
-        stock: int.tryParse(value.stockInput.value ?? ""),
+        name: value.nameInput.value.unwrap(),
+        defaultPrice: value.defaultPriceInput.value.andThen(
+          (it) => Option.from(value.currency.tryParse(it)),
+        ),
+        purchasePrice: value.purchasePriceInput.value.andThen(
+          (it) => Option.from(value.currency.tryParse(it)),
+        ),
+        stock: value.stockInput.value.andThen(
+          (it) => Option.from(int.tryParse(it)),
+        ),
       ),
     );
 

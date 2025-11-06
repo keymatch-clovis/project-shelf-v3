@@ -11,7 +11,7 @@ abstract interface class ProductService {
   Stream<Iterable<Product>> search(String value);
   Future<Option<Product>> searchWithName(String name);
 
-  Future<Product> findById(Id id);
+  Future<Product> findWithId(Id id);
   Future<Product> findByName(String name);
 
   Future<void> delete(Id id);

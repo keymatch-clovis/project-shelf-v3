@@ -254,12 +254,6 @@ abstract class AppLocalizations {
   /// **'Photos'**
   String get photos;
 
-  /// No description provided for @err_bluetooth_disabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Bluetooth disabled.'**
-  String get err_bluetooth_disabled;
-
   /// No description provided for @printer.
   ///
   /// In en, this message translates to:
@@ -272,11 +266,11 @@ abstract class AppLocalizations {
   /// **'Business name'**
   String get business_name;
 
-  /// No description provided for @unknown_error.
+  /// No description provided for @unknown_exception.
   ///
   /// In en, this message translates to:
-  /// **'Unknown error!\nCall the police'**
-  String get unknown_error;
+  /// **'Unknown exception!\nCall the police'**
+  String get unknown_exception;
 
   /// No description provided for @city.
   ///
@@ -421,6 +415,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete product?'**
   String get delete_product;
+
+  /// No description provided for @err_bluetooth_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth disabled.'**
+  String get err_bluetooth_disabled;
 
   /// No description provided for @err_blank_value.
   ///

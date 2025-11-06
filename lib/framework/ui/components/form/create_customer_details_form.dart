@@ -95,8 +95,8 @@ final class _CreateCustomerDetailsFormState
                 isRequired: true,
                 value: state.cityInput.value,
                 emptyLabel: localizations.no_city_set,
-                body: state.cityInput.value != null
-                    ? Text(state.cityInput.value!.fullName)
+                body: state.cityInput.value.isSome()
+                    ? Text(state.cityInput.value.unwrap().fullName)
                     : null,
                 onTap: () {
                   _businessNameFieldFocus.requestFocus();

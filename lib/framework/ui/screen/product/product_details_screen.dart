@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/framework/l10n/app_localizations.dart';
 import 'package:project_shelf_v3/framework/riverpod/app_preferences_provider.dart';
 import 'package:project_shelf_v3/framework/riverpod/product/selected_product_provider.dart';
@@ -92,8 +93,8 @@ class _SliverAppBar extends ConsumerWidget {
     final state = ref.watch(selectedProductProvider);
 
     return switch (state) {
-      None() => throw AssertionError(),
-      Selected() => SliverAppBar.medium(
+      NoneState() => throw AssertionError(),
+      SelectedState() => SliverAppBar.medium(
         title: Text(
           state.product.name,
           maxLines: 1,
@@ -156,8 +157,8 @@ final class _ProductDetails extends ConsumerWidget {
     );
 
     return switch (state) {
-      None() => throw AssertionError(),
-      Selected() => SingleChildScrollView(
+      NoneState() => throw AssertionError(),
+      SelectedState() => SingleChildScrollView(
         child: Padding(
           // https://m3.material.io/components/dialogs/specs#2b93ced7-9b0d-4a59-9bc4-8ff59dcd24c1
           padding: EdgeInsetsGeometry.all(24),
@@ -167,27 +168,27 @@ final class _ProductDetails extends ConsumerWidget {
               ShelfTextField(
                 isRequired: true,
                 readOnly: true,
-                value: state.product.name,
+                value: Some(state.product.name),
                 label: localizations.name,
               ),
               ShelfTextField(
                 isRequired: true,
                 readOnly: true,
-                value: state.product.defaultPrice.toString(),
+                value: Some(state.product.defaultPrice.toString()),
                 label: localizations.default_price,
                 inputFormatters: [currencyInputFormatter],
               ),
               ShelfTextField(
                 isRequired: true,
                 readOnly: true,
-                value: state.product.purchasePrice.toString(),
+                value: Some(state.product.purchasePrice.toString()),
                 label: localizations.purchase_price,
                 inputFormatters: [currencyInputFormatter],
               ),
               ShelfTextField(
                 isRequired: true,
                 readOnly: true,
-                value: state.product.stock.toString(),
+                value: Some(state.product.stock.toString()),
                 label: localizations.stock,
               ),
             ],

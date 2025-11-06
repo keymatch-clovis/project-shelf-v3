@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/ui/invoice_product_form_dialog_result_dto.dart';
@@ -66,7 +67,7 @@ final class CreateInvoiceScreen extends ConsumerWidget {
                   InvoiceProductFormArgs(
                     // NOTE: This here seems a bit weird, and it is. Maybe in
                     // the future we'll find a better way of doing this.
-                    invoiceProduct: invoiceProduct,
+                    invoiceProduct: Some(invoiceProduct),
                     product: invoiceProduct.product,
                     availableStock: availableStock,
                   ),
@@ -339,9 +340,10 @@ final class _DetailsState extends ConsumerState<_Details> {
             value: state.dateInput.value,
             errors: state.dateInput.errors.parseErrors(context),
             emptyLabel: localizations.no_date_selected,
-            body: state.dateInput.value != null
-                ? Text(state.dateInput.value!.toJiffy()!.yMd)
-                : null,
+            body: state.dateInput.value.when(
+              some: (it) => Text(it.toJiffy()!.yMd),
+              none: () => null,
+            ),
             onTap: () {
               showDatePicker(
                 context: context,
@@ -518,18 +520,13 @@ final class _CustomerSearchAnchorState
           emptyLabel: localizations.no_customer_set,
           isRequired: true,
           value: customerInput.value,
-          body: customerInput.value != null
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(customerInput.value!.name),
-                      Text(customerInput.value!.city.name),
-                    ],
-                  ),
-                )
-              : null,
+          body: customerInput.value.when(
+            some: (it) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(children: [Text(it.name), Text(it.city.name)]),
+            ),
+            none: () => null,
+          ),
           onTap: () {
             searchController.openView();
           },

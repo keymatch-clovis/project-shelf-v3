@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/common/date_time_epoch_converter.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 
@@ -39,7 +40,7 @@ class ProductDto {
 
   Product toEntity() {
     return Product(
-      id: id,
+      id: Some(id),
       name: name,
       defaultPrice: Money.fromInt(defaultPrice, isoCode: currencyIsoCode),
       purchasePrice: Money.fromInt(purchasePrice, isoCode: currencyIsoCode),

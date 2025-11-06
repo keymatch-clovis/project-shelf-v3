@@ -5,7 +5,7 @@ import 'package:project_shelf_v3/adapter/repository/invoice_repository.dart';
 import 'package:project_shelf_v3/app/dto/city_response.dart';
 import 'package:project_shelf_v3/app/dto/customer_response.dart';
 import 'package:project_shelf_v3/app/dto/invoice_response.dart';
-import 'package:project_shelf_v3/app/service/invoice_service.dart';
+import 'package:project_shelf_v3/domain/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/logger/impl_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
@@ -37,7 +37,7 @@ final class InvoiceServiceImpl implements InvoiceService {
         customerId: invoice.customerId,
         remainingUnpaidBalance: invoice.remainingUnpaidBalance.minorUnits
             .toInt(),
-        invoiceProducts: invoice.invoiceProducts.map((it) {
+        invoiceProducts: invoice.products.map((it) {
           return CreateProductArgs(
             productId: it.productId,
             unitPrice: it.unitPrice.minorUnits.toInt(),

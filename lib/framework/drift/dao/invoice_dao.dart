@@ -1,11 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:logger/logger.dart';
+import 'package:money2/money2.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
-import 'package:project_shelf_v3/app/service/invoice_service.dart';
+import 'package:project_shelf_v3/domain/aggregate/invoice_aggregate.dart';
+import 'package:project_shelf_v3/domain/entity/invoice_product.dart';
+import 'package:project_shelf_v3/domain/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
@@ -45,52 +48,52 @@ final class InvoiceDao implements InvoiceService {
   }
 
   @override
-  Future<Result<Id, Exception>> create(Invoice invoice) {
-    _logger.d("Creating invoice");
+  Future<Result<Id, Exception>> create(InvoiceAggregate aggregate) {
+    _logger.d("Creating aggregate");
 
     return Result.asyncOf(
       () => _database.transaction<Id>(() async {
         final dateTime = DateTime.now();
 
-        final invoiceId = await _database
+        final aggregateId = await _database
             .into(_database.invoiceTable)
             .insert(
               InvoiceTableCompanion.insert(
-                number: invoice.number,
-                date: invoice.date,
-                remainingUnpaidBalance: invoice
+                number: aggregate.number,
+                date: aggregate.date,
+                remainingUnpaidBalance: aggregate
                     .remainingUnpaidBalance
                     .minorUnits
                     .toInt(),
-                customer: invoice.customerId,
-                total: invoice.total.minorUnits.toInt(),
+                customer: aggregate.customerId,
+                total: aggregate.getTotal().minorUnits.toInt(),
                 currencyIsoCode:
-                    invoice.remainingUnpaidBalance.currency.isoCode,
+                    aggregate.remainingUnpaidBalance.currency.isoCode,
                 createdAt: dateTime,
                 updatedAt: dateTime,
               ),
             );
 
-        for (final invoiceProduct in invoice.invoiceProducts) {
+        for (final aggregateProduct in aggregate.products) {
           await _database
               .into(_database.invoiceProductTable)
               .insert(
                 InvoiceProductTableCompanion.insert(
-                  invoice: invoiceId,
-                  product: invoiceProduct.productId,
-                  quantity: invoiceProduct.quantity,
-                  unitPrice: invoiceProduct.unitPrice.minorUnits.toInt(),
-                  // Use the same currency as the invoice. We could change this
+                  invoice: aggregateId,
+                  product: aggregateProduct.productId,
+                  quantity: aggregateProduct.quantity,
+                  unitPrice: aggregateProduct.unitPrice.minorUnits.toInt(),
+                  // Use the same currency as the aggregate. We could change this
                   // in the future to allow for more flexibility.
                   currencyIsoCode:
-                      invoice.remainingUnpaidBalance.currency.isoCode,
+                      aggregate.remainingUnpaidBalance.currency.isoCode,
                   createdAt: dateTime,
                   updatedAt: dateTime,
                 ),
               );
         }
 
-        return invoiceId;
+        return aggregateId;
       }),
     );
   }
@@ -118,29 +121,19 @@ final class InvoiceDao implements InvoiceService {
     _logger.d("Finding invoice with ID: $id");
     final invoice = await query.getSingle();
 
-    // NOTE: In order to create Rich Domain Models, we need to recreate the
-    // invoice when searching for them. This means getting the products and
-    // adding them to the invoice. This can be VERY expensive, but I think
-    // this is ok.
-    // https://paulovich.net/rich-domain-model-with-ddd-tdd-reviewed/
-    _logger.d("Finding invoice products");
-    final invoiceProducts =
-        await (_database.select(_database.invoiceProductTable)
-              ..where((e) => e.invoice.equals(id)))
-            .get()
-            .then((it) => it.map((it) => it.toEntity(invoiceId: id)));
-
-    return invoice.toEntity(invoiceProducts: invoiceProducts);
+    return invoice.toEntity();
   }
 
   @override
-  Future<Iterable<InvoiceDto>> searchWithCustomerId(int id) {
+  Future<Result<Iterable<Invoice>, Exception>> findWithCustomerId(int id) {
     final query = _database.select(_database.invoiceTable)
       ..where((e) => e.customer.equals(id))
       ..orderBy([(e) => OrderingTerm.desc(_database.invoiceTable.createdAt)]);
 
-    _logger.d('Searching invoices with customer ID: $id');
-    return query.get();
+    _logger.d('Finding invoices with customer ID: $id');
+    return Result.asyncOf(() => query.get())
+        .map((it) => it.map((it) => it.toEntity()))
+        .mapErr((err) => err as Exception);
   }
 
   @override
@@ -159,37 +152,19 @@ final class InvoiceDao implements InvoiceService {
     final query = (_database.select(_database.invoiceTable))
       ..orderBy([(it) => OrderingTerm.desc(it.createdAt)]);
 
-    return query.watch().asyncMap((rows) async {
-      // NOTE: In order to create Rich Domain Models, we need to recreate the
-      // invoice when searching for them. This means getting the products and
-      // adding them to the invoice. This can be VERY expensive, but I think
-      // this is ok.
-      // https://paulovich.net/rich-domain-model-with-ddd-tdd-reviewed/
-      final List<Invoice> invoices = [];
-      for (final invoice in rows) {
-        final invoiceProducts =
-            await (_database.select(
-              _database.invoiceProductTable,
-            )..where((e) => e.invoice.equals(invoice.id))).get().then(
-              (it) => it.map((it) => it.toEntity(invoiceId: invoice.id)),
-            );
-
-        final entity = invoice.toEntity(invoiceProducts: invoiceProducts);
-
-        invoices.add(entity);
-      }
-
-      return invoices;
-    });
+    return query.watch().map((it) => it.map((it) => it.toEntity()));
   }
 
   @override
-  Future<Result<Unit, Exception>> update(Invoice invoice) {
+  Future<Result<Unit, Exception>> update(
+    Invoice invoice, {
+    required Iterable<InvoiceProduct> products,
+  }) {
     return Result.asyncOf(
       () => _database.transaction<Unit>(() async {
         // Update the invoice first.
         final statement = _database.update(_database.invoiceTable)
-          ..where((it) => it.id.equals(invoice.id.unwrap()));
+          ..where((it) => it.id.equals(invoice.id));
 
         await statement.write(
           InvoiceTableCompanion(
@@ -197,7 +172,7 @@ final class InvoiceDao implements InvoiceService {
             remainingUnpaidBalance: Value(
               invoice.remainingUnpaidBalance.minorUnits.toInt(),
             ),
-            total: Value(invoice.total.minorUnits.toInt()),
+            total: Value(invoice.getTotal(products).minorUnits.toInt()),
             currencyIsoCode: Value(invoice.currency.isoCode),
             updatedAt: Value(DateTime.now()),
           ),
@@ -210,13 +185,13 @@ final class InvoiceDao implements InvoiceService {
         //  - Going to be deleted.
         // We'll handle the deletions first:
         var query = _database.select(_database.invoiceProductTable)
-          ..where((e) => e.invoice.equals(invoice.id.unwrap()));
+          ..where((e) => e.invoice.equals(invoice.id));
 
         // Take all the invoice products that are not in the updated invoice
         // and delete them.
         final markedForDeletion = await query.get().then((it) {
           return it.where(
-            (it) => !invoice.invoiceProducts.any(
+            (it) => !products.any(
               (product) =>
                   product.id.when(some: (id) => id == it.id, none: () => false),
             ),
@@ -232,7 +207,7 @@ final class InvoiceDao implements InvoiceService {
         }
 
         // Then, we'll handle the updates and the creations.
-        for (final invoiceProduct in invoice.invoiceProducts) {
+        for (final invoiceProduct in products) {
           await invoiceProduct.id.whenAsync(
             some: (id) async {
               final statement = _database.update(_database.invoiceProductTable)
@@ -257,7 +232,7 @@ final class InvoiceDao implements InvoiceService {
                   .into(_database.invoiceProductTable)
                   .insert(
                     InvoiceProductTableCompanion.insert(
-                      invoice: invoice.id.unwrap(),
+                      invoice: invoice.id,
                       product: invoiceProduct.productId,
                       quantity: invoiceProduct.quantity,
                       unitPrice: invoiceProduct.unitPrice.minorUnits.toInt(),
@@ -290,5 +265,18 @@ final class InvoiceDao implements InvoiceService {
         return unit;
       }),
     );
+  }
+
+  @override
+  Future<Result<Iterable<InvoiceProduct>, Exception>> findInvoiceProducts(
+    Id id, {
+    required Currency currency,
+  }) {
+    var query = _database.select(_database.invoiceProductTable)
+      ..where((e) => e.invoice.equals(id));
+
+    return Result.asyncOf(query.get)
+        .map((it) => it.map((it) => it.toEntity(currency, invoiceId: id)))
+        .mapErr((err) => err as Exception);
   }
 }

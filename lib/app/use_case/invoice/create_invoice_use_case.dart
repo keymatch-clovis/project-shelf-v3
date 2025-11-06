@@ -3,7 +3,8 @@ import 'package:logger/logger.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/dto/create_invoice_request.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
-import 'package:project_shelf_v3/app/service/invoice_service.dart';
+import 'package:project_shelf_v3/domain/aggregate/invoice_aggregate.dart';
+import 'package:project_shelf_v3/domain/service/invoice_service.dart';
 import 'package:project_shelf_v3/common/currency_extensions.dart';
 import 'package:project_shelf_v3/common/logger/use_case_printer.dart';
 import 'package:project_shelf_v3/domain/entity/invoice.dart';
@@ -41,17 +42,25 @@ final class CreateInvoiceUseCase {
       defaultCurrency.zero,
     );
 
-    final invoice = Invoice(
-      id: None(),
+    final aggregate = InvoiceAggregate(
       currency: defaultCurrency,
       number: number,
-      date: request.date,
-      invoiceProducts: invoiceProducts,
-      remainingUnpaidBalance: remainingUnpaidBalance,
+      date: Some(request.date),
+      products: invoiceProducts,
+      remainingUnpaidBalance: Some(remainingUnpaidBalance),
       customerId: request.customerId,
     );
 
     _logger.d("Creating invoice");
-    return _service.create(invoice).map((id) => invoice.copyWith(id: id));
+    return _service.create(aggregate).map((id) {
+      return Invoice(
+        id: id,
+        number: aggregate.number,
+        date: aggregate.date,
+        remainingUnpaidBalance: aggregate.remainingUnpaidBalance,
+        currency: aggregate.currency,
+        customerId: aggregate.customerId,
+      );
+    });
   }
 }

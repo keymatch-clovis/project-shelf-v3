@@ -1,4 +1,5 @@
 import 'package:money2/money2.dart';
+import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
 
 final class InvoiceDraftProduct {
@@ -21,10 +22,10 @@ final class InvoiceDraft {
   final List<InvoiceDraftProduct> products;
 
   InvoiceDraft({
-    this.date,
     this.id,
-    this.customerId,
-    this.remainingUnpaidBalance,
+    this.date = const None(),
+    this.customerId = const None(),
+    this.remainingUnpaidBalance = const None(),
     List<InvoiceDraftProduct>? products,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now(),
@@ -32,10 +33,9 @@ final class InvoiceDraft {
 
   Id? id;
 
-  DateTime? date;
-
-  Id? customerId;
-  Money? remainingUnpaidBalance;
+  Option<DateTime> date;
+  Option<Id> customerId;
+  Option<Money> remainingUnpaidBalance;
 
   void clearProducts() {
     products.clear();

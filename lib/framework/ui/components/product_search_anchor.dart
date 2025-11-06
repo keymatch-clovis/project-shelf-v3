@@ -83,7 +83,8 @@ final class _ListView extends ConsumerWidget {
           padding: EdgeInsets.zero,
           itemCount: it.length,
           separatorBuilder: (_, _) => const Divider(height: 1),
-          itemBuilder: (_, index) => _ListTile(it[index], onSelect: onSelect),
+          itemBuilder: (_, index) =>
+              _ListTile(it.toList()[index], onSelect: onSelect),
         );
       },
     );
