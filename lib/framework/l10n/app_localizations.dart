@@ -134,6 +134,12 @@ abstract class AppLocalizations {
   /// **'No invoices'**
   String get no_invoices;
 
+  /// No description provided for @backup_database.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup database'**
+  String get backup_database;
+
   /// No description provided for @delete_invoice_product.
   ///
   /// In en, this message translates to:

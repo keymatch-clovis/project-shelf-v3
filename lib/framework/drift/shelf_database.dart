@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:oxidized/oxidized.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project_shelf_v3/adapter/dto/database/city_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
@@ -8,11 +12,13 @@ import 'package:project_shelf_v3/adapter/dto/database/customer_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_dto.dart';
 import 'package:project_shelf_v3/adapter/dto/database/invoice_product_dto.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
+import 'package:project_shelf_v3/domain/service/database_service.dart';
 import 'package:project_shelf_v3/framework/drift/table/city_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/customer_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/invoice_product_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/invoice_table.dart';
 import 'package:project_shelf_v3/framework/drift/table/product_table.dart';
+import 'package:uuid/uuid.dart';
 
 part 'shelf_database.g.dart';
 
@@ -27,7 +33,7 @@ const DATABASE_NAME = 'shelf';
     InvoiceProductTable,
   ],
 )
-class ShelfDatabase extends _$ShelfDatabase {
+class ShelfDatabase extends _$ShelfDatabase implements DatabaseService {
   final Logger _logger = Logger(printer: FrameworkPrinter());
 
   // After generating code, this class needs to define a `schemaVersion` getter
@@ -150,4 +156,25 @@ class ShelfDatabase extends _$ShelfDatabase {
       """);
     },
   );
+
+  @override
+  Future<Result<File, Object>> backup() async {
+    final backupFile = Result.asyncOf(getTemporaryDirectory).map((it) {
+      // Generates a time-based version 1 UUID
+      final uuid = Uuid().v1();
+      final fileName = join(it.path, 'db-v$schemaVersion-$uuid.sqlite');
+
+      return File(fileName);
+    });
+
+    return backupFile.andThenAsync(
+      (it) => Result.asyncOf(() async {
+        _logger.d('Saving backup database into cache: ${it.path}');
+        await customStatement('VACUUM INTO ?', [it.path]);
+        _logger.d('Backup database saved');
+
+        return it;
+      }),
+    );
+  }
 }

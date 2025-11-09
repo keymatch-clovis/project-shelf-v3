@@ -59,10 +59,12 @@ import 'package:project_shelf_v3/app/use_case/product/search_product_use_case.da
 import 'package:project_shelf_v3/app/use_case/product/search_products_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart';
+import 'package:project_shelf_v3/app/use_case/settings/backup_database_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/create_company_logo_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/get_company_info_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/load_v2_database_use_case.dart';
 import 'package:project_shelf_v3/app/use_case/settings/set_company_info_use_case.dart';
+import 'package:project_shelf_v3/domain/service/database_service.dart';
 import 'package:project_shelf_v3/domain/service/file_service.dart';
 import 'package:project_shelf_v3/domain/service/image_service.dart';
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart';
@@ -90,12 +92,16 @@ final class ServiceRegister {
   }
 
   Future<void> registerBaseServices() async {
+    final database = ShelfDatabase();
     getIt.registerSingleton<ShelfDatabase>(
-      ShelfDatabase(),
+      database,
       dispose: (database) async {
         await database.close();
       },
     );
+
+    // TODO: CHANGE THIS
+    getIt.registerSingleton<DatabaseService>(database);
 
     final objectBox = await ObjectBox.create();
     getIt.registerSingleton<ObjectBox>(objectBox);
@@ -263,6 +269,10 @@ final class ServiceRegister {
 
     getIt.registerLazySingleton<LoadV2DatabaseUseCase>(
       () => LoadV2DatabaseUseCase(),
+    );
+
+    getIt.registerLazySingleton<BackupDatabaseUseCase>(
+      () => BackupDatabaseUseCase(),
     );
   }
 }
