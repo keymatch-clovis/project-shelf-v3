@@ -27,6 +27,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get no_invoices => 'No invoices';
 
   @override
+  String get backup_database => 'Copia de seguridad';
+
+  @override
   String get delete_invoice_product => 'Delete invoice product';
 
   @override

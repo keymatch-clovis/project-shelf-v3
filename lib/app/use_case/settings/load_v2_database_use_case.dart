@@ -23,7 +23,7 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
   final _appPreferencesService = getIt.get<AppPreferencesService>();
 
   @override
-  FutureOr<Result> exec(String filePath) async {
+  Future<Result> exec(String filePath) async {
     logger.d('Loading V2 database');
 
     final defaultCurrency = await _appPreferencesService

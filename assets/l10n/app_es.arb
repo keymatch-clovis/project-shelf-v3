@@ -2,6 +2,7 @@
     "@@locale": "es",
     "products": "Productos",
     "value": "Valor",
+    "backup_database": "Copia de seguridad",
     "product": "Producto",
     "search_product": "Buscar producto",
     "unit_abbreviated": "U",

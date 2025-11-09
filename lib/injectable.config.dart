@@ -65,6 +65,9 @@ import 'package:project_shelf_v3/app/use_case/product/update_product_use_case.da
     as _i572;
 import 'package:project_shelf_v3/app/use_case/product/watch_products_use_case.dart'
     as _i295;
+import 'package:project_shelf_v3/app/use_case/settings/backup_database_use_case.dart'
+    as _i110;
+import 'package:project_shelf_v3/domain/service/database_service.dart' as _i971;
 import 'package:project_shelf_v3/domain/service/invoice_service.dart' as _i239;
 import 'package:project_shelf_v3/framework/drift/dao/city_dao.dart' as _i513;
 import 'package:project_shelf_v3/framework/drift/dao/customer_dao.dart'
@@ -146,6 +149,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i1059.CustomerService>(() => _i426.CustomerDao());
     gh.singleton<_i936.CityService>(() => _i513.CityDao());
+    gh.lazySingleton<_i971.DatabaseService>(
+      () => shelfDatabaseModule.service,
+      registerFor: {_prod, _integration_test},
+    );
     gh.singleton<_i925.DeleteProductUseCase>(
       () => _i925.DeleteProductUseCase(),
     );
@@ -154,6 +161,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1054.CreateInvoiceUseCase>(
       () => _i1054.CreateInvoiceUseCase(),
+    );
+    gh.lazySingleton<_i659.GetInvoicesUseCase>(
+      () => _i659.GetInvoicesUseCase(),
+    );
+    gh.lazySingleton<_i851.UpdateInvoiceUseCase>(
+      () => _i851.UpdateInvoiceUseCase(),
+    );
+    gh.lazySingleton<_i39.FindInvoiceProductsUseCase>(
+      () => _i39.FindInvoiceProductsUseCase(),
     );
     gh.lazySingleton<_i367.GetAppPreferencesUseCase>(
       () => _i367.GetAppPreferencesUseCase(),
@@ -166,6 +182,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i657.FindCustomerUseCase>(
       () => _i657.FindCustomerUseCase(),
+    );
+    gh.lazySingleton<_i215.GetCustomersUseCase>(
+      () => _i215.GetCustomersUseCase(),
     );
     gh.lazySingleton<_i953.CreateCustomerUseCase>(
       () => _i953.CreateCustomerUseCase(),
@@ -191,17 +210,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i295.WatchProductsUseCase>(
       () => _i295.WatchProductsUseCase(),
     );
-    gh.lazySingleton<_i215.GetCustomersUseCase>(
-      () => _i215.GetCustomersUseCase(),
-    );
-    gh.lazySingleton<_i659.GetInvoicesUseCase>(
-      () => _i659.GetInvoicesUseCase(),
-    );
-    gh.lazySingleton<_i851.UpdateInvoiceUseCase>(
-      () => _i851.UpdateInvoiceUseCase(),
-    );
-    gh.lazySingleton<_i39.FindInvoiceProductsUseCase>(
-      () => _i39.FindInvoiceProductsUseCase(),
+    gh.lazySingleton<_i110.BackupDatabaseUseCase>(
+      () => _i110.BackupDatabaseUseCase(),
     );
     return this;
   }
