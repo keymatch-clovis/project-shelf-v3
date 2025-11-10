@@ -184,13 +184,13 @@ class _ProductList extends ConsumerWidget {
         fillOverscroll: true,
         child: EmptyPlaceholder(
           title: localizations.no_products,
-          icon: Icons.inventory_2_rounded,
+          icon: Icons.check_box_outline_blank_rounded,
         ),
       );
     }
 
     return SliverList.separated(
-      separatorBuilder: (_, _) => const SizedBox(height: XS_SPACING),
+      separatorBuilder: (_, _) => const SizedBox(height: T_1),
       itemCount: items.length,
       itemBuilder: (context, index) {
         return ProductListTile(items[index], onSelect: onSelect);

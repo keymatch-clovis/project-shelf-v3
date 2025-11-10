@@ -132,7 +132,7 @@ final class _FormPane extends ConsumerWidget {
       },
       data: (data) {
         return Column(
-          spacing: COMPACT_SPACING.toDouble(),
+          spacing: T_4,
           children: [
             ImageButton(
               onTap: onAddImage,
@@ -141,7 +141,7 @@ final class _FormPane extends ConsumerWidget {
                 none: () => null,
               ),
             ),
-            SizedBox(height: S_SPACING),
+            SizedBox(height: T_2),
             ShelfTextField(
               label: localizations.company_name,
               value: data.companyName.value,

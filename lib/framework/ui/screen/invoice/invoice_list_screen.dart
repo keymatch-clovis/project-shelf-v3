@@ -111,7 +111,7 @@ final class _List extends StatelessWidget {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: COMPACT_SPACING.toDouble(),
+          spacing: T_4,
           children: [
             Icon(
               Icons.receipt_long_rounded,

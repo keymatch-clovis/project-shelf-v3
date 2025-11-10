@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_shelf_v3/framework/ui/common/constants.dart';
 
 final class EmptyPlaceholder extends StatelessWidget {
   final IconData icon;
@@ -14,7 +15,7 @@ final class EmptyPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 96, color: theme.colorScheme.outlineVariant),
+          Icon(icon, size: T_48, color: theme.colorScheme.outlineVariant),
           Text(
             title,
             style: theme.textTheme.titleMedium!.copyWith(

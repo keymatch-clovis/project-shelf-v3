@@ -63,7 +63,7 @@ final class _DetailsPane extends ConsumerWidget {
       },
       data: (data) {
         return Column(
-          spacing: COMPACT_SPACING.toDouble(),
+          spacing: T_4,
           children: [
             ImageButton(
               image: Image.memory(
@@ -71,7 +71,7 @@ final class _DetailsPane extends ConsumerWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: S_SPACING),
+            SizedBox(height: T_2),
             ShelfTextField(
               label: localizations.company_name,
               readOnly: true,

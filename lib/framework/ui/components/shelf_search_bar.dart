@@ -28,7 +28,7 @@ final class ShelfSearchBar extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Row(
-      spacing: S_SPACING,
+      spacing: T_2,
       children: [
         if (leading != null) ...[leading!],
         Expanded(
@@ -50,7 +50,7 @@ final class ShelfSearchBar extends StatelessWidget {
                   onTap: () => controller.openView(),
                   child: SizedBox(
                     // We assume this?
-                    height: SEARCH_APP_BAR_HEIGHT - S_SPACING,
+                    height: SEARCH_APP_BAR_HEIGHT - T_2,
                     child: Center(
                       child: Text(
                         hintText,

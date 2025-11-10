@@ -61,7 +61,7 @@ final class _Dialog extends StatelessWidget {
               localizations.print_invoice,
               style: theme.textTheme.headlineSmall,
             ),
-            const SizedBox(height: COMPACT_SPACING),
+            const SizedBox(height: T_4),
             _BodyPane(
               invoiceId,
               onPrinterSelected: onPrinterSelected,
@@ -145,7 +145,7 @@ final class _ExceptionPane extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(color: theme.colorScheme.outline),
             ),
-            const SizedBox(height: MEDIUM_SPACING),
+            const SizedBox(height: T_6),
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -202,11 +202,11 @@ final class _FormPane extends ConsumerWidget {
             );
           },
         ),
-        const SizedBox(height: MEDIUM_SPACING),
+        const SizedBox(height: T_6),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.end,
-          spacing: XS_SPACING,
+          spacing: T_1,
           children: [
             TextButton(onPressed: onDismiss, child: Text(localizations.cancel)),
             FilledButton(

@@ -285,7 +285,7 @@ final class _InvoiceList extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (_, index) =>
           _InvoiceListTile(items[index], onSelected: onInvoiceSelected),
-      separatorBuilder: (_, _) => const SizedBox(height: XS_SPACING),
+      separatorBuilder: (_, _) => const SizedBox(height: T_1),
     );
   }
 }

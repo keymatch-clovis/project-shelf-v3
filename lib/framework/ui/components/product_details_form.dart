@@ -68,7 +68,7 @@ class _ProductDetailsFormState extends State<ProductDetailsForm> {
       padding: MEDIUM_SPACING_ALL,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: COMPACT_SPACING.toDouble(),
+        spacing: T_4.toDouble(),
         children: [
           ShelfTextField(
             key: const ValueKey('name'),

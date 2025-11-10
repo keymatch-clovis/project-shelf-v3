@@ -412,7 +412,7 @@ final class _InvoiceProductListPane extends ConsumerWidget {
           Expanded(
             child: ListView.separated(
               padding: S_SPACING_V,
-              separatorBuilder: (_, _) => const SizedBox(height: XS_SPACING),
+              separatorBuilder: (_, _) => const SizedBox(height: T_1),
               itemCount: products.length,
               itemBuilder: (_, index) {
                 final it = products.values.toList()[index];

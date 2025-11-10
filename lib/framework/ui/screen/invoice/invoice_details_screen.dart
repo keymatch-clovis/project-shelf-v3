@@ -146,7 +146,7 @@ final class _DetailsPane extends ConsumerWidget {
           child: Padding(
             padding: MEDIUM_SPACING_ALL,
             child: Column(
-              spacing: COMPACT_SPACING.toDouble(),
+              spacing: T_4,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ShelfTextField(
@@ -214,7 +214,7 @@ final class _InvoiceProductListPane extends ConsumerWidget {
                 child: ListView.separated(
                   padding: S_SPACING_V,
                   separatorBuilder: (_, _) =>
-                      const SizedBox(height: XS_SPACING),
+                      const SizedBox(height: T_1),
                   itemCount: data.products.length,
                   itemBuilder: (_, index) {
                     final it = data.products.toList()[index];

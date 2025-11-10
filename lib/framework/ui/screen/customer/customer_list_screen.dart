@@ -192,7 +192,7 @@ class _CustomerList extends ConsumerWidget {
     }
 
     return SliverList.separated(
-      separatorBuilder: (_, _) => const SizedBox(height: XS_SPACING),
+      separatorBuilder: (_, _) => const SizedBox(height: T_1),
       itemCount: items.length,
       itemBuilder: (context, index) {
         return CustomerListTile(items[index], onSelect: onCustomerSelected);

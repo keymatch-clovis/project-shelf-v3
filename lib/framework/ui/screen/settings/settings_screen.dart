@@ -83,7 +83,7 @@ final class _BodyPane extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Column(
-        spacing: XS_SPACING,
+        spacing: T_1,
         children: [
           ListTile(
             onTap: onNavigateCompanyInfo,
