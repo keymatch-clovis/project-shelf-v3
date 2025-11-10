@@ -7,6 +7,7 @@ import 'package:project_shelf_v3/adapter/dto/database/product_dto.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/common/logger/framework_printer.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/aggregate/product_aggregate.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 import 'package:project_shelf_v3/framework/drift/exception_extension.dart';
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart';
@@ -19,23 +20,23 @@ class ProductDao implements ProductService {
   final _database = getIt.get<ShelfDatabase>();
 
   @override
-  Future<Result<Id, Exception>> create(Product product) async {
+  Future<Result<Id, Exception>> create(ProductAggregate aggregate) async {
     final dateTime = DateTime.now();
 
-    _logger.d("Creating product with: $product");
+    _logger.d("Creating product with: $aggregate");
     return Result.asyncOf(
           () => _database
               .into(_database.productTable)
               .insert(
                 ProductTableCompanion.insert(
-                  name: product.name,
-                  defaultPrice: product.defaultPrice.minorUnits.toInt(),
-                  purchasePrice: product.purchasePrice.minorUnits.toInt(),
-                  stock: product.stock,
+                  name: aggregate.name,
+                  defaultPrice: aggregate.defaultPrice.minorUnits.toInt(),
+                  purchasePrice: aggregate.purchasePrice.minorUnits.toInt(),
+                  stock: aggregate.stock,
                   // Although this value is presently derived from the default
                   // price, one could just as suitably utilise the purchase price,
                   // as it ought to make no substantive difference.
-                  currencyIsoCode: product.defaultPrice.currency.isoCode,
+                  currencyIsoCode: aggregate.defaultPrice.currency.isoCode,
                   createdAt: dateTime,
                   updatedAt: dateTime,
                 ),
@@ -48,7 +49,7 @@ class ProductDao implements ProductService {
   @override
   Future<Result<Unit, Exception>> update(Product product) async {
     final statement = _database.update(_database.productTable)
-      ..where((r) => r.id.equals(product.id.unwrap()));
+      ..where((r) => r.id.equals(product.id));
 
     _logger.d("Updating product with: $product");
     return Result.asyncOf(

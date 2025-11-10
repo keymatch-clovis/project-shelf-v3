@@ -6,6 +6,7 @@ import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart';
 import 'package:project_shelf_v3/app/service/customer_service.dart';
 import 'package:project_shelf_v3/domain/aggregate/invoice_aggregate.dart';
+import 'package:project_shelf_v3/domain/aggregate/product_aggregate.dart';
 import 'package:project_shelf_v3/domain/service/invoice_service.dart';
 import 'package:project_shelf_v3/app/service/product_service.dart';
 import 'package:project_shelf_v3/app/use_case/use_case.dart';
@@ -93,14 +94,16 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       try {
         final id = await _productService
             .create(
-              Product(
-                id: None(),
+              ProductAggregate(
+                defaultCurrency,
                 name: name,
-                defaultPrice: !defaultPrice.isNegative
-                    ? defaultPrice
-                    : defaultCurrency.zero,
-                stock: stock >= 0 ? stock : 0,
-                purchasePrice: defaultCurrency.zero,
+                defaultPrice: Some(
+                  !defaultPrice.isNegative
+                      ? defaultPrice
+                      : defaultCurrency.zero,
+                ),
+                stock: Some(stock >= 0 ? stock : 0),
+                purchasePrice: None(),
               ),
             )
             .unwrap();
@@ -110,16 +113,18 @@ final class LoadV2DatabaseUseCase extends UseCase<String, Result> {
       } catch (e) {
         final id = await _productService
             .create(
-              Product(
-                id: None(),
+              ProductAggregate(
+                defaultCurrency,
                 // We need to do this, as there are some products that have the
                 // same name... silly me! Maybe that won't happen here. :3
                 name: '$name ${randomHexString(5)}',
-                defaultPrice: !defaultPrice.isNegative
-                    ? defaultPrice
-                    : defaultCurrency.zero,
-                stock: stock >= 0 ? stock : 0,
-                purchasePrice: defaultCurrency.zero,
+                defaultPrice: Some(
+                  !defaultPrice.isNegative
+                      ? defaultPrice
+                      : defaultCurrency.zero,
+                ),
+                stock: Some(stock >= 0 ? stock : 0),
+                purchasePrice: None(),
               ),
             )
             .unwrap();

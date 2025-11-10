@@ -1,9 +1,10 @@
 import 'package:oxidized/oxidized.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
+import 'package:project_shelf_v3/domain/aggregate/product_aggregate.dart';
 import 'package:project_shelf_v3/domain/entity/product.dart';
 
 abstract interface class ProductService {
-  Future<Result<Id, Exception>> create(Product product);
+  Future<Result<Id, Exception>> create(ProductAggregate product);
   Future<Result<Unit, Exception>> update(Product product);
 
   Stream<Iterable<Product>> watch();
