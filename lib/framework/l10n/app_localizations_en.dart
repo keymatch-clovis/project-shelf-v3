@@ -42,6 +42,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remaining_unpaid_balance => 'Remaining unpaid balance';
 
   @override
+  String get search => 'Search';
+
+  @override
   String get search_customer => 'Search customer';
 
   @override

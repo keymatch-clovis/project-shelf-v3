@@ -11,6 +11,7 @@
     "details": "Details",
     "quantity": "Quantity",
     "remaining_unpaid_balance": "Remaining unpaid balance",
+    "search": "Search",
     "search_customer": "Search customer",
     "search_product": "Search product",
     "invoice_created": "Invoice created",

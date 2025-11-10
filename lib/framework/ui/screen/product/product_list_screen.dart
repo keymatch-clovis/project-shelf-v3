@@ -132,7 +132,7 @@ final class _AppBar extends StatelessWidget {
         height: SEARCH_APP_BAR_HEIGHT,
         child: ShelfSearchBar(
           consumerWidget: ProductSearchList(onSelect: onSelect),
-          hintText: localizations.search_product,
+          hintText: localizations.search,
           searchController: searchController,
           onSearch: onSearch,
         ),

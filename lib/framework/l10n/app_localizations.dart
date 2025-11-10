@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Remaining unpaid balance'**
   String get remaining_unpaid_balance;
 
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
   /// No description provided for @search_customer.
   ///
   /// In en, this message translates to:

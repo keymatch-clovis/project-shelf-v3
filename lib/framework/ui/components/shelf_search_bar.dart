@@ -25,19 +25,46 @@ final class ShelfSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Row(
       spacing: S_SPACING,
       children: [
         if (leading != null) ...[leading!],
         Expanded(
-          child: SearchAnchor.bar(
-            isFullScreen: true,
-            textCapitalization: TextCapitalization.characters,
-            keyboardType: TextInputType.name,
-            searchController: searchController,
-            barHintText: hintText,
-            barElevation: const WidgetStatePropertyAll(0),
-            onClose: () {
+          child: SearchAnchor(
+            builder: (_, controller) {
+              // NOTE: We are trying to follow the M3 Expressive guidelines, so
+              // we have to manually create this, sadly.
+              // https://m3.material.io/components/app-bars/specs
+              return Material(
+                color: theme.colorScheme.surfaceContainer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(SEARCH_APP_BAR_HEIGHT),
+                    right: Radius.circular(SEARCH_APP_BAR_HEIGHT),
+                  ),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () => controller.openView(),
+                  child: SizedBox(
+                    // We assume this?
+                    height: SEARCH_APP_BAR_HEIGHT - S_SPACING,
+                    child: Center(
+                      child: Text(
+                        hintText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+            viewOnClose: () {
               WidgetsBinding.instance.addPostFrameCallback(
                 (_) => FocusScope.of(context).unfocus(),
               );
@@ -51,9 +78,6 @@ final class ShelfSearchBar extends StatelessWidget {
               // https://github.com/rrousselGit/riverpod/discussions/2551#discussioncomment-7056819
               return [];
             },
-            // This is the consumer widget from riverpod that will render the data
-            // for us.
-            viewBuilder: (_) => consumerWidget,
           ),
         ),
         if (trailing != null) ...[trailing!],
