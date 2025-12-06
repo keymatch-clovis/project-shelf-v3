@@ -101,7 +101,7 @@ final class _Screen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.large(
+      floatingActionButton: FloatingActionButton(
         onPressed: onCreate,
         child: const Icon(Icons.add_rounded),
       ),

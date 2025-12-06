@@ -21,6 +21,7 @@ import 'package:project_shelf_v3/adapter/service_impl/app_preferences_service_im
     as _i523;
 import 'package:project_shelf_v3/adapter/service_impl/asset_service_impl.dart'
     as _i92;
+import 'package:project_shelf_v3/app/provider/currency_provider.dart' as _i328;
 import 'package:project_shelf_v3/app/service/app_preferences_service.dart'
     as _i327;
 import 'package:project_shelf_v3/app/service/asset_service.dart' as _i429;
@@ -53,6 +54,8 @@ import 'package:project_shelf_v3/app/use_case/invoice/update_invoice_use_case.da
     as _i851;
 import 'package:project_shelf_v3/app/use_case/load_default_data_use_case.dart'
     as _i84;
+import 'package:project_shelf_v3/app/use_case/load_test_data_use_case.dart'
+    as _i358;
 import 'package:project_shelf_v3/app/use_case/product/create_product_use_case.dart'
     as _i875;
 import 'package:project_shelf_v3/app/use_case/product/delete_product_use_case.dart'
@@ -77,6 +80,8 @@ import 'package:project_shelf_v3/framework/drift/dao/product_dao.dart' as _i382;
 import 'package:project_shelf_v3/framework/drift/shelf_database.dart' as _i310;
 import 'package:project_shelf_v3/framework/drift/shelf_database_module.dart'
     as _i792;
+import 'package:project_shelf_v3/framework/root_bundle/currency_bundle.dart'
+    as _i367;
 import 'package:project_shelf_v3/framework/root_bundle/root_bundle_module.dart'
     as _i784;
 import 'package:project_shelf_v3/framework/sembast/document/company_info_document.dart'
@@ -174,6 +179,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i367.GetAppPreferencesUseCase>(
       () => _i367.GetAppPreferencesUseCase(),
     );
+    gh.lazySingleton<_i358.LoadTestDataUseCase>(
+      () => _i358.LoadTestDataUseCase(),
+    );
     gh.lazySingleton<_i950.SearchCitiesUseCase>(
       () => _i950.SearchCitiesUseCase(),
     );
@@ -212,6 +220,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i110.BackupDatabaseUseCase>(
       () => _i110.BackupDatabaseUseCase(),
+    );
+    await gh.singletonAsync<_i328.CurrencyProvider>(
+      () => _i367.CurrencyBundle.create(),
+      registerFor: {_prod, _integration_test},
+      preResolve: true,
     );
     return this;
   }

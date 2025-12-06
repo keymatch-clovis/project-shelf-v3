@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-import 'package:project_shelf_v3/framework/root_bundle/root_bundle_wrapper.dart';
+import 'package:project_shelf_v3/framework/root_bundle/asset.dart';
 
 final class RootBundleWrapperMock implements AssetRepository {
   @override

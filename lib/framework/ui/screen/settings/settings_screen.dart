@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,9 @@ final class SettingsScreen extends ConsumerWidget {
       onBackupDatabase: () {
         ref.read(settingsProvider.notifier).backupDatabase();
       },
+      onLoadTestData: () {
+        ref.read(settingsProvider.notifier).loadTestData();
+      },
     );
   }
 }
@@ -27,11 +31,13 @@ final class _Screen extends StatelessWidget {
   final void Function() onNavigateCompanyInfo;
   final void Function() onUploadV2Database;
   final void Function() onBackupDatabase;
+  final void Function() onLoadTestData;
 
   const _Screen({
     required this.onNavigateCompanyInfo,
     required this.onUploadV2Database,
     required this.onBackupDatabase,
+    required this.onLoadTestData,
   });
 
   @override
@@ -48,6 +54,7 @@ final class _Screen extends StatelessWidget {
                 onNavigateCompanyInfo: onNavigateCompanyInfo,
                 onUploadV2Database: onUploadV2Database,
                 onBackupDatabase: onBackupDatabase,
+                onLoadTestData: onLoadTestData,
               ),
             ),
           ],
@@ -62,7 +69,7 @@ final class _AppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context)!;
 
-    return SliverAppBar.large(title: Text(localizations.settings));
+    return SliverAppBar(title: Text(localizations.settings), centerTitle: true);
   }
 }
 
@@ -70,11 +77,13 @@ final class _BodyPane extends StatelessWidget {
   final void Function() onNavigateCompanyInfo;
   final void Function() onUploadV2Database;
   final void Function() onBackupDatabase;
+  final void Function() onLoadTestData;
 
   const _BodyPane({
     required this.onNavigateCompanyInfo,
     required this.onUploadV2Database,
     required this.onBackupDatabase,
+    required this.onLoadTestData,
   });
 
   @override
@@ -102,6 +111,14 @@ final class _BodyPane extends StatelessWidget {
             leading: const Icon(Icons.archive_outlined),
             title: Text(localizations.backup_database),
           ),
+          if (kDebugMode) ...[
+            Text('Debug mode', textAlign: TextAlign.center),
+            ListTile(
+              onTap: onLoadTestData,
+              leading: const Icon(Icons.developer_mode_outlined),
+              title: const Text('Load test data'),
+            ),
+          ],
         ],
       ),
     );

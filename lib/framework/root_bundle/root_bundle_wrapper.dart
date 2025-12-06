@@ -4,16 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:project_shelf_v3/adapter/repository/asset_repository.dart';
 import 'package:project_shelf_v3/common/typedefs.dart';
-
-enum Asset {
-  CURRENCIES_ASSET("assets/static/currenciesInfo.json"),
-  CITIES_ASSET("assets/raw/departments_cities.csv"),
-  DEFAULT_LOGO_ASSET("assets/img/default_logo.jpeg");
-
-  final String uri;
-
-  const Asset(this.uri);
-}
+import 'package:project_shelf_v3/framework/root_bundle/asset.dart';
 
 final class RootBundleWrapper implements AssetRepository {
   @override

@@ -13,9 +13,9 @@ void main() async {
   // Almost all projects have this.
   WidgetsFlutterBinding.ensureInitialized();
 
-  await configureDependencies(Environment.prod);
-
   await Jiffy.setLocale(PlatformDispatcher.instance.locale.languageCode);
+
+  await configureDependencies(Environment.prod);
 
   runApp(
     // For widgets to be able to read providers, we need to wrap the entire
